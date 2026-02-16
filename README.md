@@ -5,6 +5,7 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 - User signup/login flow (`signup.php`, `login.php`)
 - Admin login/dashboard entry (`index.php`)
 - Protected main app page (`ash.php`)
+- Static watch/info pages (`w.html`, `video.html`, `manga.html`)
 - Static watch/info pages (`watch1.html`, `watch2.html`, `w.html`, `video.html`, `manga.html`)
 
 ## Project structure
@@ -19,6 +20,7 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 ├── control.js        # Homepage UI interactions
 ├── AT.css            # Main dashboard styles
 ├── watchstyle.css    # Watch-page styles
+├── w.html            # Detailed "Your Name" watch page
 ├── watch1.html       # Watch page 1
 ├── watch2.html       # Watch page 2
 ├── w.html            # Detailed "Your Name" page

@@ -84,6 +84,8 @@ if (isset($_GET['logout'])) {
             </a>
             <div class="dropdown-menu">
               <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
+              <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
+              <a href="w.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
               <a href="watch2.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
               <a href="watch1.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
             </div>
@@ -323,7 +325,7 @@ if (isset($_GET['logout'])) {
         
         <div class="anime-grid" id="cardSlider">
             <!-- Anime Card 1 -->
-           <a href="watch1.html" target="_blank" class="anime-card-link">
+           <a href="w.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="your-name card.jpg" alt="Your Name">
@@ -353,7 +355,7 @@ if (isset($_GET['logout'])) {
 </a>
 
             <!-- Anime Card 2 -->
-      <a href="watch2.html" target="_blank" class="anime-card-link">
+      <a href="video.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="attack-on-titan card.jpg" alt="Your Name">
@@ -506,6 +508,7 @@ if (isset($_GET['logout'])) {
         </button>
         
         <div class="anime-grid" id="cardSlider2">
+          <a href="w.html" target="_blank" class="anime-card-link">
           <a href="watch1.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
@@ -528,6 +531,7 @@ if (isset($_GET['logout'])) {
             </div>
           </a>
 
+          <a href="video.html" target="_blank" class="anime-card-link">
           <a href="watch2.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
