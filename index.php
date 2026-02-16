@@ -309,6 +309,7 @@ function showAdminPanel() {
                             <i class="fas fa-film"></i>
                         </div>
                         <h3><?php echo intval($animeCount); ?></h3>
+                        <h3>12</h3>
                         <p class="text-muted">Anime Titles</p>
                     </div>
                 </div>
@@ -319,6 +320,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['total']); ?></h3>
                         <p class="text-muted">Registered Users</p>
+                        <h3>1,245</h3>
+                        <p class="text-muted">Today's Visitors</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -328,6 +331,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['approved']); ?></h3>
                         <p class="text-muted">Approved Users</p>
+                        <h3>5,678</h3>
+                        <p class="text-muted">Total Views</p>
                     </div>
                 </div>
                 <div class="col-md-3">

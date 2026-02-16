@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Redirect to anime site
                 header('Location: user_panel.php');
+                header('Location: ash.php');
                 exit;
             } else {
                 $message = $result['message'];
