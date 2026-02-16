@@ -5,6 +5,9 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 - User signup/login flow (`signup.php`, `login.php`)
 - Admin login/dashboard entry (`index.php`)
 - Protected main app page (`ash.php`)
+- Auto-initialized SQLite backend (`data/app.sqlite`) via `db_helper.php`
+- Admin approval workflow for new user accounts (approve from `index.php`)
+- Static watch/info pages (`w.html`, `video.html`, `manga.html`)
 - Static watch/info pages (`w.html`, `video.html`, `manga.html`)
 - Static watch/info pages (`watch1.html`, `watch2.html`, `w.html`, `video.html`, `manga.html`)
 
@@ -16,6 +19,8 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 ├── login.php         # User login
 ├── signup.php        # User registration
 ├── ash.php           # Protected main homepage/dashboard
+├── db_helper.php     # SQLite DB helper + auto schema init
+├── data/app.sqlite   # Auto-created runtime DB file
 ├── db_helper.php     # SQLite DB helper methods
 ├── control.js        # Homepage UI interactions
 ├── AT.css            # Main dashboard styles
@@ -49,3 +54,10 @@ Then open:
 for f in *.php; do php -l "$f"; done
 for f in *.js; do node --check "$f"; done
 ```
+
+## Database behavior
+
+- On first run, `db_helper.php` automatically creates required tables in `data/app.sqlite`.
+- New signups are created as **pending**.
+- Admin can approve pending users from `index.php` admin panel.
+- Only approved users can log in from `login.php`.

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'db_helper.php';
 
 // ===================== CONFIGURATION =====================
 $ADMIN_USERNAME = 'admin';
@@ -50,6 +51,28 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     } else {
         $error = "Invalid username or password!";
     }
+}
+
+// Handle user approval from admin panel
+if (
+    isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true &&
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['approve_user'])
+) {
+    $approveUserId = intval($_POST['approve_user']);
+    try {
+        $db = new DatabaseHelper();
+        $approved = $db->approveUser($approveUserId);
+        $db->close();
+        $_SESSION['admin_flash'] = $approved
+            ? 'User approved successfully.'
+            : 'Unable to approve user (user may already be approved).';
+    } catch (Exception $e) {
+        $_SESSION['admin_flash'] = 'Approval failed: ' . $e->getMessage();
+    }
+
+    header('Location: index.php');
+    exit;
 }
 
 // If admin is already logged in, show admin panel
@@ -158,6 +181,19 @@ function showLoginForm() {
 }
 
 function showAdminPanel() {
+    $pendingUsers = [];
+    $userStats = ['total' => 0, 'approved' => 0, 'pending' => 0];
+    $flashMessage = $_SESSION['admin_flash'] ?? null;
+    unset($_SESSION['admin_flash']);
+
+    try {
+        $db = new DatabaseHelper();
+        $pendingUsers = $db->getPendingUsers();
+        $userStats = $db->getUserStats();
+        $db->close();
+    } catch (Exception $e) {
+        $flashMessage = 'Database warning: ' . $e->getMessage();
+    }
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -267,6 +303,8 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
+                        <h3><?php echo intval($userStats['total']); ?></h3>
+                        <p class="text-muted">Registered Users</p>
                         <h3>1,245</h3>
                         <p class="text-muted">Today's Visitors</p>
                     </div>
@@ -276,6 +314,8 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-eye"></i>
                         </div>
+                        <h3><?php echo intval($userStats['pending']); ?></h3>
+                        <p class="text-muted">Pending Approvals</p>
                         <h3>5,678</h3>
                         <p class="text-muted">Total Views</p>
                     </div>
@@ -310,6 +350,55 @@ function showAdminPanel() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <?php if($flashMessage): ?>
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> <?php echo htmlspecialchars($flashMessage); ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="card mt-3 mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-user-check"></i> Pending User Approvals</h5>
+                </div>
+                <div class="card-body">
+                    <?php if(empty($pendingUsers)): ?>
+                        <p class="mb-0 text-muted">No pending users. All good ✅</p>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($pendingUsers as $pendingUser): ?>
+                                    <tr>
+                                        <td><?php echo intval($pendingUser['id']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['created_at']); ?></td>
+                                        <td>
+                                            <form method="POST" class="mb-0">
+                                                <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
