@@ -30,15 +30,20 @@ if(isset($_GET['access']) && $_GET['access'] === 'main') {
 
 // Check login attempt
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $username = $_POST['username'] ?? '';
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    
-    // Simple password check (for demo, in production use password_verify)
-    if($username === $ADMIN_USERNAME && $password === $ADMIN_PASSWORD) {
+
+    $passwordMatch = $password === $ADMIN_PASSWORD;
+    if (!$passwordMatch && $PASSWORD_HASH !== '$2y$10$YourHashHere') {
+        $passwordMatch = password_verify($password, $PASSWORD_HASH);
+    }
+
+    if($username === $ADMIN_USERNAME && $passwordMatch) {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $username;
         $_SESSION['login_time'] = time();
-        
+
         // Redirect to admin panel
         header('Location: index.php');
         exit;
