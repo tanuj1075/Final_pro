@@ -157,13 +157,17 @@ class DatabaseHelper {
 
     public function loginUser($username, $password) {
         $stmt = $this->db->prepare(
-            "SELECT * FROM admin_panel_siteuser WHERE username = :username AND is_active = 1"
+            "SELECT * FROM admin_panel_siteuser WHERE username = :username"
         );
         $stmt->execute(['username' => trim($username)]);
         $user = $stmt->fetch();
 
         if (!$user) {
             return ['success' => false, 'message' => 'User not found'];
+        }
+
+        if ((int)$user['is_active'] !== 1) {
+            return ['success' => false, 'message' => 'Account disabled by admin'];
         }
 
         if (!password_verify($password, $user['password_hash'])) {
@@ -200,6 +204,16 @@ class DatabaseHelper {
             "UPDATE admin_panel_siteuser
              SET is_approved = 1, approved_at = datetime('now')
              WHERE id = :id AND is_active = 1"
+        );
+        $stmt->execute(['id' => (int)$userId]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function rejectUser($userId) {
+        $stmt = $this->db->prepare(
+            "UPDATE admin_panel_siteuser
+             SET is_active = 0
+             WHERE id = :id"
         );
         $stmt->execute(['id' => (int)$userId]);
         return $stmt->rowCount() > 0;

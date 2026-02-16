@@ -61,5 +61,5 @@ for f in *.js; do node --check "$f"; done
 
 - On first run, `db_helper.php` automatically creates required tables in `data/app.sqlite`.
 - New signups are created as **pending**.
-- Admin can approve pending users from `index.php` admin panel.
+- Admin can approve or reject pending users from `index.php` admin panel.
 - Only approved users can log in from `login.php`.

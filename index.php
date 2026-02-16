@@ -53,22 +53,34 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     }
 }
 
-// Handle user approval from admin panel
+// Handle user approval/rejection from admin panel
 if (
     isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true &&
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_POST['approve_user'])
+    (isset($_POST['approve_user']) || isset($_POST['reject_user']))
 ) {
-    $approveUserId = intval($_POST['approve_user']);
     try {
         $db = new DatabaseHelper();
-        $approved = $db->approveUser($approveUserId);
+
+        if (isset($_POST['approve_user'])) {
+            $approveUserId = intval($_POST['approve_user']);
+            $approved = $db->approveUser($approveUserId);
+            $_SESSION['admin_flash'] = $approved
+                ? 'User approved successfully.'
+                : 'Unable to approve user (user may already be approved).';
+        }
+
+        if (isset($_POST['reject_user'])) {
+            $rejectUserId = intval($_POST['reject_user']);
+            $rejected = $db->rejectUser($rejectUserId);
+            $_SESSION['admin_flash'] = $rejected
+                ? 'User rejected and disabled successfully.'
+                : 'Unable to reject user.';
+        }
+
         $db->close();
-        $_SESSION['admin_flash'] = $approved
-            ? 'User approved successfully.'
-            : 'Unable to approve user (user may already be approved).';
     } catch (Exception $e) {
-        $_SESSION['admin_flash'] = 'Approval failed: ' . $e->getMessage();
+        $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
     }
 
     header('Location: index.php');
@@ -384,12 +396,20 @@ function showAdminPanel() {
                                         <td><?php echo htmlspecialchars($pendingUser['email']); ?></td>
                                         <td><?php echo htmlspecialchars($pendingUser['created_at']); ?></td>
                                         <td>
-                                            <form method="POST" class="mb-0">
-                                                <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
-                                                <button type="submit" class="btn btn-sm btn-success">
-                                                    <i class="fas fa-check"></i> Approve
-                                                </button>
-                                            </form>
+                                            <div class="d-flex gap-2">
+                                                <form method="POST" class="mb-0">
+                                                    <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+                                                </form>
+                                                <form method="POST" class="mb-0" onsubmit="return confirm('Reject this user?');">
+                                                    <input type="hidden" name="reject_user" value="<?php echo intval($pendingUser['id']); ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
