@@ -10,12 +10,6 @@ if (!$isUserLoggedIn && !$isAdminLoggedIn) {
     exit;
 }
 
-// Enforce separate user panel as the first landing page for normal users.
-if ($isUserLoggedIn && !$isAdminLoggedIn && !isset($_GET['from_panel'])) {
-    header('Location: user_panel.php');
-    exit;
-}
-
 $displayName = $_SESSION['username'] ?? ($_SESSION['admin_username'] ?? 'Guest');
 
 if (isset($_GET['logout'])) {
