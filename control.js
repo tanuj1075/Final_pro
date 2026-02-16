@@ -1,295 +1,204 @@
-// Simple interactivity for the cute website
-document.addEventListener('DOMContentLoaded', function () {
-  // Mobile menu toggle
-  const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
+document.addEventListener('DOMContentLoaded', () => {
   const navMenu = document.querySelector('.nav-menu');
+  const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
 
-  if (mobileMenuBtn) {
+  if (mobileMenuBtn && navMenu) {
     mobileMenuBtn.addEventListener('click', () => {
       navMenu.classList.toggle('active');
       mobileMenuBtn.innerHTML = navMenu.classList.contains('active')
         ? '<i class="fas fa-times"></i>'
         : '<i class="fas fa-bars"></i>';
     });
-  }
 
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-container') && navMenu.classList.contains('active')) {
-      navMenu.classList.remove('active');
-      mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-    }
-  });
-
-  // Anime card hover effects
-  const animeCards = document.querySelectorAll('.anime-card');
-  animeCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      card.style.transform = 'translateY(-15px)';
-    });
-
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'translateY(0)';
-    });
-  });
-
-  // Play button animations
-  const playButtons = document.querySelectorAll('.watch-btn, .quick-play');
-  playButtons.forEach(btn => {
-    btn.addEventListener('mouseenter', (e) => {
-      e.target.style.transform = 'scale(1.1) rotate(15deg)';
-    });
-
-    btn.addEventListener('mouseleave', (e) => {
-      e.target.style.transform = 'scale(1) rotate(0)';
-    });
-  });
-
-  // Category card animations
-  const categoryCards = document.querySelectorAll('.category-card');
-  categoryCards.forEach((card, index) => {
-    card.style.setProperty('--i', index);
-
-    card.addEventListener('mouseenter', () => {
-      const icon = card.querySelector('.category-icon');
-      icon.style.transform = 'scale(1.2) rotate(15deg)';
-    });
-
-    card.addEventListener('mouseleave', () => {
-      const icon = card.querySelector('.category-icon');
-      icon.style.transform = 'scale(1) rotate(0)';
-    });
-  });
-
-  // Remind button functionality
-  const remindButtons = document.querySelectorAll('.remind-btn');
-  remindButtons.forEach(btn => {
-    btn.addEventListener('click', function () {
-      const originalText = this.innerHTML;
-      const animeTitle = this.closest('.coming-card').querySelector('h3').textContent;
-
-      this.innerHTML = '<i class="fas fa-check"></i> Added!';
-      this.style.background = '#a2ffd6';
-      this.style.color = '#2d8b64';
-
-      // Show cute notification
-      showNotification(`Added "${animeTitle}" to reminders! ✨`);
-
-      setTimeout(() => {
-        this.innerHTML = originalText;
-        this.style.background = '';
-        this.style.color = '';
-      }, 2000);
-    });
-  });
-
-  // Heart button toggle
-  const heartBtn = document.querySelector('.heart-btn');
-  if (heartBtn) {
-    heartBtn.addEventListener('click', function () {
-      const icon = this.querySelector('i');
-      const isActive = icon.classList.contains('fas');
-
-      if (isActive) {
-        icon.classList.remove('fas');
-        icon.classList.add('far');
-        this.style.background = '';
-        this.style.color = '';
-        showNotification('Removed from favorites 💔');
-      } else {
-        icon.classList.remove('far');
-        icon.classList.add('fas');
-        this.style.background = '#ff6b9d';
-        this.style.color = 'white';
-        this.style.borderColor = '#ff6b9d';
-        showNotification('Added to favorites! ❤️');
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.nav-container') && navMenu.classList.contains('active')) {
+        navMenu.classList.remove('active');
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
       }
     });
   }
 
-  // Search button
+  const sectionMap = {
+    New: '#animeCarousel',
+    Popular: '#most-watched',
+    Simulcast: '#anime-journey',
+    Manga: 'manga.html'
+  };
+
+  document.querySelectorAll('.nav-link a').forEach((link) => {
+    link.addEventListener('click', () => {
+      document.querySelectorAll('.nav-link a').forEach((l) => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+
+    const label = link.textContent.trim();
+    if (sectionMap[label]) {
+      link.setAttribute('href', sectionMap[label]);
+    }
+  });
+
   const searchBtn = document.querySelector('.action-btn[aria-label="Search"]');
   if (searchBtn) {
-    searchBtn.addEventListener('click', function () {
-      const searchInput = document.createElement('input');
+    searchBtn.addEventListener('click', () => {
+      let searchInput = document.querySelector('.search-input');
+      if (searchInput) {
+        searchInput.focus();
+        return;
+      }
+
+      searchInput = document.createElement('input');
       searchInput.type = 'text';
-      searchInput.placeholder = 'Search for cute anime...';
       searchInput.className = 'search-input';
-
-      // Position it nicely
-      this.parentNode.appendChild(searchInput);
+      searchInput.placeholder = 'Search anime by title...';
       searchInput.style.position = 'absolute';
-      searchInput.style.top = '50px';
+      searchInput.style.top = '55px';
       searchInput.style.right = '0';
-      searchInput.style.padding = '15px';
-      searchInput.style.borderRadius = '25px';
-      searchInput.style.border = '2px solid #ffb6e1';
+      searchInput.style.width = '280px';
+      searchInput.style.maxWidth = '80vw';
+      searchInput.style.padding = '10px 14px';
+      searchInput.style.borderRadius = '999px';
+      searchInput.style.border = '2px solid rgba(255,255,255,0.5)';
       searchInput.style.outline = 'none';
-      searchInput.style.width = '300px';
-      searchInput.style.boxShadow = '0 8px 25px rgba(255, 182, 225, 0.3)';
+      searchInput.style.background = '#ffffff';
+      searchInput.style.zIndex = '1001';
 
+      const actions = searchBtn.closest('.action-icons') || searchBtn.parentElement;
+      actions.style.position = 'relative';
+      actions.appendChild(searchInput);
       searchInput.focus();
 
-      // Remove on blur
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        document.querySelectorAll('.anime-card').forEach((card) => {
+          const title = card.querySelector('.anime-title')?.textContent.toLowerCase() || '';
+          card.style.display = title.includes(query) ? '' : 'none';
+        });
+      });
+
       searchInput.addEventListener('blur', () => {
-        setTimeout(() => searchInput.remove(), 200);
+        setTimeout(() => {
+          if (searchInput) {
+            searchInput.remove();
+            document.querySelectorAll('.anime-card').forEach((card) => {
+              card.style.display = '';
+            });
+          }
+        }, 150);
       });
     });
   }
 
-  // Add newsletter subscription
-  const subscribeBtn = document.querySelector('.subscribe-btn');
-  const newsletterInput = document.querySelector('.newsletter input');
-
-  if (subscribeBtn && newsletterInput) {
-    subscribeBtn.addEventListener('click', function () {
-      const email = newsletterInput.value;
-      if (email && email.includes('@')) {
-        this.innerHTML = '<i class="fas fa-check"></i>';
-        this.style.background = '#a2ffd6';
-
-        newsletterInput.value = '';
-        newsletterInput.placeholder = 'Thank you! ✨';
-
-        showNotification('You\'ll receive cute anime updates! 🌸');
-
-        setTimeout(() => {
-          this.innerHTML = '<i class="fas fa-paper-plane"></i>';
-          this.style.background = '';
-          newsletterInput.placeholder = 'Your email address';
-        }, 3000);
+  document.querySelectorAll('.quick-play').forEach((button) => {
+    button.setAttribute('type', 'button');
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const anchor = button.closest('a');
+      if (anchor && anchor.getAttribute('href')) {
+        window.open(anchor.getAttribute('href'), anchor.getAttribute('target') || '_self');
       } else {
-        newsletterInput.style.borderColor = '#ff6b9d';
-        newsletterInput.placeholder = 'Please enter a valid email';
-
-        setTimeout(() => {
-          newsletterInput.style.borderColor = '';
-          newsletterInput.placeholder = 'Your email address';
-        }, 2000);
+        const animeTitle = button.closest('.anime-card')?.querySelector('.anime-title')?.textContent?.trim() || 'This title';
+        showNotification(`${animeTitle}: episode page coming soon.`);
       }
+    });
+  });
+
+  const carouselWatchTargets = ['watch1.html', 'watch2.html', 'watch1.html', 'watch2.html', 'video.html'];
+  document.querySelectorAll('.watch-btn').forEach((button) => {
+    button.setAttribute('type', 'button');
+    button.addEventListener('click', () => {
+      const currentItem = button.closest('.carousel-item');
+      if (!currentItem) {
+        showNotification('Watch page unavailable right now.');
+        return;
+      }
+
+      const allItems = Array.from(document.querySelectorAll('#animeCarousel .carousel-item'));
+      const index = allItems.indexOf(currentItem);
+      const destination = carouselWatchTargets[index] || 'video.html';
+      window.location.href = destination;
+    });
+  });
+
+  const profileBtn = document.querySelector('.action-btn.user-btn');
+  if (profileBtn) {
+    profileBtn.addEventListener('click', () => {
+      showNotification('Profile center will be available in the next update.');
     });
   }
 
-  // Notification function
-  function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'cute-notification';
-    notification.innerHTML = `
-      <div class="notification-content">
-        <i class="fas fa-star"></i>
-        <span>${message}</span>
-      </div>
-    `;
+  document.querySelectorAll('.bookmark-btn').forEach((button) => {
+    button.setAttribute('type', 'button');
+    button.addEventListener('click', () => {
+      button.classList.toggle('is-active');
+      const icon = button.querySelector('i');
+      if (icon) {
+        icon.classList.toggle('fas');
+        icon.classList.toggle('far');
+      }
+      showNotification(button.classList.contains('is-active') ? 'Added to bookmarks.' : 'Removed from bookmarks.');
+    });
+  });
 
-    // Add styles
-    notification.style.position = 'fixed';
-    notification.style.top = '20px';
-    notification.style.right = '20px';
-    notification.style.background = 'white';
-    notification.style.padding = '15px 25px';
-    notification.style.borderRadius = '15px';
-    notification.style.boxShadow = '0 8px 25px rgba(255, 182, 225, 0.3)';
-    notification.style.borderLeft = '5px solid #ffb6e1';
-    notification.style.zIndex = '9999';
-    notification.style.animation = 'slideInRight 0.3s ease-out';
-
-    document.body.appendChild(notification);
-
-    // Remove after 3 seconds
-    setTimeout(() => {
-      notification.style.animation = 'slideOutRight 0.3s ease-out';
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
-  }
-
-  // Add CSS for notifications
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOutRight {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    .notification-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #6b4d7d;
-      font-weight: 600;
-    }
-    
-    .notification-content i {
-      color: #ffb6e1;
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Scroll animations
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
+  document.querySelectorAll('.info-btn').forEach((button) => {
+    button.setAttribute('type', 'button');
+    button.addEventListener('click', () => {
+      const card = button.closest('.carousel-content');
+      const title = card?.querySelector('.anime-logo')?.getAttribute('alt') || 'This anime';
+      showNotification(`${title}: details will be available soon.`);
+    });
+  });
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+        entry.target.classList.add('in-view');
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.12 });
 
-  // Observe elements for animation
-  document.querySelectorAll('.anime-card, .category-card, .coming-card').forEach(el => {
+  document.querySelectorAll('.anime-card').forEach((el) => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
     observer.observe(el);
   });
 
-  // Add floating emojis animation
-  const emojis = ['🌸', '🐱', '✨', '🌟', '❤️', '⭐', '🐾', '🎀'];
-  setInterval(() => {
-    if (Math.random() > 0.7) {
-      createFloatingEmoji();
-    }
-  }, 3000);
+  const style = document.createElement('style');
+  style.textContent = '.anime-card.in-view{opacity:1!important;transform:translateY(0)!important;}';
+  document.head.appendChild(style);
 
-  function createFloatingEmoji() {
-    const emoji = document.createElement('div');
-    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    emoji.style.position = 'fixed';
-    emoji.style.left = Math.random() * 100 + 'vw';
-    emoji.style.top = '100vh';
-    emoji.style.fontSize = Math.random() * 20 + 20 + 'px';
-    emoji.style.opacity = '0.7';
-    emoji.style.zIndex = '-1';
-    emoji.style.pointerEvents = 'none';
-    emoji.style.animation = `floatUp ${Math.random() * 3 + 2}s ease-in forwards`;
+  function showNotification(message) {
+    const note = document.createElement('div');
+    note.textContent = message;
+    note.style.position = 'fixed';
+    note.style.right = '16px';
+    note.style.top = '16px';
+    note.style.padding = '10px 14px';
+    note.style.borderRadius = '8px';
+    note.style.background = '#1f2937';
+    note.style.color = '#fff';
+    note.style.zIndex = '9999';
+    note.style.boxShadow = '0 8px 20px rgba(0,0,0,0.25)';
+    document.body.appendChild(note);
 
-    document.body.appendChild(emoji);
-
-    setTimeout(() => emoji.remove(), 5000);
+    setTimeout(() => {
+      note.style.opacity = '0';
+      note.style.transition = 'opacity 0.25s ease';
+      setTimeout(() => note.remove(), 250);
+    }, 1800);
   }
-
-  // Add floating animation
-  const floatStyle = document.createElement('style');
-  floatStyle.textContent = `
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.7;
-      }
-      100% {
-        transform: translateY(-100vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-  `;
-  document.head.appendChild(floatStyle);
 });
+
+function scrollSlider(direction) {
+  const slider = document.getElementById('cardSlider');
+  if (!slider) return;
+  const amount = Math.max(300, Math.floor(slider.clientWidth * 0.8));
+  slider.scrollBy({ left: direction * amount, behavior: 'smooth' });
+}
+
+function scrollSlider2(direction) {
+  const slider = document.getElementById('cardSlider2');
+  if (!slider) return;
+  const amount = Math.max(300, Math.floor(slider.clientWidth * 0.8));
+  slider.scrollBy({ left: direction * amount, behavior: 'smooth' });
+}
