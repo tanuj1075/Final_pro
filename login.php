@@ -20,11 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($result['success']) {
                 // Set session
+                session_regenerate_id(true);
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['user_id'] = $result['user']['id'];
                 $_SESSION['username'] = $result['user']['username'];
                 $_SESSION['email'] = $result['user']['email'];
-                
+
                 // Redirect to anime site
                 header('Location: ash.php');
                 exit;
