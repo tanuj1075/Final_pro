@@ -305,6 +305,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['total']); ?></h3>
                         <p class="text-muted">Registered Users</p>
+                        <h3>1,245</h3>
+                        <p class="text-muted">Today's Visitors</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -314,6 +316,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['pending']); ?></h3>
                         <p class="text-muted">Pending Approvals</p>
+                        <h3>5,678</h3>
+                        <p class="text-muted">Total Views</p>
                     </div>
                 </div>
                 <div class="col-md-3">
