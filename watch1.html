@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="watchstyle.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Landing Section -->
+<section class="fullscreen-video" id="introBanner">
+  <div class="video-overlay"></div>
+  <img src="your name.jpg" alt="Your Name Banner">
+  <div class="video-overlay"></div>
+  <div class="video-text">
+    <h1>Your Name</h1>
+    <p>Two strangers connected by dreams seek each other across time and fate.</p>
+    <button class="btn-watch" id="watchBtn">▶ Watch Overview</button>
+  </div>
+</section>
+
+<!-- Video Player Section (Hidden Initially) -->
+<section class="video-screen" id="watchScreen">
+  <video controls autoplay>
+    <source src="your-name.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</section>
+
+<!-- Tab Navigation -->
+<!-- Tab Menu -->
+<nav class="tab-menu">
+  <ul>
+    <li class="tab-item active" data-tab="overview">Overview</li>
+    <li class="tab-item" data-tab="episodes">List of Episodes</li>
+    <li class="tab-item" data-tab="related">Related</li>
+  </ul>
+</nav>
+
+<!-- Tab Content Sections -->
+<section class="tab-content" id="overview">
+  <h2>Overview</h2>
+  <p>Mitsuha and Taki, two teens connected by dreams, search for each other across time and memory to rewrite fate.</p>
+</section>
+
+<section class="tab-content" id="episodes" style="display:none;">
+  <h2>Episode List</h2>
+  <ul>
+    <li>Episode 1: "Dream Connection"</li>
+    <li>Episode 2: "Crossing Paths"</li>
+    <li>Episode 3: "Thread of Fate"</li>
+    <li>Episode 4: "Timeless Distance"</li>
+    <li>Episode 5: "Reunion"</li>
+  </ul>
+</section>
+
+<section class="tab-content" id="related" style="display:none;">
+  <h2>Related Anime</h2>
+  <ul>
+    <li><strong>Weathering with You</strong> – A tale of love and weather manipulation.</li>
+    <li><strong>5 Centimeters per Second</strong> – A beautiful story about distance and time.</li>
+    <li><strong>The Garden of Words</strong> – A quiet romance that blossoms in the rain.</li>
+  </ul>
+</section>
+
+<!-- Main Content -->
+<section class="anime-detail">
+  <div class="left">
+    <h2>Description</h2>
+<p>
+Mitsuha and Taki, two strangers linked by dreams, embark on a journey across time and memory to find each other and change fate.
+</p>
+
+
+  </div>
+
+  <div class="right">
+    <h2>Detail</h2>
+<ul>
+  <li><strong>Other Names:</strong> 君の名は。(Your Name)</li>
+  <li><strong>Genre:</strong> Romance, Supernatural, Drama, School</li>
+  <li><strong>Rating:</strong> 8.4/10</li>
+  <li><strong>Type:</strong> Movie</li>
+  <li><strong>Status:</strong> Complete</li>
+  <li><strong>Year of Release:</strong> 2016</li>
+  <li><strong>Duration:</strong> 1h 52m</li>
+</ul>
+
+  </div>
+</section>
+
+
+<script>
+  // Watch Overview Button
+  document.getElementById('watchBtn').onclick = () => {
+    document.getElementById('introBanner').style.display = 'none';
+    document.getElementById('watchScreen').style.display = 'flex';
+  };
+
+  // Tab Switching
+  document.querySelectorAll('.tab-item').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).style.display = 'block';
+    };
+  });
+</script>
+
+
+</body>
+</html>

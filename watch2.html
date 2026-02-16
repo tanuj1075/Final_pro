@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="watchstyle.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Landing Section -->
+<section class="fullscreen-video" id="introBanner">
+  <div class="video-overlay"></div>
+  <img src="aot.jpg" alt="Your Name Banner">
+  <div class="video-overlay"></div>
+  <div class="video-text">
+    <h1>Attack on Titans</h1>
+<p>Humanity battles for survival behind walls as Titans threaten their existence and freedom.</p>
+    <button class="btn-watch" id="watchBtn">▶ Watch Overview</button>
+  </div>
+</section>
+
+<!-- Video Player Section (Hidden Initially) -->
+<section class="video-screen" id="watchScreen">
+  <video controls autoplay>
+    <source src="AMV.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</section>
+
+<!-- Tab Navigation -->
+<!-- Tab Menu -->
+<nav class="tab-menu">
+  <ul>
+    <li class="tab-item active" data-tab="overview">Overview</li>
+    <li class="tab-item" data-tab="episodes">List of Episodes</li>
+    <li class="tab-item" data-tab="related">Related</li>
+  </ul>
+</nav>
+
+<!-- Tab Content Sections -->
+<section class="tab-content" id="overview">
+  <h2>Overview</h2>
+<p>In a world ravaged by Titans, Eren Yeager and his comrades rise to uncover hidden truths and fight for humanity’s freedom beyond the walls.</p>
+</section>
+
+
+<section class="tab-content" id="episodes" style="display:none;">
+  <h2>Episode List</h2>
+<ul>
+  <li>Episode 1: "To You, in 2000 Years"</li>
+  <li>Episode 2: "That Day"</li>
+  <li>Episode 3: "A Dim Light Amid Despair"</li>
+  <li>Episode 4: "The Armored Titan"</li>
+  <li>Episode 5: "Declaration of War"</li>
+</ul>
+</section>
+
+
+<section class="tab-content" id="related" style="display:none;">
+  <h2>Related Anime</h2>
+  <ul>
+    <li><strong>Weathering with You</strong> – A tale of love and weather manipulation.</li>
+    <li><strong>5 Centimeters per Second</strong> – A beautiful story about distance and time.</li>
+    <li><strong>The Garden of Words</strong> – A quiet romance that blossoms in the rain.</li>
+  </ul>
+</section>
+
+<!-- Main Content -->
+<section class="anime-detail">
+  <div class="left">
+    <h2>Description</h2>
+<p>
+Eren Yeager, driven by vengeance and the desire for freedom, joins the Scout Regiment to fight against the Titans and uncover the dark secrets hidden beyond the walls.
+</p>
+
+
+
+  </div>
+
+  <div class="right">
+    <h2>Detail</h2>
+<ul>
+  <li><strong>Other Names:</strong> 進撃の巨人 (Shingeki no Kyojin)</li>
+  <li><strong>Genre:</strong> Action, Dark Fantasy, Mystery, Drama</li>
+  <li><strong>Rating:</strong> 9.0/10</li>
+  <li><strong>Type:</strong> TV Series</li>
+  <li><strong>Status:</strong> Complete</li>
+  <li><strong>Year of Release:</strong> 2013</li>
+  <li><strong>Duration:</strong> 4 Seasons (87 Episodes)</li>
+</ul>
+
+  </div>
+</section>
+
+
+<script>
+  // Watch Overview Button
+  document.getElementById('watchBtn').onclick = () => {
+    document.getElementById('introBanner').style.display = 'none';
+    document.getElementById('watchScreen').style.display = 'flex';
+  };
+
+  // Tab Switching
+  document.querySelectorAll('.tab-item').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).style.display = 'block';
+    };
+  });
+</script>
+
+
+</body>
+</html>
