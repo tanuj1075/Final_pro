@@ -100,7 +100,7 @@ if (!$user || (int)$user['is_active'] !== 1 || (int)$user['is_approved'] !== 1) 
             <hr class="my-4" style="border-color: rgba(148,163,184,0.2)">
 
             <div class="d-flex flex-wrap gap-2">
-                <a href="ash.php" class="btn btn-main text-white">
+                <a href="ash.php?from_panel=1" class="btn btn-main text-white">
                     <i class="fas fa-tv"></i> Open Anime Home
                 </a>
                 <a href="manga.html" class="btn btn-outline-info">

@@ -51,6 +51,12 @@ for f in *.php; do php -l "$f"; done
 for f in *.js; do node --check "$f"; done
 ```
 
+## User flow
+
+- User login redirects to `user_panel.php` first.
+- From user panel, users can open the anime home (`ash.php?from_panel=1`).
+- Admin approval is still required before user login is allowed.
+
 ## Database behavior
 
 - On first run, `db_helper.php` automatically creates required tables in `data/app.sqlite`.
