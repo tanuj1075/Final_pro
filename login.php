@@ -20,13 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($result['success']) {
                 // Set session
+                session_regenerate_id(true);
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['user_id'] = $result['user']['id'];
                 $_SESSION['username'] = $result['user']['username'];
                 $_SESSION['email'] = $result['user']['email'];
-                
+
                 // Redirect to anime site
-                header('Location: ash.php');
+                header('Location: user_panel.php');
                 exit;
             } else {
                 $message = $result['message'];
@@ -44,6 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if (isset($_GET['logout'])) {
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
+}
+
+if (isset($_GET['error']) && trim($_GET['error']) !== '') {
+    $message = trim($_GET['error']);
+    $message_type = 'error';
 }
 ?>
 <!DOCTYPE html>
