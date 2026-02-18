@@ -220,6 +220,61 @@ class DatabaseHelper {
     }
 
 
+    public function getUserByEmail($email) {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM admin_panel_siteuser WHERE email = :email LIMIT 1"
+        );
+        $stmt->execute(['email' => strtolower(trim($email))]);
+        $user = $stmt->fetch();
+        return $user ?: null;
+    }
+
+    public function generateUniqueUsername($base) {
+        $base = preg_replace('/[^a-zA-Z0-9_]/', '_', strtolower($base));
+        $base = trim($base, '_');
+        if ($base === '') {
+            $base = 'user';
+        }
+
+        $candidate = $base;
+        $index = 1;
+        while ($this->usernameExists($candidate)) {
+            $candidate = $base . '_' . $index;
+            $index++;
+        }
+        return $candidate;
+    }
+
+    private function usernameExists($username) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM admin_panel_siteuser WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function createOAuthUser($username, $email, $provider, $providerId) {
+        $randomPassword = bin2hex(random_bytes(16));
+        $passwordHash = password_hash($randomPassword, PASSWORD_DEFAULT);
+
+        $stmt = $this->db->prepare(
+            "INSERT INTO admin_panel_siteuser (username, email, password_hash, is_approved, is_active, created_at, approved_at)
+             VALUES (:username, :email, :password_hash, 1, 1, datetime('now'), datetime('now'))"
+        );
+
+        return $stmt->execute([
+            'username' => $username,
+            'email' => strtolower(trim($email)),
+            'password_hash' => $passwordHash,
+        ]);
+    }
+
+    public function touchLastLogin($userId) {
+        $stmt = $this->db->prepare(
+            "UPDATE admin_panel_siteuser SET last_login = datetime('now') WHERE id = :id"
+        );
+        $stmt->execute(['id' => (int)$userId]);
+    }
+
+
     public function getUserById($userId) {
         $stmt = $this->db->prepare(
             "SELECT id, username, email, is_approved, is_active, created_at, last_login

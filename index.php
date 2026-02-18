@@ -164,6 +164,7 @@ function showLoginForm() {
                 font-size: 13px;
                 font-weight: 600;
                 display: inline-flex;
+            text-decoration: none;
                 align-items: center;
                 justify-content: center;
                 gap: 8px;
@@ -229,6 +230,9 @@ function showLoginForm() {
 
             <div class="social-login-section" aria-label="Social authentication options">
                 <div class="social-login-buttons">
+                    <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
+                    <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
                     <button type="button" class="social-btn"><i class="fab fa-google"></i> Google</button>
                     <button type="button" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</button>
                     <button type="button" class="social-btn"><i class="fab fa-apple"></i> Apple</button>

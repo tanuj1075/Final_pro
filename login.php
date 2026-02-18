@@ -246,6 +246,7 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             font-size: 14px;
             font-weight: 600;
             display: inline-flex;
+            text-decoration: none;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -316,6 +317,11 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
 
         <div class="social-login-section" aria-label="Social authentication options">
             <div class="social-login-buttons">
+                <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
+                <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+            </div>
+            <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
                 <button type="button" class="social-btn"><i class="fab fa-google"></i> Google</button>
                 <button type="button" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</button>
                 <button type="button" class="social-btn"><i class="fab fa-apple"></i> Apple</button>

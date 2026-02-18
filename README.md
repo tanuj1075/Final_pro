@@ -71,3 +71,26 @@ for f in *.js; do node --check "$f"; done
 - New signups are created as **pending**.
 - Admin can approve or reject pending users from `index.php` admin panel.
 - Only approved users can log in from `login.php`.
+
+
+## Social OAuth setup
+
+To enable Google / Meta(Facebook) / Apple sign-in:
+
+1. Register apps in provider consoles and create OAuth credentials.
+2. Configure callback URL to:
+   - `http://127.0.0.1:8000/oauth_callback.php?provider=google`
+   - `http://127.0.0.1:8000/oauth_callback.php?provider=facebook`
+   - `http://127.0.0.1:8000/oauth_callback.php?provider=apple`
+3. Set environment variables before starting PHP server:
+
+```bash
+export GOOGLE_CLIENT_ID=...
+export GOOGLE_CLIENT_SECRET=...
+export FACEBOOK_CLIENT_ID=...
+export FACEBOOK_CLIENT_SECRET=...
+export APPLE_CLIENT_ID=...
+export APPLE_CLIENT_SECRET=...
+```
+
+Then use social buttons on login/admin pages.
