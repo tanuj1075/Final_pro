@@ -92,6 +92,8 @@ if (isset($_GET['logout'])) {
               <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
               <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
               <a href="w.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
+              <a href="watch2.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
+              <a href="watch1.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
             </div>
           </li>
         </ul>
@@ -513,6 +515,7 @@ if (isset($_GET['logout'])) {
         
         <div class="anime-grid" id="cardSlider2">
           <a href="w.html" target="_blank" class="anime-card-link">
+          <a href="watch1.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="5 centimeters per second card.jpg" alt="5 Centimeters per Second">
@@ -535,6 +538,7 @@ if (isset($_GET['logout'])) {
           </a>
 
           <a href="video.html" target="_blank" class="anime-card-link">
+          <a href="watch2.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="Weathering With You  card.jpg" alt="Weathering With You">

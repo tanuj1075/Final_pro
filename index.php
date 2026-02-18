@@ -233,6 +233,9 @@ function showLoginForm() {
                     <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
                     <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
                     <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+                    <button type="button" class="social-btn"><i class="fab fa-google"></i> Google</button>
+                    <button type="button" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</button>
+                    <button type="button" class="social-btn"><i class="fab fa-apple"></i> Apple</button>
                 </div>
                 <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
             </div>
@@ -362,6 +365,7 @@ function showAdminPanel() {
                             <i class="fas fa-film"></i>
                         </div>
                         <h3><?php echo intval($animeCount); ?></h3>
+                        <h3>12</h3>
                         <p class="text-muted">Anime Titles</p>
                     </div>
                 </div>
@@ -372,6 +376,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['total']); ?></h3>
                         <p class="text-muted">Registered Users</p>
+                        <h3>1,245</h3>
+                        <p class="text-muted">Today's Visitors</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -381,6 +387,8 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['approved']); ?></h3>
                         <p class="text-muted">Approved Users</p>
+                        <h3>5,678</h3>
+                        <p class="text-muted">Total Views</p>
                     </div>
                 </div>
                 <div class="col-md-3">

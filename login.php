@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Redirect to anime site
                 header('Location: user_panel.php');
+                header('Location: ash.php');
                 exit;
             } else {
                 $message = $result['message'];
@@ -321,6 +322,13 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
                 <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
             </div>
             <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+                <button type="button" class="social-btn"><i class="fab fa-google"></i> Google</button>
+                <button type="button" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</button>
+                <button type="button" class="social-btn"><i class="fab fa-apple"></i> Apple</button>
+            </div>
+            <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+        <div class="footer-text">
+            Don't have an account? <a href="signup.php">Create Account</a>
         </div>
     </div>
 </body>
