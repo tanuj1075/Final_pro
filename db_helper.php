@@ -132,6 +132,21 @@ class DatabaseHelper {
     }
 
     public function registerUser($username, $email, $password) {
+        $username = trim($username);
+        $email = strtolower(trim($email));
+
+        if (!preg_match('/^[a-zA-Z0-9_]{3,30}$/', $username)) {
+            return 'Username must be 3-30 chars and contain only letters, numbers, and underscores';
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return 'Invalid email format';
+        }
+
+        if (strlen($password) < 6) {
+            return 'Password must be at least 6 characters';
+        }
+
         try {
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -141,8 +156,8 @@ class DatabaseHelper {
             );
 
             $stmt->execute([
-                'username' => trim($username),
-                'email' => strtolower(trim($email)),
+                'username' => $username,
+                'email' => $email,
                 'password_hash' => $password_hash,
             ]);
 
