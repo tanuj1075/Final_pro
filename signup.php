@@ -7,6 +7,10 @@ $message = '';
 $message_type = '';
 $form_values = ['username' => '', 'email' => ''];
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -17,9 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form_values['username'] = $username;
     $form_values['email'] = $email;
 
+    $csrf = $_POST['csrf_token'] ?? '';
+
     // Validation
-    if (empty($username) || empty($email) || empty($password)) {
+    if (!$csrf || !hash_equals($_SESSION['csrf_token'], $csrf)) {
+        $message = 'Invalid request token. Please refresh and try again.';
+        $message_type = 'error';
+    } elseif (empty($username) || empty($email) || empty($password)) {
         $message = 'All fields are required!';
+        $message_type = 'error';
+    } elseif (!preg_match('/^[a-zA-Z0-9_]{3,30}$/', $username)) {
+        $message = 'Username must be 3-30 chars and contain only letters, numbers, and underscores.';
         $message_type = 'error';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = 'Invalid email format!';
@@ -244,6 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
 
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
