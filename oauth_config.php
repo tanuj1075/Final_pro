@@ -51,6 +51,8 @@ return [
     'google' => [
         'client_id' => $getSecret('GOOGLE_CLIENT_ID'),
         'client_secret' => $getSecret('GOOGLE_CLIENT_SECRET'),
+        'client_id' => getenv('918326847007-0kc9hsjntb3ms1keo52g99k1if7cr7qp.apps.googleusercontent.com') ?: '',
+        'client_secret' => getenv('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') ?: '',
         'authorize_url' => 'https://accounts.google.com/o/oauth2/v2/auth',
         'token_url' => 'https://oauth2.googleapis.com/token',
         'userinfo_url' => 'https://openidconnect.googleapis.com/v1/userinfo',
