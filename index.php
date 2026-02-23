@@ -1,4 +1,12 @@
 <?php
+// Ensure sessions work on serverless/readonly filesystems (e.g., Vercel).
+$sessionDir = sys_get_temp_dir() . '/final_pro_sessions';
+if (!is_dir($sessionDir)) {
+    @mkdir($sessionDir, 0755, true);
+}
+if (is_dir($sessionDir) && is_writable($sessionDir)) {
+    ini_set('session.save_path', $sessionDir);
+}
 session_start();
 require_once 'db_helper.php';
 
@@ -334,6 +342,23 @@ function showAdminPanel() {
                 border-radius: 8px;
                 margin-bottom: 25px;
             }
+            .pending-actions {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            @media (max-width: 576px) {
+                .pending-actions {
+                    flex-direction: column;
+                    gap: 6px;
+                }
+                .pending-actions form {
+                    width: 100%;
+                }
+                .pending-actions .btn {
+                    width: 100%;
+                }
+            }
         </style>
     </head>
     <body>
@@ -468,15 +493,15 @@ function showAdminPanel() {
                                         <td><?php echo htmlspecialchars($pendingUser['email']); ?></td>
                                         <td><?php echo htmlspecialchars($pendingUser['created_at']); ?></td>
                                         <td>
-                                            <div class="d-flex gap-2">
-                                                <form method="POST" class="mb-0">
+                                            <div class="pending-actions">
+                                                <form method="POST" action="index.php" class="mb-0">
                                                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                                     <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
                                                     <button type="submit" class="btn btn-sm btn-success">
                                                         <i class="fas fa-check"></i> Approve
                                                     </button>
                                                 </form>
-                                                <form method="POST" class="mb-0" onsubmit="return confirm('Reject this user?');">
+                                                <form method="POST" action="index.php" class="mb-0" onsubmit="return confirm('Reject this user?');">
                                                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                                     <input type="hidden" name="reject_user" value="<?php echo intval($pendingUser['id']); ?>">
                                                     <button type="submit" class="btn btn-sm btn-danger">

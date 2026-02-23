@@ -10,12 +10,7 @@ class DatabaseHelper {
     private $db_path;
 
     public function __construct() {
-        $dataDir = __DIR__ . '/data';
-        if (!is_dir($dataDir)) {
-            mkdir($dataDir, 0755, true);
-        }
-
-        $this->db_path = $dataDir . '/app.sqlite';
+        $this->db_path = $this->resolveDbPath();
 
         try {
             $this->db = new PDO('sqlite:' . $this->db_path);
@@ -26,6 +21,45 @@ class DatabaseHelper {
         } catch (PDOException $e) {
             throw new RuntimeException('Database connection failed: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Resolve a writable SQLite path for both local and serverless runtimes.
+     *
+     * Priority:
+     * 1) DB_PATH env override
+     * 2) repo ./data/app.sqlite (local development)
+     * 3) /tmp/final_pro_data/app.sqlite (Vercel/serverless fallback)
+     */
+    private function resolveDbPath() {
+        $candidates = [];
+
+        $envPath = trim((string) getenv('DB_PATH'));
+        if ($envPath !== '') {
+            $candidates[] = $envPath;
+        }
+
+        $candidates[] = __DIR__ . '/data/app.sqlite';
+        $candidates[] = sys_get_temp_dir() . '/final_pro_data/app.sqlite';
+
+        foreach ($candidates as $path) {
+            $dir = dirname($path);
+
+            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+                continue;
+            }
+
+            if (!is_writable($dir)) {
+                continue;
+            }
+
+            return $path;
+        }
+
+        throw new RuntimeException(
+            'No writable directory available for SQLite database. ' .
+            'Set DB_PATH env var or ensure /tmp is writable.'
+        );
     }
 
     private function initializeSchema() {
