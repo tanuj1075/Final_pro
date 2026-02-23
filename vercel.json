@@ -8,6 +8,20 @@
   "routes": [
     {
       "handle": "filesystem"
+  "builds": [
+    {
+      "src": "api/**/*.php",
+      "use": "vercel-php"
+    },
+    {
+      "src": "**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|html))",
+      "dest": "/$1"
     },
     {
       "src": "/$",
@@ -16,6 +30,12 @@
     {
       "src": "/admin$",
       "dest": "/api/index.php?route=index.php"
+      "src": "/(admin|index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
     },
     {
       "src": "/admin\\.php$",
@@ -28,6 +48,20 @@
     {
       "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
       "dest": "/api/index.php?route=$1.php"
+      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/about/?$",
+      "dest": "/api/index.php?route=about"
+    },
+    {
+      "src": "/contact/?$",
+      "dest": "/api/index.php?route=contact"
+    },
+    {
+      "src": "/$",
+      "dest": "/api/index.php"
     },
     {
       "src": "/(.*)",
