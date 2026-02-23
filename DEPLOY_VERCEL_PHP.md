@@ -69,5 +69,5 @@ For SQLite fallback in serverless, set `DB_PATH=/tmp/final_pro_data/app.sqlite`.
 ## 6) Deployment-failure fix included
 
 - Switched back to the broadly compatible community-runtime builder style (`"builds": [{"src": "api/index.php", "use": "vercel-php"}]`).
-- Added `@vercel/static` build plus `handle: filesystem` so CSS/JS/images (including `AT.css`) are served directly before rewrites.
+- Added `@vercel/static` build (non-PHP extensions only) plus `handle: filesystem` so CSS/JS/images (including `AT.css`) are served directly, while `.php` files are never exposed as static source.
 - Fixed `/admin` rewrite so it maps directly to `index.php` (not `admin.php`).
