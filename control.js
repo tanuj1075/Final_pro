@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const carouselWatchTargets = ['w.html', 'video.html', 'w.html', 'video.html', 'video.html'];
-  const carouselWatchTargets = ['watch1.html', 'watch2.html', 'watch1.html', 'watch2.html', 'video.html'];
   document.querySelectorAll('.watch-btn').forEach((button) => {
     button.setAttribute('type', 'button');
     button.addEventListener('click', () => {
