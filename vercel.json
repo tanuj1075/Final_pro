@@ -30,6 +30,20 @@
     {
       "src": "/admin\\.php$",
       "dest": "/api/index.php?route=index.php"
+      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/about/?$",
+      "dest": "/api/index.php?route=about"
+    },
+    {
+      "src": "/contact/?$",
+      "dest": "/api/index.php?route=contact"
+    },
+    {
+      "src": "/$",
+      "dest": "/api/index.php"
     },
     {
       "src": "/(.*)",
