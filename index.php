@@ -1,4 +1,12 @@
 <?php
+// Ensure sessions work on serverless/readonly filesystems (e.g., Vercel).
+$sessionDir = sys_get_temp_dir() . '/final_pro_sessions';
+if (!is_dir($sessionDir)) {
+    @mkdir($sessionDir, 0755, true);
+}
+if (is_dir($sessionDir) && is_writable($sessionDir)) {
+    ini_set('session.save_path', $sessionDir);
+}
 session_start();
 require_once 'db_helper.php';
 
