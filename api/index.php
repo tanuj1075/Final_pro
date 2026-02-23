@@ -6,6 +6,13 @@
  * - Vercel executes PHP inside /api as serverless functions.
  * - Existing project PHP files still live in repo root.
  * - This router safely maps incoming URLs to known PHP files.
+ * Single serverless PHP entrypoint for Vercel.
+ *
+ * Suggested layout:
+ * - /index.html                  (static homepage)
+ * - /pages/about.php             (about page)
+ * - /pages/contact.php           (contact endpoint/page)
+ * - /api/index.php               (this router)
  */
 
 declare(strict_types=1);
