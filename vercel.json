@@ -12,6 +12,24 @@
   ],
   "routes": [
     {
+      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|html))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/$",
+      "dest": "/api/index.php?route=login.php"
+    },
+    {
+      "src": "/(admin|index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/admin\\.php$",
+      "dest": "/api/index.php?route=index.php"
       "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf))",
       "dest": "/$1"
     },
