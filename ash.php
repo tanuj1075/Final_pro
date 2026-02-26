@@ -134,19 +134,6 @@ if (isset($_GET['logout'])) {
     </div>
   </nav>
 
-  <section class="lumina-hero" id="luminaHero">
-    <div class="lumina-beam beam-a"></div>
-    <div class="lumina-beam beam-b"></div>
-    <div class="lumina-beam beam-c"></div>
-    <div class="lumina-noise"></div>
-    <div class="lumina-content">
-      <p class="lumina-kicker">LUMINA FESTIVAL 2026</p>
-      <h1>ENTER THE LIGHT</h1>
-      <p class="lumina-sub">A cinematic anime convention experience where light, sound, and story converge.</p>
-      <a href="#most-watched" class="lumina-cta">Explore The Program</a>
-    </div>
-  </section>
-
   <!-- Enhanced Hero Carousel -->
   <div id="animeCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
