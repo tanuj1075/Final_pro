@@ -1,26 +1,14 @@
 <?php
-// Ensure sessions work on serverless/readonly filesystems (e.g., Vercel).
-$sessionDir = sys_get_temp_dir() . '/final_pro_sessions';
-if (!is_dir($sessionDir)) {
-    @mkdir($sessionDir, 0755, true);
-}
-if (is_dir($sessionDir) && is_writable($sessionDir)) {
-    ini_set('session.save_path', $sessionDir);
-}
 session_start();
 require_once 'db_helper.php';
 
 // ===================== CONFIGURATION =====================
-$ADMIN_USERNAME = getenv('ADMIN_USERNAME') ?: 'admin';
-$ADMIN_PASSWORD = getenv('ADMIN_PASSWORD') ?: 'password123'; // Change this
+$ADMIN_USERNAME = 'admin';
+$ADMIN_PASSWORD = 'password123'; // Change this
 
-// Optional hash-based password (recommended for production)
-$PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$10$YourHashHere'; // Generate with: echo password_hash('your_password', PASSWORD_DEFAULT);
+// Hash for: password123 (generate new one for production)
+$PASSWORD_HASH = '$2y$10$YourHashHere'; // Generate with: echo password_hash('your_password', PASSWORD_DEFAULT);
 // =========================================================
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
 
 // Handle logout
 if(isset($_GET['logout'])) {
@@ -45,12 +33,8 @@ if(isset($_GET['access']) && $_GET['access'] === 'main') {
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    $csrf = $_POST['csrf_token'] ?? '';
 
-    if (!$csrf || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-        $error = 'Invalid request token. Please refresh and try again.';
-    } else {
-        $passwordMatch = $password === $ADMIN_PASSWORD;
+    $passwordMatch = $password === $ADMIN_PASSWORD;
     if (!$passwordMatch && $PASSWORD_HASH !== '$2y$10$YourHashHere') {
         $passwordMatch = password_verify($password, $PASSWORD_HASH);
     }
@@ -67,7 +51,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     } else {
         $error = "Invalid username or password!";
     }
-    }
 }
 
 // Handle user approval/rejection from admin panel
@@ -76,13 +59,6 @@ if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     (isset($_POST['approve_user']) || isset($_POST['reject_user']))
 ) {
-    $csrf = $_POST['csrf_token'] ?? '';
-    if (!$csrf || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-        $_SESSION['admin_flash'] = 'Invalid request token. Please refresh and try again.';
-        header('Location: index.php');
-        exit;
-    }
-
     try {
         $db = new DatabaseHelper();
 
@@ -233,7 +209,6 @@ function showLoginForm() {
             <?php endif; ?>
             
             <form method="POST" action="">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <div class="mb-3">
                     <label class="form-label"><i class="fas fa-user"></i> Username</label>
                     <input type="text" name="username" class="form-control" placeholder="Enter username" required>
@@ -262,7 +237,7 @@ function showLoginForm() {
                 <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
             </div>
             <div class="mt-4 text-center text-muted small">
-                <i class="fas fa-info-circle"></i> Set ADMIN_USERNAME and ADMIN_PASSWORD/ADMIN_PASSWORD_HASH for production
+                <i class="fas fa-info-circle"></i> Default: admin / password123
             </div>
         </div>
     </body>
@@ -342,23 +317,6 @@ function showAdminPanel() {
                 border-radius: 8px;
                 margin-bottom: 25px;
             }
-            .pending-actions {
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-            @media (max-width: 576px) {
-                .pending-actions {
-                    flex-direction: column;
-                    gap: 6px;
-                }
-                .pending-actions form {
-                    width: 100%;
-                }
-                .pending-actions .btn {
-                    width: 100%;
-                }
-            }
         </style>
     </head>
     <body>
@@ -370,7 +328,7 @@ function showAdminPanel() {
                 </a>
                 <div class="navbar-nav ms-auto">
                     <span class="nav-link">
-                        <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['admin_username']); ?>
+                        <i class="fas fa-user"></i> <?php echo $_SESSION['admin_username']; ?>
                     </span>
                     <a class="nav-link" href="?logout">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -384,7 +342,7 @@ function showAdminPanel() {
             <div class="session-info">
                 <div class="row">
                     <div class="col-md-6">
-                        <h5><i class="fas fa-user-shield"></i> Welcome, <?php echo htmlspecialchars($_SESSION['admin_username']); ?>!</h5>
+                        <h5><i class="fas fa-user-shield"></i> Welcome, <?php echo $_SESSION['admin_username']; ?>!</h5>
                         <p class="mb-0">You have full access to manage the anime site.</p>
                     </div>
                     <div class="col-md-6 text-end">
@@ -414,7 +372,6 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['total']); ?></h3>
                         <p class="text-muted">Registered Users</p>
-
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -424,7 +381,6 @@ function showAdminPanel() {
                         </div>
                         <h3><?php echo intval($userStats['approved']); ?></h3>
                         <p class="text-muted">Approved Users</p>
-
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -493,16 +449,14 @@ function showAdminPanel() {
                                         <td><?php echo htmlspecialchars($pendingUser['email']); ?></td>
                                         <td><?php echo htmlspecialchars($pendingUser['created_at']); ?></td>
                                         <td>
-                                            <div class="pending-actions">
-                                                <form method="POST" action="index.php" class="mb-0">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                                            <div class="d-flex gap-2">
+                                                <form method="POST" class="mb-0">
                                                     <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
                                                     <button type="submit" class="btn btn-sm btn-success">
                                                         <i class="fas fa-check"></i> Approve
                                                     </button>
                                                 </form>
-                                                <form method="POST" action="index.php" class="mb-0" onsubmit="return confirm('Reject this user?');">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                                                <form method="POST" class="mb-0" onsubmit="return confirm('Reject this user?');">
                                                     <input type="hidden" name="reject_user" value="<?php echo intval($pendingUser['id']); ?>">
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-times"></i> Reject

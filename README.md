@@ -74,17 +74,7 @@ To enable Google / Meta(Facebook) / Apple sign-in:
    - `http://127.0.0.1:8000/oauth_callback.php?provider=google`
    - `http://127.0.0.1:8000/oauth_callback.php?provider=facebook`
    - `http://127.0.0.1:8000/oauth_callback.php?provider=apple`
-3. Configure credentials using either method:
-
-- **Method A (recommended for local):** copy `.env.example` to `.env` and fill values.
-- **Method B:** export environment variables before starting PHP.
-
-```bash
-cp .env.example .env
-# then edit .env with real values
-```
-
-Or with env vars:
+3. Set environment variables before starting PHP server:
 
 ```bash
 export GOOGLE_CLIENT_ID=...
@@ -95,4 +85,4 @@ export APPLE_CLIENT_ID=...
 export APPLE_CLIENT_SECRET=...
 ```
 
-Then restart PHP server and use social buttons on login/admin pages.
+Then use social buttons on login/admin pages. Newly created social accounts are kept pending until admin approval.
