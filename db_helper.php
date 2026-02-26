@@ -10,11 +10,7 @@ class DatabaseHelper {
     private $db_path;
 
     public function __construct() {
-        $dataDir = __DIR__ . '/data';
-        if (!is_dir($dataDir)) {
-            mkdir($dataDir, 0755, true);
-        }
-
+        $dataDir = $this->resolveDataDirectory();
         $this->db_path = $dataDir . '/app.sqlite';
 
         try {
@@ -24,8 +20,45 @@ class DatabaseHelper {
             $this->initializeSchema();
             $this->seedInitialData();
         } catch (PDOException $e) {
-            throw new RuntimeException('Database connection failed: ' . $e->getMessage());
+            throw new RuntimeException('Database connection failed: ' . $e->getMessage() . ' (path: ' . $this->db_path . ')');
         }
+    }
+
+    private function resolveDataDirectory() {
+        $candidates = [];
+
+        $envDataDir = getenv('APP_DATA_DIR');
+        if (is_string($envDataDir) && trim($envDataDir) !== '') {
+            $candidates[] = rtrim(trim($envDataDir), '/');
+        }
+
+        $candidates[] = __DIR__ . '/data';
+
+        $tmpRoot = rtrim(sys_get_temp_dir(), '/');
+        if ($tmpRoot !== '') {
+            $candidates[] = $tmpRoot . '/final_pro_data';
+        }
+
+        $homeDir = getenv('HOME');
+        if (is_string($homeDir) && trim($homeDir) !== '') {
+            $candidates[] = rtrim(trim($homeDir), '/') . '/.final_pro/data';
+        }
+
+        foreach ($candidates as $candidate) {
+            if ($this->ensureWritableDirectory($candidate)) {
+                return $candidate;
+            }
+        }
+
+        throw new RuntimeException('Unable to create or write to any data directory candidate');
+    }
+
+    private function ensureWritableDirectory($path) {
+        if (!is_dir($path) && !@mkdir($path, 0775, true) && !is_dir($path)) {
+            return false;
+        }
+
+        return is_writable($path);
     }
 
     private function initializeSchema() {

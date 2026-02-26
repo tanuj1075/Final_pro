@@ -322,10 +322,6 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             </div>
             <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
         </div>
-
-        <div class="footer-text">
-            Don't have an account? <a href="signup.php">Create Account</a>
-        </div>
     </div>
 </body>
 </html>
