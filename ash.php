@@ -1,18 +1,30 @@
 <?php
-// PROTECTED ANIME SITE - Only accessible after user login
+// PROTECTED ANIME SITE - Accessible by approved user login OR admin login.
 session_start();
 
-// Check if user is logged in
-if(!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-    // Not logged in, redirect to login page
+$isUserLoggedIn = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+$isAdminLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+
+if (!$isUserLoggedIn && !$isAdminLoggedIn) {
     header('Location: login.php');
     exit;
 }
 
-// Add logout functionality
-if(isset($_GET['logout'])) {
+// Enforce separate user panel as the first landing page for normal users.
+if ($isUserLoggedIn && !$isAdminLoggedIn && !isset($_GET['from_panel'])) {
+    header('Location: user_panel.php');
+    exit;
+}
+
+$displayName = $_SESSION['username'] ?? ($_SESSION['admin_username'] ?? 'Guest');
+
+if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: login.php?logout=1');
+    if ($isAdminLoggedIn && !$isUserLoggedIn) {
+        header('Location: index.php');
+    } else {
+        header('Location: login.php?logout=1');
+    }
     exit;
 }
 ?>
@@ -22,7 +34,7 @@ if(isset($_GET['logout'])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AckerStream - Premium Anime Streaming</title>
+  <title>Lumina Festival 2026 - Enter the Light</title>
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -44,42 +56,42 @@ if(isset($_GET['logout'])) {
       <!-- Logo Section -->
       <div class="logo-section">
         <img src="bird.svg" alt="AckerStream Logo" class="logo-img">
-        <span class="logo-text">AckerStream</span>
+        <span class="logo-text">LUMINA FESTIVAL</span>
       </div>
 
       <!-- Center Navigation Menu -->
       <div class="nav-menu">
         <ul class="nav-links">
-          <li class="nav-link"><a href="#" class="active">New</a></li>
-          <li class="nav-link"><a href="#">Popular</a></li>
-          <li class="nav-link"><a href="#">Simulcast</a></li>
+          <li class="nav-link"><a href="#luminaHero" class="active">Stages</a></li>
+          <li class="nav-link"><a href="#most-watched">Schedule</a></li>
+          <li class="nav-link"><a href="#anime-journey">Installations</a></li>
           
           <!-- Categories Dropdown -->
           <li class="nav-dropdown">
-            <a href="#" class="dropdown-toggle">
+            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
               Categories <i class="fas fa-chevron-down"></i>
             </a>
             <div class="dropdown-menu">
-              <a href="#" class="dropdown-item"><i class="fas fa-heart"></i> Love</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-robot"></i> Sci-Fi</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-fist-raised"></i> Action</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-laugh"></i> Comedy</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-ghost"></i> Horror</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-home"></i> Slice of Life</a>
+              <a href="#most-watched" class="dropdown-item"><i class="fas fa-heart"></i> Love</a>
+              <a href="#anime-journey" class="dropdown-item"><i class="fas fa-robot"></i> Sci-Fi</a>
+              <a href="#most-watched" class="dropdown-item"><i class="fas fa-fist-raised"></i> Action</a>
+              <a href="#anime-journey" class="dropdown-item"><i class="fas fa-laugh"></i> Comedy</a>
+              <a href="#anime-journey" class="dropdown-item"><i class="fas fa-ghost"></i> Horror</a>
+              <a href="#most-watched" class="dropdown-item"><i class="fas fa-home"></i> Slice of Life</a>
             </div>
           </li>
           
-          <li class="nav-link"><a href="#">Games</a></li>
+          <li class="nav-link"><a href="manga.html">Manga</a></li>
           
           <!-- News Dropdown -->
           <li class="nav-dropdown">
-            <a href="#" class="dropdown-toggle">
+            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
               News <i class="fas fa-chevron-down"></i>
             </a>
             <div class="dropdown-menu">
-              <a href="#" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
+              <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
+              <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
+              <a href="w.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
             </div>
           </li>
         </ul>
@@ -98,37 +110,43 @@ if(isset($_GET['logout'])) {
             <i class="fas fa-crown"></i>
           </div>
           <div class="premium-text">
-            <span class="premium-try">TRY FREE</span>
-            <span class="premium-label">PREMIUM</span>
+            <span class="premium-try">BOOK NOW</span>
+            <span class="premium-label">FESTIVAL PASS</span>
           </div>
         </div>
         
         <!-- Action Icons -->
         <div class="action-icons">
-          <button class="action-btn" aria-label="Search">
+          <button class="action-btn" aria-label="Search" type="button">
             <i class="fas fa-search"></i>
           </button>
-          <button class="action-btn" aria-label="Bookmarks">
+          <a href="#most-watched" class="action-btn" aria-label="Bookmarks" title="Jump to most watched">
             <i class="fas fa-bookmark"></i>
-          </button>
-          <button class="action-btn user-btn" aria-label="User Profile">
+          </a>
+          <button class="action-btn user-btn" aria-label="User Profile" type="button" title="Logged in as <?php echo htmlspecialchars($displayName); ?>">
             <i class="fas fa-user"></i>
           </button>
+          <a href="?logout=1" class="action-btn" aria-label="Logout" title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
         </div>
       </div>
     </div>
   </nav>
-        <!-- LOGOUT BUTTON ADDED HERE -->
-      <div class="nav-item">
-        <a href="?logout" title="Logout"
-          style="color: white; text-decoration: none; font-size: 20px; display: flex; align-items: center;">
-          <i class="fas fa-sign-out-alt"></i>
-        </a>
-      </div>
-    </div>
-  </div>
 
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <section class="lumina-hero" id="luminaHero">
+    <div class="lumina-beam beam-a"></div>
+    <div class="lumina-beam beam-b"></div>
+    <div class="lumina-beam beam-c"></div>
+    <div class="lumina-noise"></div>
+    <div class="lumina-content">
+      <p class="lumina-kicker">LUMINA FESTIVAL 2026</p>
+      <h1>ENTER THE LIGHT</h1>
+      <p class="lumina-sub">A cinematic anime convention experience where light, sound, and story converge.</p>
+      <a href="#most-watched" class="lumina-cta">Explore The Program</a>
+    </div>
+  </section>
+
   <!-- Enhanced Hero Carousel -->
   <div id="animeCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
@@ -309,12 +327,12 @@ if(isset($_GET['logout'])) {
   <!-- Enhanced Anime Sliders -->
   <main class="main-content">
     <!-- Most Watched Section -->
-    <section class="anime-section">
+    <section class="anime-section" id="most-watched">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="fas fa-fire"></i> Most Watched Anime
+          <i class="fas fa-lightbulb"></i> Featured Light Performances
         </h2>
-        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        <a href="video.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
       
       <div class="slider-container">
@@ -324,7 +342,7 @@ if(isset($_GET['logout'])) {
         
         <div class="anime-grid" id="cardSlider">
             <!-- Anime Card 1 -->
-           <a href="watch1.html" target="_blank" class="anime-card-link">
+           <a href="w.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="your-name card.jpg" alt="Your Name">
@@ -354,7 +372,7 @@ if(isset($_GET['logout'])) {
 </a>
 
             <!-- Anime Card 2 -->
-      <a href="watch2.html" target="_blank" class="anime-card-link">
+      <a href="video.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="attack-on-titan card.jpg" alt="Your Name">
@@ -493,12 +511,12 @@ if(isset($_GET['logout'])) {
     </section>
 
     <!-- Anime Journey Section -->
-    <section class="anime-section">
+    <section class="anime-section" id="anime-journey">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="fas fa-rocket"></i> Kickstart Your Anime Journey
+          <i class="fas fa-vr-cardboard"></i> Immersive Zones
         </h2>
-        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        <a href="manga.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
       
       <div class="slider-container">
@@ -507,8 +525,93 @@ if(isset($_GET['logout'])) {
         </button>
         
         <div class="anime-grid" id="cardSlider2">
-          <!-- Use similar card structure as above -->
-          <!-- Replace broken image URLs with placeholders or correct paths -->
+          <a href="w.html" target="_blank" class="anime-card-link">
+            <div class="anime-card">
+              <div class="card-image">
+                <img src="5 centimeters per second card.jpg" alt="5 Centimeters per Second">
+                <div class="card-overlay">
+                  <button class="quick-play" aria-label="Play 5 Centimeters per Second" type="button">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+                <div class="episode-tag">Movie</div>
+              </div>
+              <div class="card-content">
+                <h3 class="anime-title">5 Centimeters per Second</h3>
+                <p class="anime-synopsis">A bittersweet story about distance, time, and first love.</p>
+                <div class="card-meta">
+                  <span class="rating"><i class="fas fa-star"></i> 8.1</span>
+                  <span class="episodes">1 Movie</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <a href="video.html" target="_blank" class="anime-card-link">
+            <div class="anime-card">
+              <div class="card-image">
+                <img src="Weathering With You  card.jpg" alt="Weathering With You">
+                <div class="card-overlay">
+                  <button class="quick-play" aria-label="Play Weathering With You" type="button">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+                <div class="episode-tag">Movie</div>
+              </div>
+              <div class="card-content">
+                <h3 class="anime-title">Weathering With You</h3>
+                <p class="anime-synopsis">A runaway boy meets a girl with the power to clear the skies.</p>
+                <div class="card-meta">
+                  <span class="rating"><i class="fas fa-star"></i> 8.3</span>
+                  <span class="episodes">1 Movie</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <a href="video.html" class="anime-card-link">
+            <div class="anime-card">
+              <div class="card-image">
+                <img src="The garden of words card.jpg" alt="The Garden of Words">
+                <div class="card-overlay">
+                  <button class="quick-play" aria-label="Play The Garden of Words" type="button">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+                <div class="episode-tag">Special</div>
+              </div>
+              <div class="card-content">
+                <h3 class="anime-title">The Garden of Words</h3>
+                <p class="anime-synopsis">Two lonely souls meet on rainy mornings and change each other.</p>
+                <div class="card-meta">
+                  <span class="rating"><i class="fas fa-star"></i> 7.9</span>
+                  <span class="episodes">1 Special</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <a href="manga.html" class="anime-card-link">
+            <div class="anime-card">
+              <div class="card-image">
+                <img src="your-name-vol-1-manga-1.jpg" alt="Your Name Manga">
+                <div class="card-overlay">
+                  <button class="quick-play" aria-label="Open Your Name Manga" type="button">
+                    <i class="fas fa-book-open"></i>
+                  </button>
+                </div>
+                <div class="episode-tag">Manga</div>
+              </div>
+              <div class="card-content">
+                <h3 class="anime-title">Your Name (Manga)</h3>
+                <p class="anime-synopsis">Read the original manga adaptation of the hit story.</p>
+                <div class="card-meta">
+                  <span class="rating"><i class="fas fa-star"></i> 8.8</span>
+                  <span class="episodes">3 Volumes</span>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
         
         <button class="slider-nav next" onclick="scrollSlider2(1)">
