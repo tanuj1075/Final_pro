@@ -5,6 +5,7 @@ This repository keeps PHP pages in project root (for example `index.php`, `login
 ## 1) What is wired now
 
 - `vercel.json` uses `handle: filesystem` so existing static files are served directly by Vercel CDN before PHP routing.
+- `vercel.json` sends static assets (`.html`, `.css`, `.js`, images, fonts, video) directly via Vercel CDN.
 - PHP routes are rewritten to `/api/index.php`.
 - `/api/index.php` whitelists and loads root PHP files safely.
 
@@ -61,6 +62,13 @@ npx vercel env add DB_PATH production
 ```
 
 In PHP read with `getenv('DB_DSN')` (or `$_ENV`).
+
+
+## 6) Deployment-failure fix included
+
+- Removed legacy `builds` configuration and switched to `functions.runtime` (`vercel-php@0.7.3`) for better compatibility with current Vercel deployments.
+- Fixed `/admin` rewrite bug so it maps directly to `index.php` (not `admin.php`).
+Access in PHP via `getenv('NAME')` or `$_ENV['NAME']`.
 
 For SQLite fallback in serverless, set `DB_PATH=/tmp/final_pro_data/app.sqlite`.
 (Important: `/tmp` is ephemeral and resets between deployments/cold starts.)
