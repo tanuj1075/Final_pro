@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 $config = require __DIR__ . '/oauth_config.php';
@@ -29,8 +30,9 @@ $redirectUri = $_SESSION['oauth_redirect_uri_' . $provider] ?? '';
 unset($_SESSION['oauth_redirect_uri_' . $provider]);
 
 if (!$redirectUri) {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? '127.0.0.1:8000';
+    $forwardedProto = strtolower(trim($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+    $scheme = ($forwardedProto === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')) ? 'https' : 'http';
+    $host = trim($_SERVER['HTTP_X_FORWARDED_HOST'] ?? ($_SERVER['HTTP_HOST'] ?? '127.0.0.1:8000'));
     $redirectUri = $scheme . '://' . $host . '/oauth_callback.php?provider=' . urlencode($provider);
 }
 
@@ -124,7 +126,8 @@ try {
     header('Location: user_panel.php');
     exit;
 } catch (Exception $e) {
-    header('Location: login.php?error=' . urlencode('OAuth login failed: ' . $e->getMessage()));
+    error_log('OAuth login failed for provider ' . $provider . ': ' . $e->getMessage());
+    header('Location: login.php?error=' . urlencode('OAuth login failed. Please try again.'));
     exit;
 }
 

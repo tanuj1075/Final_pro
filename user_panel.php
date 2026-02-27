@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
@@ -8,7 +9,7 @@ if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true)
 }
 
 if (isset($_GET['logout'])) {
-    session_destroy();
+    destroy_session_and_cookie();
     header('Location: login.php?logout=1');
     exit;
 }
@@ -20,12 +21,13 @@ try {
     $user = $db->getUserById($_SESSION['user_id'] ?? 0);
     $db->close();
 } catch (Exception $e) {
-    $dbError = $e->getMessage();
+    error_log('User panel database warning: ' . $e->getMessage());
+    $dbError = 'Unable to load live account details right now.';
 }
 
 if (!$user || (int)$user['is_active'] !== 1 || (int)$user['is_approved'] !== 1) {
     // User missing/deactivated/unapproved in DB: force logout for safety.
-    session_destroy();
+    destroy_session_and_cookie();
     header('Location: login.php?error=Account state changed. Please login again.');
     exit;
 }

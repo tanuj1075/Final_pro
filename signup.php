@@ -1,17 +1,18 @@
 <?php
 // Start session at the very beginning before any output
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 $message = '';
 $message_type = '';
 $form_values = ['username' => '', 'email' => ''];
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $message = 'Invalid request token. Please refresh and try again.';
+        $message_type = 'error';
+    } else {
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -21,23 +22,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form_values['username'] = $username;
     $form_values['email'] = $email;
 
-    $csrf = $_POST['csrf_token'] ?? '';
-
     // Validation
-    if (!$csrf || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-        $message = 'Invalid request token. Please refresh and try again.';
-        $message_type = 'error';
-    } elseif (empty($username) || empty($email) || empty($password)) {
+    if (empty($username) || empty($email) || empty($password)) {
         $message = 'All fields are required!';
-        $message_type = 'error';
-    } elseif (!preg_match('/^[a-zA-Z0-9_]{3,30}$/', $username)) {
-        $message = 'Username must be 3-30 chars and contain only letters, numbers, and underscores.';
         $message_type = 'error';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = 'Invalid email format!';
         $message_type = 'error';
-    } elseif (strlen($password) < 6) {
-        $message = 'Password must be at least 6 characters!';
+    } elseif (strlen($password) < 8) {
+        $message = 'Password must be at least 8 characters!';
         $message_type = 'error';
     } elseif ($password !== $confirm_password) {
         $message = 'Passwords do not match!';
@@ -59,9 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $db->close();
         } catch (Exception $e) {
-            $message = 'Registration failed: ' . $e->getMessage();
+            error_log('Signup failure: ' . $e->getMessage());
+            $message = 'Registration failed due to a server error. Please try again.';
             $message_type = 'error';
         }
+    }
     }
 }
 ?>
@@ -256,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
 
         <form method="POST" action="">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
@@ -277,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="password">Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" minlength="8" required>
                 </div>
                 <div class="password-strength" id="strength"></div>
             </div>
@@ -286,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="confirm_password">Confirm Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" minlength="8" required>
                 </div>
             </div>
 
@@ -312,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             
             let strength = 0;
-            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
             if (password.length >= 10) strength++;
             if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
             if (/\d/.test(password)) strength++;

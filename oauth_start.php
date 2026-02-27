@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'security.php';
+secure_session_start();
 
 $config = require __DIR__ . '/oauth_config.php';
 $provider = $_GET['provider'] ?? '';
@@ -15,8 +16,9 @@ if (empty($providerConfig['client_id']) || empty($providerConfig['client_secret'
     exit;
 }
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? '127.0.0.1:8000';
+$forwardedProto = strtolower(trim($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+$scheme = ($forwardedProto === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')) ? 'https' : 'http';
+$host = trim($_SERVER['HTTP_X_FORWARDED_HOST'] ?? ($_SERVER['HTTP_HOST'] ?? '127.0.0.1:8000'));
 $redirectUri = $scheme . '://' . $host . '/oauth_callback.php?provider=' . urlencode($provider);
 
 $state = bin2hex(random_bytes(16));
