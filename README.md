@@ -9,10 +9,6 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 - Auto-initialized SQLite backend (`data/app.sqlite`) via `db_helper.php`
 - Admin approval workflow for new user accounts (approve from `index.php`)
 - Static watch/info pages (`w.html`, `video.html`, `manga.html`)
-- Admin login/dashboard entry (`index.php`)
-- Protected main app page (`ash.php`)
-- Static watch/info pages (`w.html`, `video.html`, `manga.html`)
-- Static watch/info pages (`watch1.html`, `watch2.html`, `w.html`, `video.html`, `manga.html`)
 
 ## Project structure
 
@@ -24,14 +20,10 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 ├── ash.php           # Protected main homepage/dashboard
 ├── db_helper.php     # SQLite DB helper + auto schema init
 ├── data/app.sqlite   # Auto-created runtime DB file
-├── db_helper.php     # SQLite DB helper methods
 ├── control.js        # Homepage UI interactions
 ├── AT.css            # Main dashboard styles
 ├── watchstyle.css    # Watch-page styles
 ├── w.html            # Detailed "Your Name" watch page
-├── watch1.html       # Watch page 1
-├── watch2.html       # Watch page 2
-├── w.html            # Detailed "Your Name" page
 ├── manga.html        # Manga page
 ├── video.html        # Video/news style page
 └── media assets      # images/videos/icons in repo root
@@ -82,17 +74,7 @@ To enable Google / Meta(Facebook) / Apple sign-in:
    - `http://127.0.0.1:8000/oauth_callback.php?provider=google`
    - `http://127.0.0.1:8000/oauth_callback.php?provider=facebook`
    - `http://127.0.0.1:8000/oauth_callback.php?provider=apple`
-3. Configure credentials using either method:
-
-- **Method A (recommended for local):** copy `.env.example` to `.env` and fill values.
-- **Method B:** export environment variables before starting PHP.
-
-```bash
-cp .env.example .env
-# then edit .env with real values
-```
-
-Or with env vars:
+3. Set environment variables before starting PHP server:
 
 ```bash
 export GOOGLE_CLIENT_ID=...
@@ -103,4 +85,4 @@ export APPLE_CLIENT_ID=...
 export APPLE_CLIENT_SECRET=...
 ```
 
-Then restart PHP server and use social buttons on login/admin pages.
+Then use social buttons on login/admin pages. Newly created social accounts are kept pending until admin approval.

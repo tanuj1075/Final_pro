@@ -10,11 +10,7 @@ class DatabaseHelper {
     private $db_path;
 
     public function __construct() {
-        $dataDir = __DIR__ . '/data';
-        if (!is_dir($dataDir)) {
-            mkdir($dataDir, 0755, true);
-        }
-
+        $dataDir = $this->resolveDataDirectory();
         $this->db_path = $dataDir . '/app.sqlite';
 
         try {
@@ -24,8 +20,45 @@ class DatabaseHelper {
             $this->initializeSchema();
             $this->seedInitialData();
         } catch (PDOException $e) {
-            throw new RuntimeException('Database connection failed: ' . $e->getMessage());
+            throw new RuntimeException('Database connection failed: ' . $e->getMessage() . ' (path: ' . $this->db_path . ')');
         }
+    }
+
+    private function resolveDataDirectory() {
+        $candidates = [];
+
+        $envDataDir = getenv('APP_DATA_DIR');
+        if (is_string($envDataDir) && trim($envDataDir) !== '') {
+            $candidates[] = rtrim(trim($envDataDir), '/');
+        }
+
+        $candidates[] = __DIR__ . '/data';
+
+        $tmpRoot = rtrim(sys_get_temp_dir(), '/');
+        if ($tmpRoot !== '') {
+            $candidates[] = $tmpRoot . '/final_pro_data';
+        }
+
+        $homeDir = getenv('HOME');
+        if (is_string($homeDir) && trim($homeDir) !== '') {
+            $candidates[] = rtrim(trim($homeDir), '/') . '/.final_pro/data';
+        }
+
+        foreach ($candidates as $candidate) {
+            if ($this->ensureWritableDirectory($candidate)) {
+                return $candidate;
+            }
+        }
+
+        throw new RuntimeException('Unable to create or write to any data directory candidate');
+    }
+
+    private function ensureWritableDirectory($path) {
+        if (!is_dir($path) && !@mkdir($path, 0775, true) && !is_dir($path)) {
+            return false;
+        }
+
+        return is_writable($path);
     }
 
     private function initializeSchema() {
@@ -90,6 +123,18 @@ class DatabaseHelper {
         }
     }
 
+    private function normalizeUsername($username) {
+        return trim((string)$username);
+    }
+
+    private function normalizeEmail($email) {
+        return strtolower(trim((string)$email));
+    }
+
+    private function isValidUsername($username) {
+        return (bool)preg_match('/^[A-Za-z0-9_]{3,30}$/', $username);
+    }
+
     public function getAllAnime($limit = null) {
         $sql = "SELECT * FROM admin_panel_anime ORDER BY created_at DESC";
         if ($limit !== null) {
@@ -132,19 +177,19 @@ class DatabaseHelper {
     }
 
     public function registerUser($username, $email, $password) {
-        $username = trim($username);
-        $email = strtolower(trim($email));
+        $normalizedUsername = $this->normalizeUsername($username);
+        $normalizedEmail = $this->normalizeEmail($email);
 
-        if (!preg_match('/^[a-zA-Z0-9_]{3,30}$/', $username)) {
-            return 'Username must be 3-30 chars and contain only letters, numbers, and underscores';
+        if (!$this->isValidUsername($normalizedUsername)) {
+            return 'Username must be 3-30 characters and use only letters, numbers, or underscores';
         }
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return 'Invalid email format';
+        if (!filter_var($normalizedEmail, FILTER_VALIDATE_EMAIL)) {
+            return 'Please enter a valid email address';
         }
 
-        if (strlen($password) < 6) {
-            return 'Password must be at least 6 characters';
+        if (strlen((string)$password) < 8) {
+            return 'Password must be at least 8 characters long';
         }
 
         try {
@@ -156,8 +201,8 @@ class DatabaseHelper {
             );
 
             $stmt->execute([
-                'username' => $username,
-                'email' => $email,
+                'username' => $normalizedUsername,
+                'email' => $normalizedEmail,
                 'password_hash' => $password_hash,
             ]);
 
@@ -171,14 +216,16 @@ class DatabaseHelper {
     }
 
     public function loginUser($username, $password) {
+        $normalizedUsername = $this->normalizeUsername($username);
+
         $stmt = $this->db->prepare(
             "SELECT * FROM admin_panel_siteuser WHERE username = :username"
         );
-        $stmt->execute(['username' => trim($username)]);
+        $stmt->execute(['username' => $normalizedUsername]);
         $user = $stmt->fetch();
 
         if (!$user) {
-            return ['success' => false, 'message' => 'User not found'];
+            return ['success' => false, 'message' => 'Invalid username or password'];
         }
 
         if ((int)$user['is_active'] !== 1) {
@@ -186,7 +233,7 @@ class DatabaseHelper {
         }
 
         if (!password_verify($password, $user['password_hash'])) {
-            return ['success' => false, 'message' => 'Invalid password'];
+            return ['success' => false, 'message' => 'Invalid username or password'];
         }
 
         if (!(int)$user['is_approved']) {
@@ -272,7 +319,7 @@ class DatabaseHelper {
 
         $stmt = $this->db->prepare(
             "INSERT INTO admin_panel_siteuser (username, email, password_hash, is_approved, is_active, created_at, approved_at)
-             VALUES (:username, :email, :password_hash, 1, 1, datetime('now'), datetime('now'))"
+             VALUES (:username, :email, :password_hash, 0, 1, datetime('now'), NULL)"
         );
 
         return $stmt->execute([

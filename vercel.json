@@ -10,18 +10,17 @@
       "handle": "filesystem"
   "builds": [
     {
-      "src": "api/**/*.php",
+      "src": "api/index.php",
       "use": "vercel-php"
     },
     {
-      "src": "**/*",
+      "src": "**/*.{html,css,js,mjs,png,jpg,jpeg,gif,svg,webp,avif,ico,jfif,mp4,webm,woff,woff2,ttf}",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|html))",
-      "dest": "/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/$",
@@ -52,16 +51,12 @@
       "dest": "/$1"
     },
     {
-      "src": "/about/?$",
-      "dest": "/api/index.php?route=about"
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
     },
     {
-      "src": "/contact/?$",
-      "dest": "/api/index.php?route=contact"
-    },
-    {
-      "src": "/$",
-      "dest": "/api/index.php"
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
     },
     {
       "src": "/(.*)",

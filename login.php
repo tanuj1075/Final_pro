@@ -6,20 +6,11 @@ require_once 'db_helper.php';
 $message = '';
 $message_type = '';
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $csrf = $_POST['csrf_token'] ?? '';
-
-    if (!$csrf || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-        $message = 'Invalid request token. Please refresh the page and try again.';
-        $message_type = 'error';
-    } elseif (empty($username) || empty($password)) {
+    if (empty($username) || empty($password)) {
         $message = 'Please enter both username and password!';
         $message_type = 'error';
     } else {
@@ -300,7 +291,6 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
         <?php endif; ?>
 
         <form method="POST" action="">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
@@ -331,10 +321,6 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
                 <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
             </div>
             <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
-        </div>
-
-        <div class="footer-text">
-            Don't have an account? <a href="signup.php">Create Account</a>
         </div>
     </div>
 </body>

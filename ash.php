@@ -34,7 +34,7 @@ if (isset($_GET['logout'])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AckerStream - Premium Anime Streaming</title>
+  <title>Lumina Festival 2026 - Enter the Light</title>
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -56,15 +56,15 @@ if (isset($_GET['logout'])) {
       <!-- Logo Section -->
       <div class="logo-section">
         <img src="bird.svg" alt="AckerStream Logo" class="logo-img">
-        <span class="logo-text">AckerStream</span>
+        <span class="logo-text">LUMINA FESTIVAL</span>
       </div>
 
       <!-- Center Navigation Menu -->
       <div class="nav-menu">
         <ul class="nav-links">
-          <li class="nav-link"><a href="#animeCarousel" class="active">New</a></li>
-          <li class="nav-link"><a href="#most-watched">Popular</a></li>
-          <li class="nav-link"><a href="#anime-journey">Simulcast</a></li>
+          <li class="nav-link"><a href="#luminaHero" class="active">Stages</a></li>
+          <li class="nav-link"><a href="#most-watched">Schedule</a></li>
+          <li class="nav-link"><a href="#anime-journey">Installations</a></li>
           
           <!-- Categories Dropdown -->
           <li class="nav-dropdown">
@@ -92,8 +92,6 @@ if (isset($_GET['logout'])) {
               <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
               <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
               <a href="w.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
-              <a href="watch2.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
-              <a href="watch1.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
             </div>
           </li>
         </ul>
@@ -112,8 +110,8 @@ if (isset($_GET['logout'])) {
             <i class="fas fa-crown"></i>
           </div>
           <div class="premium-text">
-            <span class="premium-try">TRY FREE</span>
-            <span class="premium-label">PREMIUM</span>
+            <span class="premium-try">BOOK NOW</span>
+            <span class="premium-label">FESTIVAL PASS</span>
           </div>
         </div>
         
@@ -319,7 +317,7 @@ if (isset($_GET['logout'])) {
     <section class="anime-section" id="most-watched">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="fas fa-fire"></i> Most Watched Anime
+          <i class="fas fa-lightbulb"></i> Featured Light Performances
         </h2>
         <a href="video.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
@@ -503,7 +501,7 @@ if (isset($_GET['logout'])) {
     <section class="anime-section" id="anime-journey">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="fas fa-rocket"></i> Kickstart Your Anime Journey
+          <i class="fas fa-vr-cardboard"></i> Immersive Zones
         </h2>
         <a href="manga.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
@@ -515,7 +513,6 @@ if (isset($_GET['logout'])) {
         
         <div class="anime-grid" id="cardSlider2">
           <a href="w.html" target="_blank" class="anime-card-link">
-          <a href="watch1.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="5 centimeters per second card.jpg" alt="5 Centimeters per Second">
@@ -538,7 +535,6 @@ if (isset($_GET['logout'])) {
           </a>
 
           <a href="video.html" target="_blank" class="anime-card-link">
-          <a href="watch2.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="Weathering With You  card.jpg" alt="Weathering With You">
