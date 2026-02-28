@@ -1,12 +1,17 @@
 <?php
 // Start session at the very beginning before any output
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 $message = '';
 $message_type = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $message = 'Invalid request token. Please refresh and try again.';
+        $message_type = 'error';
+    } else {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -20,13 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($result['success']) {
                 // Set session
+                session_regenerate_id(true);
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['user_id'] = $result['user']['id'];
                 $_SESSION['username'] = $result['user']['username'];
                 $_SESSION['email'] = $result['user']['email'];
-                
+
                 // Redirect to anime site
-                header('Location: ash.php');
+                header('Location: user_panel.php');
                 exit;
             } else {
                 $message = $result['message'];
@@ -34,16 +40,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $db->close();
         } catch (Exception $e) {
-            $message = 'Login failed: ' . $e->getMessage();
+            error_log('Login failure: ' . $e->getMessage());
+            $message = 'Login failed due to a server error. Please try again.';
             $message_type = 'error';
         }
+    }
     }
 }
 
 // Check for logout
 if (isset($_GET['logout'])) {
+    destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
+}
+
+if (isset($_GET['error']) && trim($_GET['error']) !== '') {
+    $message = trim($_GET['error']);
+    $message_type = 'error';
 }
 ?>
 <!DOCTYPE html>
@@ -215,6 +229,57 @@ if (isset($_GET['logout'])) {
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
+
+        .social-login-section {
+            margin-top: 18px;
+            text-align: center;
+        }
+
+        .social-login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            color: #334155;
+            border-radius: 12px;
+            min-width: 110px;
+            padding: 10px 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            text-decoration: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .social-note {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .social-note a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .social-note a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -234,6 +299,7 @@ if (isset($_GET['logout'])) {
         <?php endif; ?>
 
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
@@ -255,8 +321,15 @@ if (isset($_GET['logout'])) {
             </button>
         </form>
 
-        <div class="footer-text">
-            Don't have an account? <a href="signup.php">Create Account</a>
+
+
+        <div class="social-login-section" aria-label="Social authentication options">
+            <div class="social-login-buttons">
+                <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
+                <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+            </div>
+            <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
         </div>
     </div>
 </body>
