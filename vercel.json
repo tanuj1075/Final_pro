@@ -1,19 +1,18 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "**/*.php",
-      "use": "@vercel/php"
+  "functions": {
+    "*.php": {
+      "runtime": "vercel-php@0.7.3"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/login.php"
+      "source": "/",
+      "destination": "/login.php"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ]
 }
