@@ -1,0 +1,66 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.3"
+    }
+  },
+  "routes": [
+    {
+      "handle": "filesystem"
+  "builds": [
+    {
+      "src": "api/index.php",
+      "use": "vercel-php"
+    },
+    {
+      "src": "**/*.{html,css,js,mjs,png,jpg,jpeg,gif,svg,webp,avif,ico,jfif,mp4,webm,woff,woff2,ttf}",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/$",
+      "dest": "/api/index.php?route=login.php"
+    },
+    {
+      "src": "/admin$",
+      "dest": "/api/index.php?route=index.php"
+      "src": "/(admin|index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/admin\\.php$",
+      "dest": "/api/index.php?route=index.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+      "src": "/(.*\\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|about|contact)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php?route=$1"
+    }
+  ]
+}
