@@ -1,12 +1,17 @@
 <?php
 // Start session at the very beginning before any output
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 $message = '';
 $message_type = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $message = 'Invalid request token. Please refresh and try again.';
+        $message_type = 'error';
+    } else {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -35,14 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $db->close();
         } catch (Exception $e) {
-            $message = 'Login failed: ' . $e->getMessage();
+            error_log('Login failure: ' . $e->getMessage());
+            $message = 'Login failed due to a server error. Please try again.';
             $message_type = 'error';
         }
+    }
     }
 }
 
 // Check for logout
 if (isset($_GET['logout'])) {
+    destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
 }
@@ -291,6 +299,7 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
         <?php endif; ?>
 
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">

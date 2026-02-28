@@ -1,6 +1,7 @@
 <?php
-// PROTECTED ANIME SITE - Accessible by approved user login OR admin login.
-session_start();
+// PROTECTED ANIME SITE - Only accessible after user login
+require_once 'security.php';
+secure_session_start();
 
 $isUserLoggedIn = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 $isAdminLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
@@ -10,21 +11,10 @@ if (!$isUserLoggedIn && !$isAdminLoggedIn) {
     exit;
 }
 
-// Enforce separate user panel as the first landing page for normal users.
-if ($isUserLoggedIn && !$isAdminLoggedIn && !isset($_GET['from_panel'])) {
-    header('Location: user_panel.php');
-    exit;
-}
-
-$displayName = $_SESSION['username'] ?? ($_SESSION['admin_username'] ?? 'Guest');
-
-if (isset($_GET['logout'])) {
-    session_destroy();
-    if ($isAdminLoggedIn && !$isUserLoggedIn) {
-        header('Location: index.php');
-    } else {
-        header('Location: login.php?logout=1');
-    }
+// Add logout functionality
+if(isset($_GET['logout'])) {
+    destroy_session_and_cookie();
+    header('Location: login.php?logout=1');
     exit;
 }
 ?>

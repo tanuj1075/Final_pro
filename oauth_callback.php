@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'security.php';
+secure_session_start();
 require_once 'db_helper.php';
 
 $config = require __DIR__ . '/oauth_config.php';
@@ -29,9 +30,7 @@ $redirectUri = $_SESSION['oauth_redirect_uri_' . $provider] ?? '';
 unset($_SESSION['oauth_redirect_uri_' . $provider]);
 
 if (!$redirectUri) {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? '127.0.0.1:8000';
-    $redirectUri = $scheme . '://' . $host . '/oauth_callback.php?provider=' . urlencode($provider);
+    $redirectUri = build_app_url('/oauth_callback.php?provider=' . urlencode($provider));
 }
 
 $tokenResponse = httpPostForm($providerConfig['token_url'], [
@@ -124,38 +123,70 @@ try {
     header('Location: user_panel.php');
     exit;
 } catch (Exception $e) {
-    header('Location: login.php?error=' . urlencode('OAuth login failed: ' . $e->getMessage()));
+    error_log('OAuth login failed for provider ' . $provider . ': ' . $e->getMessage());
+    header('Location: login.php?error=' . urlencode('OAuth login failed. Please try again.'));
     exit;
 }
 
 function httpPostForm($url, $formData) {
-    $opts = [
-        'http' => [
-            'method' => 'POST',
-            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-            'content' => http_build_query($formData),
-            'timeout' => 15,
-        ],
-    ];
+    $body = null;
 
-    $context = stream_context_create($opts);
-    $body = @file_get_contents($url, false, $context);
-    return ['ok' => $body !== false, 'body' => $body ?: ''];
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+            CURLOPT_POSTFIELDS => http_build_query($formData),
+        ]);
+        $body = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $opts = [
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'content' => http_build_query($formData),
+                'timeout' => 15,
+            ],
+        ];
+
+        $context = stream_context_create($opts);
+        $body = @file_get_contents($url, false, $context);
+    }
+
+    return ['ok' => $body !== false && $body !== null, 'body' => $body ?: ''];
 }
 
 function fetchJsonWithBearer($url, $token) {
-    $opts = [
-        'http' => [
-            'method' => 'GET',
-            'header' => "Authorization: Bearer {$token}\r\n",
-            'timeout' => 15,
-        ],
-    ];
-    $context = stream_context_create($opts);
-    $body = @file_get_contents($url, false, $context);
-    if ($body === false) {
+    $body = null;
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_HTTPHEADER => ["Authorization: Bearer {$token}"],
+        ]);
+        $body = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "Authorization: Bearer {$token}\r\n",
+                'timeout' => 15,
+            ],
+        ];
+        $context = stream_context_create($opts);
+        $body = @file_get_contents($url, false, $context);
+    }
+
+    if ($body === false || $body === null) {
         return null;
     }
+
     $decoded = json_decode($body, true);
     return is_array($decoded) ? $decoded : null;
 }

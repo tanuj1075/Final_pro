@@ -9,6 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
         ? '<i class="fas fa-times"></i>'
         : '<i class="fas fa-bars"></i>';
     });
+  }
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (navMenu && !e.target.closest('.nav-container') && navMenu.classList.contains('active')) {
+      navMenu.classList.remove('active');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      }
+    }
+  });
+
+  // Anime card hover effects
+  const animeCards = document.querySelectorAll('.anime-card');
+  animeCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-15px)';
+    });
 
     document.addEventListener('click', (event) => {
       if (!event.target.closest('.nav-container') && navMenu.classList.contains('active')) {
@@ -18,17 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const sectionMap = {
-    New: '#animeCarousel',
-    Popular: '#most-watched',
-    Simulcast: '#anime-journey',
-    Manga: 'manga.html'
-  };
+    card.addEventListener('mouseenter', () => {
+      const icon = card.querySelector('.category-icon');
+      if (icon) {
+        icon.style.transform = 'scale(1.2) rotate(15deg)';
+      }
+    });
 
-  document.querySelectorAll('.nav-link a').forEach((link) => {
-    link.addEventListener('click', () => {
-      document.querySelectorAll('.nav-link a').forEach((l) => l.classList.remove('active'));
-      link.classList.add('active');
+    card.addEventListener('mouseleave', () => {
+      const icon = card.querySelector('.category-icon');
+      if (icon) {
+        icon.style.transform = 'scale(1) rotate(0)';
+      }
     });
 
     const label = link.textContent.trim();
