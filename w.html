@@ -713,12 +713,12 @@
       <span class="meta-item"><i class="fas fa-film"></i> Movie</span>
     </div>
     
-    <button class="btn-watch" id="watchBtn">
+    <button class="btn-watch" id="watchOverviewBtn" type="button">
       <i class="fas fa-play"></i> Watch Overview
     </button>
-    <button class="btn-watch" id="watchBtn">
-      <i class="fas fa-star"></i> <a href="manga.html"style="color: inherit; text-decoration: none;">Manga</a>
-    </button>
+    <a class="btn-watch" href="manga.html" style="color: inherit; text-decoration: none;">
+      <i class="fas fa-star"></i> Manga
+    </a>
   </div>
 </section>
 
@@ -880,7 +880,7 @@
   // Enhanced JavaScript
   document.addEventListener('DOMContentLoaded', function() {
     // Watch button functionality
-    const watchBtn = document.getElementById('watchBtn');
+    const watchBtn = document.getElementById('watchOverviewBtn');
     const introBanner = document.getElementById('introBanner');
     const watchScreen = document.getElementById('watchScreen');
     
