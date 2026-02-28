@@ -2,13 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*.php",
+      "src": "*.php",
       "use": "@vercel/php"
     }
   ],
   "routes": [
     {
-      "src": "/",
+      "src": "^/$",
       "dest": "/login.php"
     },
     {
