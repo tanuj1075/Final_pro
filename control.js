@@ -15,9 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Close mobile menu when clicking outside
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-container') && navMenu.classList.contains('active')) {
+    if (navMenu && !e.target.closest('.nav-container') && navMenu.classList.contains('active')) {
       navMenu.classList.remove('active');
-      mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      if (mobileMenuBtn) {
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      }
     }
   });
 
@@ -52,12 +54,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     card.addEventListener('mouseenter', () => {
       const icon = card.querySelector('.category-icon');
-      icon.style.transform = 'scale(1.2) rotate(15deg)';
+      if (icon) {
+        icon.style.transform = 'scale(1.2) rotate(15deg)';
+      }
     });
 
     card.addEventListener('mouseleave', () => {
       const icon = card.querySelector('.category-icon');
-      icon.style.transform = 'scale(1) rotate(0)';
+      if (icon) {
+        icon.style.transform = 'scale(1) rotate(0)';
+      }
     });
   });
 
