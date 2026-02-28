@@ -1,17 +1,19 @@
 <?php
-session_start();
+require_once 'security.php';
+secure_session_start();
+require_once 'db_helper.php';
 
 // ===================== CONFIGURATION =====================
-$ADMIN_USERNAME = 'admin';
-$ADMIN_PASSWORD = 'password123'; // Change this
+$ADMIN_USERNAME = getenv('ADMIN_USERNAME') ?: 'admin';
+$ADMIN_PASSWORD = getenv('ADMIN_PASSWORD') ?: 'password123'; // Change this
 
-// Hash for: password123 (generate new one for production)
-$PASSWORD_HASH = '$2y$10$YourHashHere'; // Generate with: echo password_hash('your_password', PASSWORD_DEFAULT);
+// Optional hash override for production (set ADMIN_PASSWORD_HASH in env)
+$PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$10$YourHashHere';
 // =========================================================
 
 // Handle logout
 if(isset($_GET['logout'])) {
-    session_destroy();
+    destroy_session_and_cookie();
     header('Location: index.php');
     exit;
 }
@@ -30,21 +32,70 @@ if(isset($_GET['access']) && $_GET['access'] === 'main') {
 
 // Check login attempt
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $username = $_POST['username'] ?? '';
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = 'Invalid request token. Please refresh and try again.';
+    } else {
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    
-    // Simple password check (for demo, in production use password_verify)
-    if($username === $ADMIN_USERNAME && $password === $ADMIN_PASSWORD) {
+
+    $passwordMatch = $password === $ADMIN_PASSWORD;
+    if (!$passwordMatch && $PASSWORD_HASH !== '$2y$10$YourHashHere') {
+        $passwordMatch = password_verify($password, $PASSWORD_HASH);
+    }
+
+    if($username === $ADMIN_USERNAME && $passwordMatch) {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $username;
         $_SESSION['login_time'] = time();
-        
+
         // Redirect to admin panel
         header('Location: index.php');
         exit;
     } else {
         $error = "Invalid username or password!";
     }
+    }
+}
+
+// Handle user approval/rejection from admin panel
+if (
+    isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true &&
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    (isset($_POST['approve_user']) || isset($_POST['reject_user']))
+) {
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
+        header('Location: index.php');
+        exit;
+    }
+
+    try {
+        $db = new DatabaseHelper();
+
+        if (isset($_POST['approve_user'])) {
+            $approveUserId = intval($_POST['approve_user']);
+            $approved = $db->approveUser($approveUserId);
+            $_SESSION['admin_flash'] = $approved
+                ? 'User approved successfully.'
+                : 'Unable to approve user (user may already be approved).';
+        }
+
+        if (isset($_POST['reject_user'])) {
+            $rejectUserId = intval($_POST['reject_user']);
+            $rejected = $db->rejectUser($rejectUserId);
+            $_SESSION['admin_flash'] = $rejected
+                ? 'User rejected and disabled successfully.'
+                : 'Unable to reject user.';
+        }
+
+        $db->close();
+    } catch (Exception $e) {
+        $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
+    }
+
+    header('Location: index.php');
+    exit;
 }
 
 // If admin is already logged in, show admin panel
@@ -57,6 +108,11 @@ if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true)
 showLoginForm();
 
 // ===================== FUNCTIONS =====================
+
+
+function appLogError($context, $errorMessage) {
+    error_log('[index.php][' . $context . '] ' . $errorMessage);
+}
 
 function showLoginForm() {
     global $error;
@@ -102,6 +158,49 @@ function showLoginForm() {
                 25% {transform: translateX(-10px);}
                 75% {transform: translateX(10px);}
             }
+
+            .social-login-section {
+                margin-top: 18px;
+                text-align: center;
+            }
+            .social-login-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .social-btn {
+                border: 1px solid #e5e7eb;
+                background: #f8fafc;
+                color: #334155;
+                border-radius: 12px;
+                min-width: 105px;
+                padding: 9px 12px;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+                font-size: 13px;
+                font-weight: 600;
+                display: inline-flex;
+            text-decoration: none;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .social-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+            }
+            .social-note {
+                margin-top: 12px;
+                color: #64748b;
+                font-size: 13px;
+            }
+            .social-note a {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 700;
+            }
+            .social-note a:hover { text-decoration: underline; }
         </style>
     </head>
     <body>
@@ -126,6 +225,7 @@ function showLoginForm() {
             <?php endif; ?>
             
             <form method="POST" action="">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
                 <div class="mb-3">
                     <label class="form-label"><i class="fas fa-user"></i> Username</label>
                     <input type="text" name="username" class="form-control" placeholder="Enter username" required>
@@ -143,6 +243,16 @@ function showLoginForm() {
                 </button>
             </form>
             
+
+
+            <div class="social-login-section" aria-label="Social authentication options">
+                <div class="social-login-buttons">
+                    <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
+                    <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+                </div>
+                <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+            </div>
             <div class="mt-4 text-center text-muted small">
                 <i class="fas fa-info-circle"></i> Default: admin / password123
             </div>
@@ -153,6 +263,22 @@ function showLoginForm() {
 }
 
 function showAdminPanel() {
+    $pendingUsers = [];
+    $userStats = ['total' => 0, 'approved' => 0, 'pending' => 0];
+    $animeCount = 0;
+    $flashMessage = $_SESSION['admin_flash'] ?? null;
+    unset($_SESSION['admin_flash']);
+
+    try {
+        $db = new DatabaseHelper();
+        $pendingUsers = $db->getPendingUsers();
+        $userStats = $db->getUserStats();
+        $animeCount = $db->getAnimeCount();
+        $db->close();
+    } catch (Exception $e) {
+        appLogError('showAdminPanel', $e->getMessage());
+        $flashMessage = 'Database warning: unable to load admin metrics right now.';
+    }
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -220,7 +346,7 @@ function showAdminPanel() {
                 </a>
                 <div class="navbar-nav ms-auto">
                     <span class="nav-link">
-                        <i class="fas fa-user"></i> <?php echo $_SESSION['admin_username']; ?>
+                        <i class="fas fa-user"></i> <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'admin'); ?>
                     </span>
                     <a class="nav-link" href="?logout">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -234,13 +360,13 @@ function showAdminPanel() {
             <div class="session-info">
                 <div class="row">
                     <div class="col-md-6">
-                        <h5><i class="fas fa-user-shield"></i> Welcome, <?php echo $_SESSION['admin_username']; ?>!</h5>
+                        <h5><i class="fas fa-user-shield"></i> Welcome, <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'admin'); ?>!</h5>
                         <p class="mb-0">You have full access to manage the anime site.</p>
                     </div>
                     <div class="col-md-6 text-end">
                         <p class="mb-0">
                             <i class="fas fa-clock"></i> 
-                            Logged in at: <?php echo date('H:i:s', $_SESSION['login_time']); ?>
+                            Logged in at: <?php echo isset($_SESSION['login_time']) ? date('H:i:s', $_SESSION['login_time']) : 'N/A'; ?>
                         </p>
                     </div>
                 </div>
@@ -253,7 +379,7 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-film"></i>
                         </div>
-                        <h3>12</h3>
+                        <h3><?php echo intval($animeCount); ?></h3>
                         <p class="text-muted">Anime Titles</p>
                     </div>
                 </div>
@@ -262,8 +388,8 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <h3>1,245</h3>
-                        <p class="text-muted">Today's Visitors</p>
+                        <h3><?php echo intval($userStats['total']); ?></h3>
+                        <p class="text-muted">Registered Users</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -271,8 +397,8 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-eye"></i>
                         </div>
-                        <h3>5,678</h3>
-                        <p class="text-muted">Total Views</p>
+                        <h3><?php echo intval($userStats['approved']); ?></h3>
+                        <p class="text-muted">Approved Users</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -280,7 +406,7 @@ function showAdminPanel() {
                         <div class="stat-icon">
                             <i class="fas fa-clock"></i>
                         </div>
-                        <h3><?php echo round((time() - $_SESSION['login_time']) / 60); ?>m</h3>
+                        <h3><?php echo isset($_SESSION['login_time']) ? round((time() - $_SESSION['login_time']) / 60) : 0; ?>m</h3>
                         <p class="text-muted">Session Time</p>
                     </div>
                 </div>
@@ -305,6 +431,65 @@ function showAdminPanel() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <?php if($flashMessage): ?>
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> <?php echo htmlspecialchars($flashMessage); ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="card mt-3 mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-user-check"></i> Pending User Approvals</h5>
+                </div>
+                <div class="card-body">
+                    <?php if(empty($pendingUsers)): ?>
+                        <p class="mb-0 text-muted">No pending users. All good ✅</p>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($pendingUsers as $pendingUser): ?>
+                                    <tr>
+                                        <td><?php echo intval($pendingUser['id']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($pendingUser['created_at']); ?></td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <form method="POST" class="mb-0">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+                                                    <input type="hidden" name="approve_user" value="<?php echo intval($pendingUser['id']); ?>">
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+                                                </form>
+                                                <form method="POST" class="mb-0" onsubmit="return confirm('Reject this user?');">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+                                                    <input type="hidden" name="reject_user" value="<?php echo intval($pendingUser['id']); ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
