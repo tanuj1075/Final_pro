@@ -974,3 +974,89 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 165, 0, 0.8);
 }
+/* ===== Lumina Festival Override Theme ===== */
+body {
+  background: radial-gradient(circle at 50% 0%, #131a42 0%, #070914 45%, #050510 100%);
+  color: #e8efff;
+}
+
+.navbar {
+  background: rgba(5, 8, 20, 0.7) !important;
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.logo-text {
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  background: linear-gradient(90deg, #00f0ff, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-link a, .dropdown-toggle { color: #dbeafe !important; }
+.nav-link a.active, .nav-link a:hover, .dropdown-toggle:hover { color: #00f0ff !important; }
+
+.premium-btn, .action-btn, .dropdown-menu, .anime-card, .card-content {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(28px);
+  box-shadow: 0 0 40px rgba(0,240,255,0.15);
+}
+
+.lumina-hero {
+  position: relative;
+  min-height: 72vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: 10px 16px 26px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: radial-gradient(circle at 50% 20%, rgba(124,58,237,0.33), rgba(5,5,16,0.96));
+}
+
+.lumina-content { text-align: center; position: relative; z-index: 2; max-width: 780px; padding: 28px; }
+.lumina-kicker { letter-spacing: 0.24em; color: #93c5fd; font-size: 12px; }
+.lumina-hero h1 {
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  margin: 8px 0 12px;
+  background: linear-gradient(90deg, #00f0ff, #7c3aed, #ff3cf0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 32px rgba(124,58,237,0.45);
+}
+.lumina-sub { color: #dbeafe; opacity: .92; margin-bottom: 22px; }
+.lumina-cta {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #e2f7ff;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 26px rgba(0,240,255,0.23);
+}
+.lumina-cta:hover { transform: translateY(-2px); }
+
+.lumina-beam {
+  position: absolute;
+  width: 220%;
+  height: 260px;
+  left: -60%;
+  filter: blur(18px);
+  opacity: .35;
+  transform-origin: center;
+  animation: beamPulse 8s ease-in-out infinite;
+}
+.beam-a { top: 12%; background: linear-gradient(90deg, transparent, rgba(0,240,255,.65), transparent); transform: rotate(-16deg); }
+.beam-b { top: 40%; background: linear-gradient(90deg, transparent, rgba(124,58,237,.6), transparent); transform: rotate(8deg); animation-delay: 1.4s; }
+.beam-c { top: 64%; background: linear-gradient(90deg, transparent, rgba(255,60,240,.55), transparent); transform: rotate(-5deg); animation-delay: 2.1s; }
+.lumina-noise { position:absolute; inset:0; background-image: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px); background-size:3px 3px; opacity:.04; }
+
+@keyframes beamPulse {
+  0%,100% { opacity:.16; transform: translateX(0) scale(1); }
+  50% { opacity:.42; transform: translateX(2%) scale(1.05); }
+}
