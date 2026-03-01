@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (mobileMenuBtn && navMenu) {
     mobileMenuBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      mobileMenuBtn.innerHTML = navMenu.classList.contains('active')
+      const isOpen = navMenu.classList.toggle('active');
+      mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+      mobileMenuBtn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+      mobileMenuBtn.innerHTML = isOpen
         ? '<i class="fas fa-times"></i>'
         : '<i class="fas fa-bars"></i>';
     });
@@ -16,8 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navMenu && !e.target.closest('.nav-container') && navMenu.classList.contains('active')) {
       navMenu.classList.remove('active');
       if (mobileMenuBtn) {
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.setAttribute('aria-label', 'Open navigation menu');
         mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
       }
+    }
+  });
+
+  const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle="true"]');
+  dropdownToggles.forEach((toggle) => {
+    toggle.addEventListener('click', (event) => {
+      if (window.innerWidth > 576) return;
+      event.preventDefault();
+      const parentItem = toggle.closest('.nav-dropdown');
+      const menu = parentItem?.querySelector('.dropdown-menu');
+      if (!menu) return;
+
+      const isOpen = menu.classList.toggle('mobile-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 576) {
+      document.querySelectorAll('.dropdown-menu.mobile-open').forEach((menu) => menu.classList.remove('mobile-open'));
+      dropdownToggles.forEach((toggle) => toggle.setAttribute('aria-expanded', 'false'));
     }
   });
 
