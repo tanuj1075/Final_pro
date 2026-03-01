@@ -86,3 +86,27 @@ export APPLE_CLIENT_SECRET=...
 ```
 
 Then use social buttons on login/admin pages. Newly created social accounts are kept pending until admin approval.
+
+
+## Vercel deployment (updated)
+
+This repo now uses a minimal schema-safe `vercel.json`:
+
+```json
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/", "destination": "/login.php" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}
+```
+
+Recommended Vercel environment variables:
+
+- `APP_BASE_URL` = your deployed URL (example: `https://your-app.vercel.app`)
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD` or `ADMIN_PASSWORD_HASH`
+- Optional OAuth vars (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `APPLE_CLIENT_ID`, `APPLE_CLIENT_SECRET`)
+
+If preview deploy fails, first verify `vercel.json` and re-deploy from the repo root.
