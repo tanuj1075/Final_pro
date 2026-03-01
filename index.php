@@ -4,8 +4,21 @@ secure_session_start();
 require_once 'db_helper.php';
 
 // ===================== CONFIGURATION =====================
-$ADMIN_USERNAME = getenv('ADMIN_USERNAME') ?: 'admin';
-$ADMIN_PASSWORD = getenv('ADMIN_PASSWORD') ?: 'password123'; // Change this
+$envAdminUsername = trim((string)(getenv('ADMIN_USERNAME') ?: ''));
+$envAdminPassword = (string)(getenv('ADMIN_PASSWORD') ?: '');
+
+$allowDefaultCredentials = (getenv('ALLOW_DEFAULT_ADMIN_CREDENTIALS') === '1');
+$localHosts = ['127.0.0.1', '::1', 'localhost'];
+$serverAddr = trim((string)($_SERVER['SERVER_ADDR'] ?? ''));
+$remoteAddr = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+if (in_array($serverAddr, $localHosts, true) || in_array($remoteAddr, $localHosts, true)) {
+    $allowDefaultCredentials = true;
+}
+
+$isUsingDefaultAdminCredentials = ($envAdminUsername === '' || $envAdminPassword === '');
+$ADMIN_USERNAME = $envAdminUsername !== '' ? $envAdminUsername : 'admin';
+$ADMIN_PASSWORD = $envAdminPassword !== '' ? $envAdminPassword : 'password123';
+$adminCredentialsConfigured = !$isUsingDefaultAdminCredentials || $allowDefaultCredentials;
 
 // Optional hash override for production (set ADMIN_PASSWORD_HASH in env)
 $PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$10$YourHashHere';
@@ -32,7 +45,9 @@ if(isset($_GET['access']) && $_GET['access'] === 'main') {
 
 // Check login attempt
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+    if (!$adminCredentialsConfigured) {
+        $error = 'Admin login is disabled in this environment. Set ADMIN_USERNAME and ADMIN_PASSWORD (or ALLOW_DEFAULT_ADMIN_CREDENTIALS=1 for local development).';
+    } elseif (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
         $error = 'Invalid request token. Please refresh and try again.';
     } else {
     $username = trim($_POST['username'] ?? '');
@@ -115,7 +130,7 @@ function appLogError($context, $errorMessage) {
 }
 
 function showLoginForm() {
-    global $error;
+    global $error, $adminCredentialsConfigured, $isUsingDefaultAdminCredentials;
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -224,6 +239,18 @@ function showLoginForm() {
             </div>
             <?php endif; ?>
             
+            <?php if (!$adminCredentialsConfigured): ?>
+            <div class="alert alert-danger">
+                <i class="fas fa-triangle-exclamation"></i>
+                Admin login is disabled in this environment. Set <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code> (or <code>ALLOW_DEFAULT_ADMIN_CREDENTIALS=1</code> for local development).
+            </div>
+            <?php elseif ($isUsingDefaultAdminCredentials): ?>
+            <div class="alert alert-warning">
+                <i class="fas fa-circle-exclamation"></i>
+                Using development defaults (<code>admin</code> / <code>password123</code>). Configure environment variables before deployment.
+            </div>
+            <?php endif; ?>
+
             <form method="POST" action="">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
                 <div class="mb-3">
@@ -252,9 +279,6 @@ function showLoginForm() {
                     <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
                 </div>
                 <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
-            </div>
-            <div class="mt-4 text-center text-muted small">
-                <i class="fas fa-info-circle"></i> Default: admin / password123
             </div>
         </div>
     </body>
