@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Name - Watch Now | AnimeStream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Watch Your Name - A beautiful anime movie about two strangers connected by dreams across time and fate.">
+  <link rel="stylesheet" href="watchstyle.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for polish */
+    :root {
+      --primary: #ff4c60;
+      --primary-dark: #ff334a;
+      --secondary: #6c63ff;
+      --dark: #0d0d0d;
+      --dark-light: #1a1a1a;
+      --light: #ffffff;
+      --gray: #b3b3b3;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* Header/Navigation */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(13, 13, 13, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: var(--transition);
+    }
+    
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--light);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      color: var(--primary);
+    }
+    
+    .logo-text {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+    
+    .nav-link {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      padding: 8px 0;
+      position: relative;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--light);
+    }
+    
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+    }
+    
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .btn-subscribe {
+      background: var(--primary);
+      color: var(--light);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .btn-subscribe:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    /* Hero Section */
+    .fullscreen-video {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0;
+    }
+    
+    .fullscreen-video img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      filter: brightness(0.5);
+      animation: zoomEffect 30s infinite alternate ease-in-out;
+    }
+    
+    @keyframes zoomEffect {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, 
+        rgba(13, 13, 13, 0.8) 0%, 
+        rgba(13, 13, 13, 0.4) 50%,
+        rgba(13, 13, 13, 0.8) 100%);
+      z-index: 2;
+    }
+    
+    .video-text {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      max-width: 900px;
+      padding: 30px;
+      animation: fadeInUp 1.2s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .video-text h1 {
+      font-size: 4.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(45deg, #fff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 5px 25px rgba(255, 76, 96, 0.3);
+    }
+    
+    .video-text p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: var(--gray);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .movie-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 20px;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .meta-item i {
+      color: var(--primary);
+    }
+    
+    .btn-watch {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(255, 76, 96, 0.3);
+    }
+    
+    .btn-watch:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 76, 96, 0.4);
+    }
+    
+    .rating-badge {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 8px 15px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+      z-index: 4;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .rating-badge i {
+      color: gold;
+    }
+    
+    /* Video Player */
+    .video-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--dark);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .video-controls {
+      width: 100%;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .video-screen video {
+      width: 100%;
+      height: calc(100vh - 80px);
+      object-fit: contain;
+    }
+    
+    .close-video {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Tabs */
+    .tab-menu {
+      background: var(--dark-light);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .tab-menu ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .tab-item {
+      padding: 20px 40px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--gray);
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      position: relative;
+    }
+    
+    .tab-item:hover {
+      color: var(--light);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .tab-item.active {
+      color: var(--light);
+      border-bottom: 3px solid var(--primary);
+      background: rgba(255, 76, 96, 0.05);
+    }
+    
+    .tab-content {
+      padding: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    #overview {
+      display: block;
+    }
+    
+    .tab-content h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .tab-content h2 i {
+      color: var(--primary);
+    }
+    
+    .tab-content p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      margin-bottom: 20px;
+      max-width: 800px;
+    }
+    
+    /* Anime Details */
+    .anime-detail {
+      display: flex;
+      padding: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+    
+    .anime-detail .left {
+      flex: 2;
+      min-width: 300px;
+    }
+    
+    .anime-detail .right {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .anime-detail h2 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .anime-detail p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--gray);
+    }
+    
+    .anime-detail ul {
+      list-style: none;
+    }
+    
+    .anime-detail ul li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--gray);
+    }
+    
+    .anime-detail ul li strong {
+      color: var(--light);
+      font-weight: 600;
+      display: inline-block;
+      width: 140px;
+    }
+    
+    /* Episodes List */
+    .episode-list {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .episode-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 4px solid transparent;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .episode-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid var(--primary);
+      transform: translateX(5px);
+    }
+    
+    .episode-number {
+      background: var(--primary);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    
+    .episode-info {
+      flex: 1;
+    }
+    
+    .episode-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--light);
+    }
+    
+    .episode-duration {
+      color: var(--gray);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    /* Related Anime */
+    .related-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .related-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+    
+    .related-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-5px);
+    }
+    
+    .related-item strong {
+      color: var(--light);
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .related-item p {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--dark-light);
+      padding: 50px 0 20px;
+      margin-top: 50px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+    
+    .footer-section h3 {
+      color: var(--light);
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+    
+    .footer-links a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary);
+      padding-left: 5px;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      color: var(--light);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .social-links a:hover {
+      background: var(--primary);
+      transform: translateY(-3px);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray);
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 40px;
+    }
+    
+    /* Scroll to top */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(255, 76, 96, 0.3);
+    }
+    
+    .scroll-top:hover {
+      background: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 0 20px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .video-text h1 {
+        font-size: 2.8rem;
+      }
+      
+      .video-text p {
+        font-size: 1.1rem;
+      }
+      
+      .movie-meta {
+        gap: 10px;
+      }
+      
+      .meta-item {
+        padding: 6px 15px;
+        font-size: 0.9rem;
+      }
+      
+      .tab-item {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+      }
+      
+      .tab-content, .anime-detail {
+        padding: 20px;
+      }
+      
+      .footer-content {
+        padding: 0 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .video-text h1 {
+        font-size: 2.2rem;
+      }
+      
+      .btn-watch {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+      
+      .tab-menu ul {
+        flex-wrap: wrap;
+      }
+      
+      .tab-item {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+<!-- Landing Section -->
+<section class="fullscreen-video" id="introBanner">
+  <div class="video-overlay"></div>
+  <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Your Name Banner">
+  <div class="rating-badge">
+    <i class="fas fa-star"></i> 8.4/10
+  </div>
+  <div class="video-text">
+    <h1>Attack on Titan</h1>
+    <p>Children inherit a world built on lies, and must decide whether freedom is worth becoming the monster history needs</p>
+    
+    <div class="movie-meta">
+     <span class="meta-item"><i class="fas fa-calendar"></i> 2013–2023</span>
+<span class="meta-item"><i class="fas fa-clock"></i> 4 Seasons</span>
+<span class="meta-item"><i class="fas fa-tag"></i> Action, Dark Fantasy</span>
+<span class="meta-item"><i class="fas fa-film"></i> TV Series</span>
+    </div>
+    
+    <button class="btn-watch" id="watchOverviewBtn" type="button">
+      <i class="fas fa-play"></i> Watch Overview
+    </button>
+    <a class="btn-watch" href="manga.html" style="color: inherit; text-decoration: none;">
+      <i class="fas fa-star"></i> Manga
+    </a>
+  </div>
+</section>
+
+<!-- Video Player Section -->
+<section class="video-screen" id="watchScreen">
+  <div class="video-controls">
+    <button class="close-video" onclick="closeVideo()">
+      <i class="fas fa-times"></i> Close Video
+    </button>
+    <h3>Attack on Titan - Official Trailer</h3>
+  </div>
+  <video controls autoplay>
+    <source src="your-name.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</section>
+
+<!-- Tab Navigation -->
+<nav class="tab-menu">
+  <ul>
+    <li class="tab-item active" data-tab="overview">
+      <i class="fas fa-info-circle"></i> Overview
+    </li>
+    <li class="tab-item" data-tab="related">
+      <i class="fas fa-link"></i> Related
+    </li>
+    <li class="tab-item" data-tab="details">
+      <i class="fas fa-ellipsis-h"></i> Info
+    </li>
+  </ul>
+</nav>
+
+<!-- Tab Content -->
+<section class="tab-content" id="overview">
+  <h2><i class="fas fa-film"></i> Overview</h2>
+<p>In a world where humanity hides behind massive walls to survive against man-eating Titans, Eren Yeager vows to eradicate every last one after witnessing the destruction of his home. What begins as a desperate fight for survival evolves into a brutal conflict spanning nations, history, and inherited memories.</p>
+<p>Attack on Titan became a global phenomenon, redefining modern anime with its intense storytelling, moral complexity, and shocking twists. Its exploration of freedom, war, and the cycle of hatred turned it from a survival thriller into one of the most controversial and discussed series of its generation.</p>
+</section>
+
+<section class="tab-content" id="related">
+  <h2><i class="fas fa-star"></i> Related Anime</h2>
+  <div class="related-list">
+    
+    <div class="related-item">
+      <strong>Vinland Saga</strong>
+      <p>A brutal historical epic about revenge, war, and the meaning of true freedom. Like AOT, it explores violence, inherited hatred, and the cost of pursuing an ideal.</p>
+    </div>
+    
+    <div class="related-item">
+      <strong>Code Geass</strong>
+      <p>A strategic rebellion led by a morally complex protagonist willing to sacrifice everything for change. It mirrors AOT’s themes of power, revolution, and ethical compromise.</p>
+    </div>
+    
+    <div class="related-item">
+      <strong>Fullmetal Alchemist: Brotherhood</strong>
+      <p>A war-driven narrative centered on conspiracy, moral consequences, and the pursuit of truth in a militarized society. It shares AOT’s layered political storytelling.</p>
+    </div>
+    
+    <div class="related-item">
+      <strong>Tokyo Ghoul</strong>
+      <p>A dark transformation story where the line between human and monster blurs. Identity, survival, and moral ambiguity echo many of AOT’s core conflicts.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="tab-content" id="details">
+  <h2><i class="fas fa-info-circle"></i> Detailed Information</h2>
+  
+  <div class="anime-detail">
+    <div class="left">
+      <h2>Full Description</h2>
+      <p>
+        In a world where humanity survives behind enormous walls to protect themselves from man-eating Titans, Eren Yeager dreams of seeing the outside world. After a catastrophic breach destroys his hometown and kills his mother, he joins the military alongside Mikasa Ackerman and Armin Arlert, swearing to exterminate every Titan.
+      </p>
+      <p>
+        As the truth behind the Titans begins to unravel, the story expands far beyond survival. Hidden histories, political conspiracies, and inherited powers reshape the conflict. What once seemed like a battle between humans and monsters evolves into a global war fueled by ideology, revenge, and generational hatred.
+      </p>
+      <p>
+        Attack on Titan is not simply an action series — it is a brutal exploration of freedom, moral ambiguity, and the devastating cost of breaking (or continuing) the cycle of violence.
+      </p>
+    </div>
+
+   <div class="right">
+  <h2>Details</h2>
+  <ul>
+    <li><strong>Original Title:</strong> 進撃の巨人 (Shingeki no Kyojin)</li>
+    <li><strong>Genre:</strong> Action, Dark Fantasy, Drama</li>
+    <li><strong>Rating:</strong> 9.0/10 (IMDb)</li>
+    <li><strong>Type:</strong> TV Series (Anime)</li>
+    <li><strong>Status:</strong> Complete</li>
+    <li><strong>Year of Release:</strong> 2013–2023</li>
+    <li><strong>Episodes:</strong> 87</li>
+    <li><strong>Director:</strong> Tetsurō Araki (Seasons 1–3), Yūichirō Hayashi (Final Season)</li>
+    <li><strong>Studio:</strong> Wit Studio (S1–3), MAPPA (Final Season)</li>
+    <li><strong>Awards:</strong> Crunchyroll Anime Awards (Multiple Wins & Nominations)</li>
+  </ul>
+</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>AnimeStream</h3>
+      <p>Your premium destination for anime streaming. Watch the best anime movies and series in high quality with multiple subtitle options.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-discord"></i></a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Movies</a></li>
+        <li><a href="#">Series</a></li>
+        <li><a href="#">New Releases</a></li>
+        <li><a href="#">Top Rated</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Categories</h3>
+      <ul class="footer-links">
+        <li><a href="#">Action</a></li>
+        <li><a href="#">Romance</a></li>
+        <li><a href="#">Fantasy</a></li>
+        <li><a href="#">Drama</a></li>
+        <li><a href="#">Comedy</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Support</h3>
+      <ul class="footer-links">
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="copyright">
+    <p>&copy; 2023 AnimeStream. All rights reserved. "Your Name" is a trademark of CoMix Wave Films.</p>
+    <p>This site is for educational purposes only. All content belongs to their respective owners.</p>
+  </div>
+</footer>
+
+<!-- Scroll to top button -->
+<div class="scroll-top" id="scrollTop">
+  <i class="fas fa-chevron-up"></i>
+</div>
+
+<script>
+  // Enhanced JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+    // Watch button functionality
+    const watchBtn = document.getElementById('watchOverviewBtn');
+    const introBanner = document.getElementById('introBanner');
+    const watchScreen = document.getElementById('watchScreen');
+    
+    if (watchBtn) {
+      watchBtn.addEventListener('click', () => {
+        introBanner.style.display = 'none';
+        watchScreen.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    
+    // Close video function
+    window.closeVideo = function() {
+      watchScreen.style.display = 'none';
+      introBanner.style.display = 'block';
+      document.body.style.overflow = 'auto';
+      
+      // Pause video when closing
+      const video = watchScreen.querySelector('video');
+      if (video) {
+        video.pause();
+      }
+    };
+    
+    // Tab switching with animation
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab-item').forEach(t => {
+          t.classList.remove('active');
+        });
+        
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(c => {
+          c.style.display = 'none';
+        });
+        
+        // Activate clicked tab
+        tab.classList.add('active');
+        const targetTab = document.getElementById(tab.dataset.tab);
+        if (targetTab) {
+          targetTab.style.display = 'block';
+        }
+        
+        // Smooth scroll to tab content
+        targetTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    
+    // Scroll to top button
+    const scrollTopBtn = document.getElementById('scrollTop');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        scrollTopBtn.style.display = 'flex';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+    
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Header scroll effect
+    const header = document.querySelector('.site-header');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 100) {
+        header.style.background = 'rgba(13, 13, 13, 0.98)';
+        header.style.backdropFilter = 'blur(15px)';
+      } else {
+        header.style.background = 'rgba(13, 13, 13, 0.95)';
+        header.style.backdropFilter = 'blur(10px)';
+      }
+    });
+    
+    // Hover effects for episode items
+    document.querySelectorAll('.episode-item').forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateX(5px)';
+      });
+      
+      item.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateX(0)';
+      });
+    });
+    
+    // Hover effects for related items
+    document.querySelectorAll('.related-item').forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px)';
+      });
+      
+      item.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+      });
+    });
+    
+    // Close video when clicking outside (on overlay)
+    watchScreen.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVideo();
+      }
+    });
+    
+    // Close video with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && watchScreen.style.display === 'flex') {
+        closeVideo();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

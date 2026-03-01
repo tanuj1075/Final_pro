@@ -319,7 +319,7 @@ if(isset($_GET['logout'])) {
         
         <div class="anime-grid" id="cardSlider">
             <!-- Anime Card 1 -->
-           <a href="w.html" target="_blank" class="anime-card-link">
+           <a href="watch1.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="your-name card.jpg" alt="Your Name">
@@ -336,7 +336,7 @@ if(isset($_GET['logout'])) {
     <div class="card-content">
       <h3 class="anime-title">Your Name</h3>
       <p class="anime-synopsis">
-        Two strangers connected by fate begin a journey to uncover a forgotten connection.
+        Two strangers connected by fate begin a journey to uncover a forgotten connections.
       </p>
       <div class="card-meta">
         <span class="rating">
@@ -349,7 +349,7 @@ if(isset($_GET['logout'])) {
 </a>
 
             <!-- Anime Card 2 -->
-      <a href="video.html" target="_blank" class="anime-card-link">
+      <a href="watch2.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
       <img src="attack-on-titan card.jpg" alt="Your Name">
