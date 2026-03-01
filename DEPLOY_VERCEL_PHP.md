@@ -49,3 +49,10 @@ php -r 'json_decode(file_get_contents("vercel.json")); echo json_last_error_msg(
 for f in $(rg --files -g '*.php'); do php -l "$f" >/dev/null || exit 1; done
 for f in $(rg --files -g '*.js'); do node --check "$f" >/dev/null || exit 1; done
 ```
+
+
+## 6) If clicking Visit downloads a file instead of opening pages
+
+This happens when `.php` files are matched by static filesystem handling before they are routed to the PHP function.
+
+The fixed `vercel.json` in this repo routes app `.php` pages to `/api/index.php` **before** `handle: filesystem`, so URLs like `/login.php`, `/index.php`, and `/admin` execute correctly instead of downloading.

@@ -7,23 +7,23 @@
   },
   "routes": [
     {
-      "handle": "filesystem"
-    },
-    {
       "src": "^/$",
       "dest": "/api/index.php?route=login.php"
-    },
-    {
-      "src": "^/admin/?$",
-      "dest": "/api/index.php?route=index.php"
     },
     {
       "src": "^/(index|login|signup|ash|user_panel|oauth_start|oauth_callback)\\.php$",
       "dest": "/api/index.php?route=$1.php"
     },
     {
-      "src": "^/(login|signup|admin|ash|user_panel|oauth_start|oauth_callback)/?$",
+      "src": "^/admin/?$",
+      "dest": "/api/index.php?route=index.php"
+    },
+    {
+      "src": "^/(login|signup|ash|user_panel|oauth_start|oauth_callback)/?$",
       "dest": "/api/index.php?route=$1"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "^/api/?$",
@@ -31,7 +31,7 @@
     },
     {
       "src": "^/(.*)$",
-      "dest": "/$1"
+      "dest": "/api/index.php?route=$1"
     }
   ]
 }
