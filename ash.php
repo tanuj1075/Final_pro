@@ -1,6 +1,7 @@
 <?php
 // PROTECTED ANIME SITE - Only accessible after user login
-session_start();
+require_once 'security.php';
+secure_session_start();
 
 // Check if user is logged in
 if(!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
@@ -11,7 +12,7 @@ if(!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) 
 
 // Add logout functionality
 if(isset($_GET['logout'])) {
-    session_destroy();
+    destroy_session_and_cookie();
     header('Location: login.php?logout=1');
     exit;
 }
@@ -70,6 +71,7 @@ if(isset($_GET['logout'])) {
           </li>
           
           <li class="nav-link"><a href="#">Games</a></li>
+          <li class="nav-link"><a href="subscription.html">Subscription</a></li>
           
           <!-- News Dropdown -->
           <li class="nav-dropdown">
@@ -93,6 +95,7 @@ if(isset($_GET['logout'])) {
         </button>
         
         <!-- Premium Button -->
+        <a href="subscription.html" style="text-decoration:none;color:inherit;">
         <div class="premium-btn">
           <div class="premium-icon">
             <i class="fas fa-crown"></i>
@@ -102,6 +105,7 @@ if(isset($_GET['logout'])) {
             <span class="premium-label">PREMIUM</span>
           </div>
         </div>
+        </a>
         
         <!-- Action Icons -->
         <div class="action-icons">
