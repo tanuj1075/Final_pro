@@ -336,7 +336,7 @@ if(isset($_GET['logout'])) {
     <div class="card-content">
       <h3 class="anime-title">Your Name</h3>
       <p class="anime-synopsis">
-        Two strangers connected by fate begin a journey to uncover a forgotten connection.
+        Two strangers connected by fate begin a journey to uncover a forgotten connections.
       </p>
       <div class="card-meta">
         <span class="rating">
