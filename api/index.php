@@ -42,6 +42,11 @@ $aliases = [
     'contact' => 'contact.php',
     'login' => 'login.php',
     'signup' => 'signup.php',
+    'index' => 'index.php',
+    'ash' => 'ash.php',
+    'user_panel' => 'user_panel.php',
+    'oauth_start' => 'oauth_start.php',
+    'oauth_callback' => 'oauth_callback.php',
 ];
 
 if (isset($aliases[$route])) {
