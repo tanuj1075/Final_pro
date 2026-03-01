@@ -72,6 +72,7 @@ if(isset($_GET['logout'])) {
           </li>
           
           <li class="nav-link"><a href="manga.html">Manga</a></li>
+          <li class="nav-link"><a href="subscription.html">Subscription</a></li>
           
           <!-- News Dropdown -->
           <li class="nav-dropdown">
@@ -95,7 +96,7 @@ if(isset($_GET['logout'])) {
         </button>
         
         <!-- Premium Button -->
-        <div class="premium-btn">
+        <a href="subscription.html" class="premium-btn" aria-label="Open subscription plans">
           <div class="premium-icon">
             <i class="fas fa-crown"></i>
           </div>
@@ -103,7 +104,7 @@ if(isset($_GET['logout'])) {
             <span class="premium-try">BOOK NOW</span>
             <span class="premium-label">FESTIVAL PASS</span>
           </div>
-        </div>
+        </a>
         
         <!-- Action Icons -->
         <div class="action-icons">
