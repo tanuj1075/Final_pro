@@ -5,6 +5,7 @@ secure_session_start();
 
 $isUserLoggedIn = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 $isAdminLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+$displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
 
 if (!$isUserLoggedIn && !$isAdminLoggedIn) {
     header('Location: login.php');
@@ -41,16 +42,16 @@ if(isset($_GET['logout'])) {
 
 <body>
   <!-- Enhanced Navigation Bar -->
-  <nav class="navbar">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
     <div class="nav-container">
       <!-- Logo Section -->
-      <div class="logo-section">
+      <a href="ash.php" class="logo-section" aria-label="AckerStream home">
         <img src="bird.svg" alt="AckerStream Logo" class="logo-img">
         <span class="logo-text">Ackerstream</span>
-      </div>
+      </a>
 
       <!-- Center Navigation Menu -->
-      <div class="nav-menu">
+      <div class="nav-menu" id="primary-nav-menu">
         <ul class="nav-links">
           <li class="nav-link"><a href="#luminaHero" class="active">Stages</a></li>
           <li class="nav-link"><a href="#most-watched">Schedule</a></li>
@@ -58,7 +59,7 @@ if(isset($_GET['logout'])) {
           
           <!-- Categories Dropdown -->
           <li class="nav-dropdown">
-            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-dropdown-toggle="true">
               Categories <i class="fas fa-chevron-down"></i>
             </a>
             <div class="dropdown-menu">
@@ -76,7 +77,7 @@ if(isset($_GET['logout'])) {
           
           <!-- News Dropdown -->
           <li class="nav-dropdown">
-            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+            <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-dropdown-toggle="true">
               News <i class="fas fa-chevron-down"></i>
             </a>
             <div class="dropdown-menu">
@@ -91,7 +92,7 @@ if(isset($_GET['logout'])) {
       <!-- Right Navigation Actions -->
       <div class="nav-actions">
         <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" style="display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">
+        <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="primary-nav-menu" aria-label="Open navigation menu" type="button">
           <i class="fas fa-bars"></i>
         </button>
         

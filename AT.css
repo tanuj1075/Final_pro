@@ -43,6 +43,29 @@ body {
     flex-shrink: 0; /* Prevents logo from shrinking */
 }
 
+
+.logo-section {
+    text-decoration: none;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #FF8C00;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.mobile-menu-toggle:focus-visible,
+.premium-btn:focus-visible,
+.nav-link a:focus-visible,
+.dropdown-toggle:focus-visible,
+.action-btn:focus-visible {
+    outline: 2px solid #FFD700;
+    outline-offset: 2px;
+}
 .logo-img {
     height: 36px;
     width: auto;
@@ -195,6 +218,7 @@ body {
 }
 
 .premium-btn {
+    text-decoration: none;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -458,6 +482,11 @@ body {
         margin-top: 5px;
         border: none;
         box-shadow: none;
+        display: none;
+    }
+
+    .dropdown-menu.mobile-open {
+        display: block;
     }
 }
 
