@@ -46,7 +46,7 @@ if(isset($_GET['logout'])) {
       <!-- Logo Section -->
       <div class="logo-section">
         <img src="bird.svg" alt="AckerStream Logo" class="logo-img">
-        <span class="logo-text">LUMINA FESTIVAL</span>
+        <span class="logo-text">Ackerstream</span>
       </div>
 
       <!-- Center Navigation Menu -->
