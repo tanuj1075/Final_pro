@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
       card.style.transform = 'translateY(-15px)';
     });
 
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('.nav-container') && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      const icon = card.querySelector('.category-icon');
+      if (icon) {
+        icon.style.transform = 'scale(1) rotate(0)';
       }
     });
-  }
 
     card.addEventListener('mouseenter', () => {
       const icon = card.querySelector('.category-icon');
@@ -42,14 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.style.transform = 'scale(1.2) rotate(15deg)';
       }
     });
+  });
 
-    card.addEventListener('mouseleave', () => {
-      const icon = card.querySelector('.category-icon');
-      if (icon) {
-        icon.style.transform = 'scale(1) rotate(0)';
-      }
-    });
+  const sectionMap = {
+    Home: '#home',
+    Popular: '#popular',
+    New: '#new',
+    Manga: 'manga.html',
+    News: 'video.html',
+  };
 
+  document.querySelectorAll('.nav-menu a').forEach((link) => {
     const label = link.textContent.trim();
     if (sectionMap[label]) {
       link.setAttribute('href', sectionMap[label]);
