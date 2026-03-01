@@ -86,3 +86,24 @@ export APPLE_CLIENT_SECRET=...
 ```
 
 Then use social buttons on login/admin pages. Newly created social accounts are kept pending until admin approval.
+
+## Auto deploy from GitHub to live site (Vercel)
+
+This repo now includes a GitHub Actions workflow at:
+
+- `.github/workflows/vercel-auto-deploy.yml`
+
+Behavior:
+
+- Every push to `main`/`master` triggers a **production deploy**.
+- Every pull request to `main`/`master` triggers a **preview deploy**.
+
+### One-time setup in GitHub
+
+In your GitHub repository, add these **Actions secrets**:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+After this setup, when you change code in GitHub and push, the website will update automatically after the workflow succeeds.
