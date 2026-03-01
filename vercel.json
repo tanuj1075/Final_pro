@@ -1,13 +1,37 @@
 {
   "version": 2,
-  "rewrites": [
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.3"
+    }
+  },
+  "routes": [
     {
-      "source": "/",
-      "destination": "/login.php"
+      "src": "^/$",
+      "dest": "/api/index.php?route=login.php"
     },
     {
-      "source": "/(.*)",
-      "destination": "/$1"
+      "src": "^/(index|login|signup|ash|user_panel|oauth_start|oauth_callback)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+    {
+      "src": "^/admin/?$",
+      "dest": "/api/index.php?route=index.php"
+    },
+    {
+      "src": "^/(login|signup|ash|user_panel|oauth_start|oauth_callback)/?$",
+      "dest": "/api/index.php?route=$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/api/?$",
+      "dest": "/api/index.php"
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/api/index.php?route=$1"
     }
   ]
 }

@@ -1,81 +1,58 @@
-# Vercel setup check (PHP + static links)
+# Vercel deployment (PHP + static assets)
 
-This repository keeps PHP pages in project root (for example `index.php`, `login.php`, `signup.php`) and static pages/assets beside them.
+This project uses a serverless PHP router (`api/index.php`) and serves static assets from the repo root.
 
-## 1) What is wired now
+## 1) Required Vercel setup
 
-- `vercel.json` uses `handle: filesystem` so existing static files are served directly by Vercel CDN before PHP routing.
-- `vercel.json` sends static assets (`.html`, `.css`, `.js`, images, fonts, video) directly via Vercel CDN.
-- PHP routes are rewritten to `/api/index.php`.
-- `/api/index.php` whitelists and loads root PHP files safely.
+- Runtime: `vercel-php@0.7.3` for `api/index.php`
+- Routing:
+  - static files first (`handle: filesystem`)
+  - app routes forwarded to `/api/index.php?route=...`
 
-This makes existing links like `login.php`, `signup.php`, `ash.php`, `user_panel.php`, and OAuth endpoints continue to work.
+This is already configured in `vercel.json`.
 
-## 2) Current route mapping
+## 2) Route behavior
 
-- `/` -> `login.php` (user login page)
-- `/admin` or `/admin.php` -> `index.php` (admin login/panel)
-- `/login` or `/login.php` -> `login.php`
-- `/signup` or `/signup.php` -> `signup.php`
-- `/ash` or `/ash.php` -> `ash.php`
-- `/user_panel` or `/user_panel.php` -> `user_panel.php`
-- `/oauth_start` or `/oauth_start.php` -> `oauth_start.php`
-- `/oauth_callback` or `/oauth_callback.php` -> `oauth_callback.php`
-- `/about` -> `about.php` (only if file exists)
-- `/contact` -> `contact.php` (only if file exists)
+- `/` -> `login.php`
+- `/admin` -> `index.php`
+- `/login`, `/signup`, `/ash`, `/user_panel` -> mapped app pages
+- `/oauth_start`, `/oauth_callback` -> OAuth endpoints
+- `/*.css`, `/*.js`, images/videos/html -> served as static files
 
-## 3) Commands to install and deploy
+## 3) Important env vars (production)
 
-```bash
-npm install --save-dev vercel vercel-php
-npx vercel login
-npx vercel
-npx vercel --prod
-```
+Set these in Vercel Project Settings -> Environment Variables:
 
-## 4) Link-check suggestion (before deploy)
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (if using Google OAuth)
+- `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET` (if using Facebook OAuth)
+- `APPLE_CLIENT_ID`, `APPLE_CLIENT_SECRET` (if using Apple OAuth)
 
-Run these quick checks locally:
+Optional (local-style fallback in non-local environments):
+
+- `ALLOW_DEFAULT_ADMIN_CREDENTIALS=1`
+
+## 4) SQLite note on Vercel
+
+SQLite file storage is ephemeral in serverless environments. For temporary fallback, use:
+
+- `APP_DATA_DIR=/tmp/final_pro_data`
+
+For reliable production data, use a managed database service.
+
+## 5) Quick validation
 
 ```bash
 php -l api/index.php
 php -r 'json_decode(file_get_contents("vercel.json")); echo json_last_error_msg(), PHP_EOL;'
+for f in $(rg --files -g '*.php'); do php -l "$f" >/dev/null || exit 1; done
+for f in $(rg --files -g '*.js'); do node --check "$f" >/dev/null || exit 1; done
 ```
 
-And verify links/files exist:
 
-```bash
-for f in index.php login.php signup.php ash.php user_panel.php oauth_start.php oauth_callback.php AT.css style.css control.js manga.html video.html w.html; do [ -f "$f" ] && echo "OK  $f" || echo "MISS $f"; done
-```
+## 6) If clicking Visit downloads a file instead of opening pages
 
-## 5) Database + env notes for Vercel serverless
+This happens when `.php` files are matched by static filesystem handling before they are routed to the PHP function.
 
-- Avoid relying on local writable SQLite files for production persistence.
-- Use managed DB services and keep credentials in Vercel env vars.
-
-```bash
-npx vercel env add APP_ENV production
-npx vercel env add DB_DSN production
-npx vercel env add DB_USER production
-npx vercel env add DB_PASS production
-npx vercel env add DB_PATH production
-```
-
-In PHP read with `getenv('DB_DSN')` (or `$_ENV`).
-
-
-## 6) Deployment-failure fix included
-
-- Removed legacy `builds` configuration and switched to `functions.runtime` (`vercel-php@0.7.3`) for better compatibility with current Vercel deployments.
-- Fixed `/admin` rewrite bug so it maps directly to `index.php` (not `admin.php`).
-Access in PHP via `getenv('NAME')` or `$_ENV['NAME']`.
-
-For SQLite fallback in serverless, set `DB_PATH=/tmp/final_pro_data/app.sqlite`.
-(Important: `/tmp` is ephemeral and resets between deployments/cold starts.)
-
-
-## 6) Deployment-failure fix included
-
-- Switched back to the broadly compatible community-runtime builder style (`"builds": [{"src": "api/index.php", "use": "vercel-php"}]`).
-- Added `@vercel/static` build (non-PHP extensions only) plus `handle: filesystem` so CSS/JS/images (including `AT.css`) are served directly, while `.php` files are never exposed as static source.
-- Fixed `/admin` rewrite so it maps directly to `index.php` (not `admin.php`).
+The fixed `vercel.json` in this repo routes app `.php` pages to `/api/index.php` **before** `handle: filesystem`, so URLs like `/login.php`, `/index.php`, and `/admin` execute correctly instead of downloading.
