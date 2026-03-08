@@ -74,6 +74,7 @@ if(isset($_GET['logout'])) {
           
           <li class="nav-link"><a href="manga.html">Manga</a></li>
           <li class="nav-link"><a href="subscription.html">Subscription</a></li>
+          <li class="nav-link"><a href="anime_hub.php">Anime Hub</a></li>
           
           <!-- News Dropdown -->
           <li class="nav-dropdown">

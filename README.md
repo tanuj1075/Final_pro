@@ -9,6 +9,8 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 - Auto-initialized SQLite backend (`data/app.sqlite`) via `db_helper.php`
 - Admin approval workflow for new user accounts (approve from `index.php`)
 - Static watch/info pages (`w.html`, `video.html`, `manga.html`)
+- Dynamic anime catalog with centralized details/search (`anime_hub.php`, `anime_detail.php`)
+- Admin content management for synopsis/trailer/poster/manga/stream/schedule (`manage_anime.php`)
 
 ## Project structure
 
@@ -18,6 +20,9 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 ├── login.php         # User login
 ├── signup.php        # User registration
 ├── ash.php           # Protected main homepage/dashboard
+├── anime_hub.php     # Dynamic searchable anime catalog
+├── anime_detail.php  # Full centralized anime detail page
+├── manage_anime.php  # Admin anime content management
 ├── db_helper.php     # SQLite DB helper + auto schema init
 ├── data/app.sqlite   # Auto-created runtime DB file
 ├── control.js        # Homepage UI interactions
