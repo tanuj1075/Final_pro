@@ -447,6 +447,9 @@ function showAdminPanel() {
                             <a href="?access=main" class="btn main-site-btn">
                                 <i class="fas fa-external-link-alt"></i> ENTER MAIN SITE
                             </a>
+                            <a href="manage_anime.php" class="btn btn-outline-primary ms-2 mt-2 mt-md-0">
+                                <i class="fas fa-database"></i> MANAGE ANIME CONTENT
+                            </a>
                             
                             <div class="mt-3">
                                 <small class="text-muted">

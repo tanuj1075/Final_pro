@@ -28,6 +28,9 @@ $allowedPhpFiles = [
     'oauth_callback.php',
     'about.php',
     'contact.php',
+    'anime_hub.php',
+    'anime_detail.php',
+    'manage_anime.php',
 ];
 
 /**
@@ -40,6 +43,9 @@ $aliases = [
     'admin' => 'index.php',
     'about' => 'about.php',
     'contact' => 'contact.php',
+    'anime_hub' => 'anime_hub.php',
+    'anime_detail' => 'anime_detail.php',
+    'manage_anime' => 'manage_anime.php',
     'login' => 'login.php',
     'signup' => 'signup.php',
     'index' => 'index.php',
