@@ -12,6 +12,13 @@ body {
     overflow-x: hidden;
 }
 
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
 /* Enhanced Navigation Bar */
 .navbar {
     position: sticky;
@@ -487,6 +494,84 @@ body {
 
     .dropdown-menu.mobile-open {
         display: block;
+    }
+}
+
+
+@media (max-width: 992px) {
+    .carousel-img {
+        height: 560px;
+    }
+
+    .carousel-content {
+        left: 30px;
+        right: 30px;
+        bottom: 40px;
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .action-icons {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .carousel-img {
+        height: 460px;
+    }
+
+    .carousel-content {
+        left: 20px;
+        right: 20px;
+        bottom: 25px;
+        max-width: calc(100% - 40px);
+    }
+
+    .anime-logo {
+        width: min(220px, 60vw);
+        height: auto;
+    }
+
+    .anime-description {
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .watch-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-img {
+        height: 380px;
+    }
+
+    .carousel-content {
+        bottom: 18px;
+    }
+
+    .badge {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .watch-btn {
+        padding: 9px 14px;
+        gap: 8px;
+    }
+
+    .bookmark-btn,
+    .info-btn {
+        width: 38px;
+        height: 38px;
     }
 }
 

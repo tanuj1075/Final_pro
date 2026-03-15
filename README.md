@@ -28,7 +28,7 @@ A PHP + HTML/CSS/JS anime streaming-style project with:
 ├── control.js        # Homepage UI interactions
 ├── AT.css            # Main dashboard styles
 ├── watchstyle.css    # Watch-page styles
-├── w.html            # Detailed "Your Name" watch page
+├── watch1.html       # Detailed "Your Name" watch page
 ├── manga.html        # Manga page
 ├── video.html        # Video/news style page
 └── media assets      # images/videos/icons in repo root
@@ -112,3 +112,23 @@ In your GitHub repository, add these **Actions secrets**:
 - `VERCEL_PROJECT_ID`
 
 After this setup, when you change code in GitHub and push, the website will update automatically after the workflow succeeds.
+
+
+## Make it open on any phone/device with a global link
+
+This project is already set up for global deployment using **Vercel** (`vercel.json` + GitHub Action workflow).
+
+### Fastest method (GitHub + Vercel)
+
+1. Push this repo to GitHub.
+2. In Vercel, import the GitHub repository.
+3. In Vercel project settings, add environment variables from `.env.example` and `DEPLOY_VERCEL_PHP.md`.
+4. Deploy. Vercel gives you a public HTTPS URL (for example: `https://your-project.vercel.app`).
+5. Open that URL on any phone/browser.
+
+### Optional: custom domain
+
+In Vercel -> Project -> Domains, add your own domain (example: `animehub.com`) and update DNS records.
+
+After DNS propagation, your website will be globally reachable on desktop and mobile devices.
+
