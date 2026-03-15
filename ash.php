@@ -84,7 +84,7 @@ if(isset($_GET['logout'])) {
             <div class="dropdown-menu">
               <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
               <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
-              <a href="w.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
+              <a href="watch1.html" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
             </div>
           </li>
         </ul>
