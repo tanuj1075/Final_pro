@@ -1,0 +1,13 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:check": "node -e \"import('./src/client.js').then(() => console.log('db client ok'))\""
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "pg": "^8.14.1"
+  }
+}

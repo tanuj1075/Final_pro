@@ -11,28 +11,56 @@ if (!isset($config[$provider])) {
     exit;
 }
 
-$state = $_GET['state'] ?? ($_POST['state'] ?? '');
-$expectedState = $_SESSION['oauth_state_' . $provider] ?? '';
-if (!$state || !$expectedState || !hash_equals($expectedState, $state)) {
+$providerError = trim((string)($_GET['error'] ?? ($_POST['error'] ?? '')));
+if ($providerError !== '') {
+    $providerDescription = trim((string)($_GET['error_description'] ?? ($_POST['error_description'] ?? '')));
+    $errorMessage = 'OAuth provider returned an error: ' . $providerError;
+    if ($providerDescription !== '') {
+        $errorMessage .= ' (' . $providerDescription . ')';
+    }
+    header('Location: login.php?error=' . urlencode($errorMessage));
+    exit;
+}
+
+$state = trim((string)($_GET['state'] ?? ($_POST['state'] ?? '')));
+$stateCookieName = 'oauth_state_' . $provider;
+$stateCookieValue = $_COOKIE[$stateCookieName] ?? '';
+$statePayload = parse_oauth_state_cookie_value($stateCookieValue);
+
+// Always clear one-time state cookie once callback is reached.
+setcookie($stateCookieName, '', oauth_cookie_options(time() - 3600));
+
+if (!is_array($statePayload)) {
+    header('Location: login.php?error=Missing or invalid OAuth state cookie. Please try again.');
+    exit;
+}
+
+$expectedState = (string)($statePayload['state'] ?? '');
+$stateProvider = (string)($statePayload['provider'] ?? '');
+$stateExp = (int)($statePayload['exp'] ?? 0);
+$redirectUri = (string)($statePayload['redirect_uri'] ?? '');
+
+if ($state === '' || $expectedState === '' || !hash_equals($expectedState, $state)) {
     header('Location: login.php?error=Invalid OAuth state. Please try again.');
     exit;
 }
-unset($_SESSION['oauth_state_' . $provider]);
 
-$code = $_GET['code'] ?? ($_POST['code'] ?? '');
-if (!$code) {
+if ($stateProvider !== $provider || $stateExp < time()) {
+    header('Location: login.php?error=OAuth state expired or provider mismatch. Please try again.');
+    exit;
+}
+
+if ($redirectUri === '') {
+    $redirectUri = build_app_url('/oauth_callback.php?provider=' . urlencode($provider));
+}
+
+$code = trim((string)($_GET['code'] ?? ($_POST['code'] ?? '')));
+if ($code === '') {
     header('Location: login.php?error=OAuth code missing.');
     exit;
 }
 
 $providerConfig = $config[$provider];
-$redirectUri = $_SESSION['oauth_redirect_uri_' . $provider] ?? '';
-unset($_SESSION['oauth_redirect_uri_' . $provider]);
-
-if (!$redirectUri) {
-    $redirectUri = build_app_url('/oauth_callback.php?provider=' . urlencode($provider));
-}
-
 $tokenResponse = httpPostForm($providerConfig['token_url'], [
     'grant_type' => 'authorization_code',
     'code' => $code,
@@ -47,20 +75,48 @@ if (!$tokenResponse['ok']) {
 }
 
 $tokenData = json_decode($tokenResponse['body'], true);
-$accessToken = $tokenData['access_token'] ?? null;
+if (!is_array($tokenData)) {
+    header('Location: login.php?error=' . urlencode('OAuth token response is not valid JSON.'));
+    exit;
+}
 
-if (!$accessToken && $provider !== 'apple') {
+$accessToken = trim((string)($tokenData['access_token'] ?? ''));
+$idToken = trim((string)($tokenData['id_token'] ?? ''));
+
+if ($provider === 'google' && ($accessToken === '' || $idToken === '')) {
+    header('Location: login.php?error=Google token response missing access_token or id_token.');
+    exit;
+}
+
+if ($provider !== 'apple' && $accessToken === '') {
     header('Location: login.php?error=OAuth token missing.');
     exit;
 }
 
 $profile = null;
 if ($provider === 'google') {
-    $profile = fetchJsonWithBearer($providerConfig['userinfo_url'], $accessToken);
+    $validatedIdToken = validateGoogleIdToken(
+        $idToken,
+        (string)$providerConfig['client_id'],
+        (string)($providerConfig['issuer'] ?? 'https://accounts.google.com')
+    );
+
+    if (!$validatedIdToken['ok']) {
+        header('Location: login.php?error=' . urlencode('Google ID token validation failed: ' . $validatedIdToken['error']));
+        exit;
+    }
+
+    $claims = $validatedIdToken['claims'];
+    $profile = [
+        'sub' => (string)($claims['sub'] ?? ''),
+        'id' => (string)($claims['sub'] ?? ''),
+        'email' => strtolower(trim((string)($claims['email'] ?? ''))),
+        'email_verified' => (bool)($claims['email_verified'] ?? false),
+        'name' => trim((string)($claims['name'] ?? '')),
+    ];
 } elseif ($provider === 'facebook') {
     $profile = fetchJsonWithBearer($providerConfig['userinfo_url'], $accessToken);
 } elseif ($provider === 'apple') {
-    $idToken = $tokenData['id_token'] ?? '';
     $profile = decodeAppleIdToken($idToken);
 }
 
@@ -69,22 +125,41 @@ if (!$profile) {
     exit;
 }
 
-$email = strtolower(trim($profile['email'] ?? ''));
-$name = trim($profile['name'] ?? '');
-$providerId = trim((string)($profile['id'] ?? $profile['sub'] ?? ''));
+$email = strtolower(trim((string)($profile['email'] ?? '')));
+$name = trim((string)($profile['name'] ?? ''));
+$providerId = trim((string)($profile['id'] ?? ($profile['sub'] ?? '')));
+
+if ($provider === 'google' && ($profile['email_verified'] ?? false) !== true) {
+    header('Location: login.php?error=Google account email is not verified.');
+    exit;
+}
 
 if ($email === '') {
     header('Location: login.php?error=No email returned by provider.');
     exit;
 }
 
+if ($providerId === '') {
+    header('Location: login.php?error=No provider user ID returned by provider.');
+    exit;
+}
+
 try {
     $db = new DatabaseHelper();
-    $user = $db->getUserByEmail($email);
+    $userByIdentity = $db->getUserByOAuthIdentity($provider, $providerId);
+    $userByEmail = $db->getUserByEmail($email);
+
+    if ($userByIdentity && $userByEmail && (int)$userByIdentity['id'] !== (int)$userByEmail['id']) {
+        $db->close();
+        header('Location: login.php?error=OAuth account conflict detected. Please contact support.');
+        exit;
+    }
+
+    $user = $userByIdentity ?: $userByEmail;
 
     if (!$user) {
         $usernameBase = $name !== '' ? preg_replace('/[^a-zA-Z0-9_]/', '_', strtolower($name)) : explode('@', $email)[0];
-        $usernameBase = trim($usernameBase, '_');
+        $usernameBase = trim((string)$usernameBase, '_');
         if ($usernameBase === '') {
             $usernameBase = $provider . '_user';
         }
@@ -97,6 +172,8 @@ try {
             exit;
         }
         $user = $db->getUserByEmail($email);
+    } else {
+        $db->linkOAuthIdentity((int)$user['id'], $provider, $providerId);
     }
 
     if (!$user || (int)$user['is_active'] !== 1) {
@@ -105,6 +182,7 @@ try {
         exit;
     }
 
+    // OAuth-created users are auto-approved, but keep this guard for legacy rows.
     if ((int)$user['is_approved'] !== 1) {
         $db->close();
         header('Location: login.php?error=Account pending admin approval.');
@@ -196,20 +274,216 @@ function decodeAppleIdToken($idToken) {
         return null;
     }
 
-    $parts = explode('.', $idToken);
-    $payload = $parts[1] ?? '';
-    $payload .= str_repeat('=', (4 - strlen($payload) % 4) % 4);
-    $json = base64_decode(strtr($payload, '-_', '+/'));
-    $decoded = json_decode($json, true);
-
-    if (!is_array($decoded)) {
+    $jwtParts = decodeJwtParts($idToken);
+    if ($jwtParts === null || !isset($jwtParts['payload']) || !is_array($jwtParts['payload'])) {
         return null;
     }
 
+    $decoded = $jwtParts['payload'];
     return [
         'id' => $decoded['sub'] ?? '',
         'sub' => $decoded['sub'] ?? '',
         'email' => $decoded['email'] ?? '',
         'name' => 'Apple User',
     ];
+}
+
+function validateGoogleIdToken($idToken, $expectedAudience, $expectedIssuer) {
+    $jwtParts = decodeJwtParts($idToken);
+    if ($jwtParts === null) {
+        return ['ok' => false, 'error' => 'Malformed JWT token'];
+    }
+
+    $header = $jwtParts['header'];
+    $payload = $jwtParts['payload'];
+
+    $alg = (string)($header['alg'] ?? '');
+    $kid = (string)($header['kid'] ?? '');
+    if ($alg !== 'RS256' || $kid === '') {
+        return ['ok' => false, 'error' => 'Unsupported Google JWT header'];
+    }
+
+    $jwks = fetchGoogleJwks();
+    if ($jwks === null) {
+        return ['ok' => false, 'error' => 'Unable to fetch Google JWKS'];
+    }
+
+    $jwk = null;
+    foreach ($jwks['keys'] ?? [] as $candidate) {
+        if (($candidate['kid'] ?? '') === $kid) {
+            $jwk = $candidate;
+            break;
+        }
+    }
+
+    if (!is_array($jwk)) {
+        return ['ok' => false, 'error' => 'No matching Google JWK found'];
+    }
+
+    if (!verifyJwtSignatureWithJwk($jwtParts['signed_part'], $jwtParts['signature'], $jwk)) {
+        return ['ok' => false, 'error' => 'Google JWT signature verification failed'];
+    }
+
+    $issuer = (string)($payload['iss'] ?? '');
+    if (!in_array($issuer, [$expectedIssuer, 'accounts.google.com', 'https://accounts.google.com'], true)) {
+        return ['ok' => false, 'error' => 'Invalid issuer'];
+    }
+
+    $aud = $payload['aud'] ?? '';
+    $audiences = is_array($aud) ? $aud : [$aud];
+    if (!in_array($expectedAudience, $audiences, true)) {
+        return ['ok' => false, 'error' => 'Invalid audience'];
+    }
+
+    $exp = (int)($payload['exp'] ?? 0);
+    $iat = (int)($payload['iat'] ?? 0);
+    $now = time();
+
+    if ($exp <= $now - 60) {
+        return ['ok' => false, 'error' => 'ID token expired'];
+    }
+
+    if ($iat > $now + 300) {
+        return ['ok' => false, 'error' => 'Invalid iat claim'];
+    }
+
+    if (empty($payload['sub']) || empty($payload['email'])) {
+        return ['ok' => false, 'error' => 'Missing required Google claims'];
+    }
+
+    if (($payload['email_verified'] ?? false) !== true) {
+        return ['ok' => false, 'error' => 'Unverified Google email'];
+    }
+
+    return ['ok' => true, 'claims' => $payload];
+}
+
+function fetchGoogleJwks() {
+    $url = 'https://www.googleapis.com/oauth2/v3/certs';
+    $body = null;
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+        ]);
+        $body = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $opts = ['http' => ['method' => 'GET', 'timeout' => 10]];
+        $context = stream_context_create($opts);
+        $body = @file_get_contents($url, false, $context);
+    }
+
+    if (!is_string($body) || $body === '') {
+        return null;
+    }
+
+    $jwks = json_decode($body, true);
+    if (!is_array($jwks) || !isset($jwks['keys']) || !is_array($jwks['keys'])) {
+        return null;
+    }
+
+    return $jwks;
+}
+
+function decodeJwtParts($jwt) {
+    $parts = explode('.', $jwt);
+    if (count($parts) !== 3) {
+        return null;
+    }
+
+    $header = json_decode(base64UrlDecode($parts[0]), true);
+    $payload = json_decode(base64UrlDecode($parts[1]), true);
+    $signature = base64UrlDecode($parts[2]);
+
+    if (!is_array($header) || !is_array($payload) || !is_string($signature)) {
+        return null;
+    }
+
+    return [
+        'header' => $header,
+        'payload' => $payload,
+        'signature' => $signature,
+        'signed_part' => $parts[0] . '.' . $parts[1],
+    ];
+}
+
+function verifyJwtSignatureWithJwk($signedPart, $signature, $jwk) {
+    $n = base64UrlDecode((string)($jwk['n'] ?? ''));
+    $e = base64UrlDecode((string)($jwk['e'] ?? ''));
+
+    if ($n === '' || $e === '') {
+        return false;
+    }
+
+    $publicKeyPem = jwkToPem($n, $e);
+    if ($publicKeyPem === null) {
+        return false;
+    }
+
+    $verifyResult = openssl_verify($signedPart, $signature, $publicKeyPem, OPENSSL_ALGO_SHA256);
+    return $verifyResult === 1;
+}
+
+function jwkToPem($modulus, $exponent) {
+    $modulusEnc = asn1EncodeInteger($modulus);
+    $exponentEnc = asn1EncodeInteger($exponent);
+    $rsaPublicKey = asn1EncodeSequence($modulusEnc . $exponentEnc);
+
+    // rsaEncryption OID + NULL
+    $algorithmIdentifier = hex2bin('300d06092a864886f70d0101010500');
+    $subjectPublicKey = asn1EncodeBitString($rsaPublicKey);
+    $subjectPublicKeyInfo = asn1EncodeSequence($algorithmIdentifier . $subjectPublicKey);
+
+    $pem = "-----BEGIN PUBLIC KEY-----\n";
+    $pem .= chunk_split(base64_encode($subjectPublicKeyInfo), 64, "\n");
+    $pem .= "-----END PUBLIC KEY-----\n";
+
+    return $pem;
+}
+
+function asn1EncodeInteger($value) {
+    if ($value === '') {
+        $value = "\x00";
+    }
+
+    if (ord($value[0]) > 0x7f) {
+        $value = "\x00" . $value;
+    }
+
+    return "\x02" . asn1EncodeLength(strlen($value)) . $value;
+}
+
+function asn1EncodeBitString($value) {
+    $value = "\x00" . $value;
+    return "\x03" . asn1EncodeLength(strlen($value)) . $value;
+}
+
+function asn1EncodeSequence($value) {
+    return "\x30" . asn1EncodeLength(strlen($value)) . $value;
+}
+
+function asn1EncodeLength($length) {
+    if ($length <= 0x7f) {
+        return chr($length);
+    }
+
+    $lenBytes = '';
+    while ($length > 0) {
+        $lenBytes = chr($length & 0xff) . $lenBytes;
+        $length >>= 8;
+    }
+
+    return chr(0x80 | strlen($lenBytes)) . $lenBytes;
+}
+
+function base64UrlDecode($input) {
+    $padding = 4 - (strlen($input) % 4);
+    if ($padding < 4) {
+        $input .= str_repeat('=', $padding);
+    }
+
+    return base64_decode(strtr($input, '-_', '+/')) ?: '';
 }
