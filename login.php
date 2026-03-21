@@ -285,7 +285,7 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
 <body>
     <div class="login-container">
         <div class="logo">
-            <h1>🎬 Crunchrolly</h1>
+            <h1>🎬 AckerStream</h1>
             <p>Sign in to continue watching</p>
         </div>
 
