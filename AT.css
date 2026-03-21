@@ -512,6 +512,12 @@ a { text-decoration: none; color: inherit; }
   filter: drop-shadow(0 4px 20px rgba(0,0,0,0.7));
 }
 
+/* Keep Lord of Mysteries logo visually aligned with other slide logos */
+.lord-mysteries-logo {
+  height: 72px;
+  max-width: 240px;
+}
+
 .genre-badges {
   display: flex;
   gap: 8px;
