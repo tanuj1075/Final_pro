@@ -50,6 +50,62 @@ function destroy_session_and_cookie() {
     session_destroy();
 }
 
+function oauth_cookie_options($expiresAt) {
+    return [
+        'expires' => (int)$expiresAt,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'None',
+    ];
+}
+
+function get_oauth_state_secret() {
+    $configured = trim((string)getenv('OAUTH_STATE_SECRET'));
+    if ($configured !== '') {
+        return $configured;
+    }
+
+    $clientSecret = trim((string)getenv('GOOGLE_CLIENT_SECRET'));
+    if ($clientSecret !== '') {
+        return hash('sha256', $clientSecret . '|oauth-state-secret', false);
+    }
+
+    // Last-resort fallback. Works functionally but should not be used in production.
+    return hash('sha256', __FILE__ . '|development-fallback', false);
+}
+
+function build_oauth_state_cookie_value(array $payload) {
+    $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
+    $encodedPayload = rtrim(strtr(base64_encode((string)$json), '+/', '-_'), '=');
+    $signature = hash_hmac('sha256', $encodedPayload, get_oauth_state_secret());
+
+    return $encodedPayload . '.' . $signature;
+}
+
+function parse_oauth_state_cookie_value($cookieValue) {
+    if (!is_string($cookieValue) || strpos($cookieValue, '.') === false) {
+        return null;
+    }
+
+    [$encodedPayload, $providedSig] = explode('.', $cookieValue, 2);
+    if ($encodedPayload === '' || $providedSig === '') {
+        return null;
+    }
+
+    $expectedSig = hash_hmac('sha256', $encodedPayload, get_oauth_state_secret());
+    if (!hash_equals($expectedSig, $providedSig)) {
+        return null;
+    }
+
+    $decoded = base64_decode(strtr($encodedPayload, '-_', '+/'), true);
+    if (!is_string($decoded) || $decoded === '') {
+        return null;
+    }
+
+    $payload = json_decode($decoded, true);
+    return is_array($payload) ? $payload : null;
+}
 
 function get_app_base_url() {
     $configured = trim((string)(getenv('APP_BASE_URL') ?: ''));

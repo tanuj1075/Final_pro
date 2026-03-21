@@ -753,9 +753,70 @@
 
 <!-- Tab Content -->
 <section class="tab-content" id="overview">
-  <h2><i class="fas fa-film"></i> Overview</h2>
-<p>In a world where humanity hides behind massive walls to survive against man-eating Titans, Eren Yeager vows to eradicate every last one after witnessing the destruction of his home. What begins as a desperate fight for survival evolves into a brutal conflict spanning nations, history, and inherited memories.</p>
-<p>Attack on Titan became a global phenomenon, redefining modern anime with its intense storytelling, moral complexity, and shocking twists. Its exploration of freedom, war, and the cycle of hatred turned it from a survival thriller into one of the most controversial and discussed series of its generation.</p>
+  <h2><i class="fas fa-film"></i> Full Clone Plan</h2>
+  <p>Alright—“fully clone” means something very different from what we’ve been doing so far. You’re not asking for a component anymore. You’re asking for a <strong>mini Netflix-style app UI system</strong>.</p>
+  <p>So here’s the reality: a real clone includes a navbar, hero section, movie rows with horizontal scroll, hover animations, responsive layout, and a data structure (even if static). Not just one section.</p>
+
+  <h3>⚠️ First — reality check</h3>
+  <p>What you showed is a design concept, not a full product. So this is a <strong>front-end clone</strong> (UI + interactions), not backend streaming.</p>
+
+  <h3>🧱 Full Clone Structure</h3>
+  <pre><code>app/
+ ├── page.tsx
+components/
+ ├── Navbar.tsx
+ ├── Hero.tsx
+ ├── MovieRow.tsx
+ ├── MovieCard.tsx
+data/
+ ├── movies.ts</code></pre>
+
+  <h3>🔥 Step 1 — Navbar</h3>
+  <p>Create a fixed top navbar with brand, navigation links, and profile actions.</p>
+
+  <h3>🎬 Step 2 — Movie Card</h3>
+  <p>Create a reusable card with poster image and hover overlay play state.</p>
+
+  <h3>🎞 Step 3 — Movie Row</h3>
+  <p>Render horizontal scroll rows (Trending, Popular, Top Rated) using reusable movie cards.</p>
+
+  <h3>📦 Step 4 — Fake Data</h3>
+  <p>Use static movie entries with title + image URL to prototype quickly.</p>
+
+  <h3>🏠 Step 5 — Main Page</h3>
+  <p>Compose the page with Navbar, Hero, and multiple MovieRow sections to complete the clone foundation.</p>
+
+  <h3>🎯 What you now have</h3>
+  <ul>
+    <li>Navbar ✅</li>
+    <li>Hero section ✅</li>
+    <li>Scrollable rows ✅</li>
+    <li>Hover effects ✅</li>
+    <li>Clean UI system ✅</li>
+  </ul>
+
+  <h3>❌ What it is NOT</h3>
+  <ul>
+    <li>Not a streaming app</li>
+    <li>Not dynamic</li>
+    <li>No backend</li>
+    <li>No auth yet</li>
+  </ul>
+
+  <h3>💥 If you REALLY want “full clone”</h3>
+  <ol>
+    <li>Connect your OAuth login</li>
+    <li>Add a real API (TMDB or anime API)</li>
+    <li>Add routing (<code>/movie/[id]</code>)</li>
+    <li>Add a video player</li>
+    <li>Store user lists</li>
+  </ol>
+
+  <h3>🧠 Brutal truth</h3>
+  <p>You wanted a clone — now you have one at UI level. Most people stop here and pretend it’s done. It’s not.</p>
+
+  <h3>Next move</h3>
+  <p>“connect this with my OAuth login” or “make it dynamic with real API”.</p>
 </section>
 
 <section class="tab-content" id="related">

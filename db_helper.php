@@ -122,6 +122,16 @@ class DatabaseHelper {
             UNIQUE (anime_id, episode_number)
         )");
 
+        $this->db->exec("CREATE TABLE IF NOT EXISTS admin_panel_oauth_identity (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            provider TEXT NOT NULL,
+            provider_user_id TEXT NOT NULL,
+            created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            UNIQUE (provider, provider_user_id),
+            UNIQUE (user_id, provider)
+        )");
+
         $this->db->exec("ALTER TABLE admin_panel_anime ADD COLUMN cover_image TEXT NULL");
         $this->db->exec("ALTER TABLE admin_panel_anime ADD COLUMN type TEXT NOT NULL DEFAULT 'Series'");
         $this->db->exec("ALTER TABLE admin_panel_anime ADD COLUMN release_year INTEGER NULL");
@@ -574,17 +584,91 @@ class DatabaseHelper {
     public function createOAuthUser($username, $email, $provider, $providerId) {
         $randomPassword = bin2hex(random_bytes(16));
         $passwordHash = password_hash($randomPassword, PASSWORD_DEFAULT);
+        $email = strtolower(trim($email));
 
+        try {
+            $this->db->beginTransaction();
+
+            $stmt = $this->db->prepare(
+                "INSERT INTO admin_panel_siteuser (username, email, password_hash, is_approved, is_active, created_at, approved_at)
+                 VALUES (:username, :email, :password_hash, 1, 1, datetime('now'), datetime('now'))"
+            );
+
+            $ok = $stmt->execute([
+                'username' => $username,
+                'email' => $email,
+                'password_hash' => $passwordHash,
+            ]);
+
+            if (!$ok) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            $userId = (int)$this->db->lastInsertId();
+            $linked = $this->linkOAuthIdentity($userId, $provider, $providerId);
+            if (!$linked) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    public function linkOAuthIdentity($userId, $provider, $providerId) {
         $stmt = $this->db->prepare(
-            "INSERT INTO admin_panel_siteuser (username, email, password_hash, is_approved, is_active, created_at, approved_at)
-             VALUES (:username, :email, :password_hash, 0, 1, datetime('now'), NULL)"
+            "INSERT OR IGNORE INTO admin_panel_oauth_identity (user_id, provider, provider_user_id, created_at)
+             VALUES (:user_id, :provider, :provider_user_id, datetime('now'))"
         );
 
-        return $stmt->execute([
-            'username' => $username,
-            'email' => strtolower(trim($email)),
-            'password_hash' => $passwordHash,
+        $stmt->execute([
+            'user_id' => (int)$userId,
+            'provider' => strtolower(trim((string)$provider)),
+            'provider_user_id' => trim((string)$providerId),
         ]);
+
+        return $stmt->rowCount() > 0 || $this->getOAuthIdentity((string)$provider, (string)$providerId) !== null;
+    }
+
+    public function getOAuthIdentity($provider, $providerId) {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM admin_panel_oauth_identity
+             WHERE provider = :provider AND provider_user_id = :provider_user_id
+             LIMIT 1"
+        );
+
+        $stmt->execute([
+            'provider' => strtolower(trim((string)$provider)),
+            'provider_user_id' => trim((string)$providerId),
+        ]);
+
+        $identity = $stmt->fetch();
+        return $identity ?: null;
+    }
+
+    public function getUserByOAuthIdentity($provider, $providerId) {
+        $stmt = $this->db->prepare(
+            "SELECT u.*
+             FROM admin_panel_siteuser u
+             INNER JOIN admin_panel_oauth_identity oi ON oi.user_id = u.id
+             WHERE oi.provider = :provider AND oi.provider_user_id = :provider_user_id
+             LIMIT 1"
+        );
+
+        $stmt->execute([
+            'provider' => strtolower(trim((string)$provider)),
+            'provider_user_id' => trim((string)$providerId),
+        ]);
+
+        $user = $stmt->fetch();
+        return $user ?: null;
     }
 
     public function touchLastLogin($userId) {

@@ -1,6 +1,5 @@
 <?php
 require_once 'security.php';
-secure_session_start();
 
 $config = require __DIR__ . '/oauth_config.php';
 $provider = $_GET['provider'] ?? '';
@@ -17,10 +16,18 @@ if (empty($providerConfig['client_id']) || empty($providerConfig['client_secret'
 }
 
 $redirectUri = build_app_url('/oauth_callback.php?provider=' . urlencode($provider));
+$state = bin2hex(random_bytes(32));
+$expiresAt = time() + 600;
 
-$state = bin2hex(random_bytes(16));
-$_SESSION['oauth_state_' . $provider] = $state;
-$_SESSION['oauth_redirect_uri_' . $provider] = $redirectUri;
+$statePayload = [
+    'provider' => $provider,
+    'state' => $state,
+    'redirect_uri' => $redirectUri,
+    'exp' => $expiresAt,
+];
+
+$stateCookie = build_oauth_state_cookie_value($statePayload);
+setcookie('oauth_state_' . $provider, $stateCookie, oauth_cookie_options($expiresAt));
 
 $params = [
     'client_id' => $providerConfig['client_id'],
