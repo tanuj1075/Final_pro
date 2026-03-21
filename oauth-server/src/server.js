@@ -5,32 +5,38 @@ import { registerProvider } from './services/oauthService.js';
 import {
   buildGoogleAuthUrl,
   googleExchangeCode,
-  googleProfileFromTokens
+  googleProfileFromTokens,
+  validateGoogleConfig
 } from './services/providers/google.js';
 import {
   buildFacebookAuthUrl,
   facebookExchangeCode,
-  facebookProfileFromTokens
+  facebookProfileFromTokens,
+  validateFacebookConfig
 } from './services/providers/facebook.js';
 import {
   buildAppleAuthUrl,
   appleExchangeCode,
-  appleProfileFromTokens
+  appleProfileFromTokens,
+  validateAppleConfig
 } from './services/providers/apple.js';
 
 registerProvider('google', {
+  validateConfig: validateGoogleConfig,
   buildAuthUrl: buildGoogleAuthUrl,
   exchangeCode: googleExchangeCode,
   normalizeProfile: googleProfileFromTokens
 });
 
 registerProvider('facebook', {
+  validateConfig: validateFacebookConfig,
   buildAuthUrl: buildFacebookAuthUrl,
   exchangeCode: facebookExchangeCode,
   normalizeProfile: facebookProfileFromTokens
 });
 
 registerProvider('apple', {
+  validateConfig: validateAppleConfig,
   buildAuthUrl: buildAppleAuthUrl,
   exchangeCode: appleExchangeCode,
   normalizeProfile: appleProfileFromTokens

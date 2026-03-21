@@ -2,11 +2,13 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.js';
 import { OAuthError } from './utils/errors.js';
+import { env } from './config/env.js';
 
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(env.cookieSecret));
 
 app.get('/health', (req, res) => {
   res.status(200).json({ ok: true });

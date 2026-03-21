@@ -11,6 +11,13 @@ function redirectUri() {
   return `${env.baseUrl}/auth/apple/callback`;
 }
 
+export function validateAppleConfig() {
+  const c = env.providers.apple;
+  if (!c.clientId || !c.teamId || !c.keyId || !c.privateKey) {
+    throw new OAuthError('Apple OAuth credentials are not configured', 500);
+  }
+}
+
 function toPkcs8(privateKey) {
   return privateKey.includes('BEGIN PRIVATE KEY')
     ? privateKey

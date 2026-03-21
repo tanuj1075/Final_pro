@@ -10,6 +10,12 @@ function redirectUri() {
   return `${env.baseUrl}/auth/facebook/callback`;
 }
 
+export function validateFacebookConfig() {
+  if (!env.providers.facebook.clientId || !env.providers.facebook.clientSecret) {
+    throw new OAuthError('Facebook OAuth credentials are not configured', 500);
+  }
+}
+
 export function buildFacebookAuthUrl(state) {
   const params = new URLSearchParams({
     client_id: env.providers.facebook.clientId,

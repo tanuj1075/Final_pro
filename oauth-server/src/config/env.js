@@ -4,6 +4,7 @@ dotenv.config();
 
 const required = [
   'JWT_SECRET',
+  'COOKIE_SECRET',
   'BASE_URL',
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
@@ -24,13 +25,15 @@ for (const key of required) {
 
 export const env = {
   port: Number(process.env.PORT || 3000),
-  baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+  baseUrl: (process.env.BASE_URL || 'http://localhost:3000').replace(/\/+$/, ''),
   jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
+  cookieSecret: process.env.COOKIE_SECRET || 'change-me-cookie-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h',
   mongoUri: process.env.MONGO_URI,
   stateCookieName: process.env.STATE_COOKIE_NAME || 'oauth_state',
   stateTtlMs: Number(process.env.STATE_TTL_MS || 10 * 60 * 1000),
-  cookieSecure: process.env.COOKIE_SECURE === 'true',
+  cookieSecure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : true,
+  cookieSameSite: process.env.COOKIE_SAME_SITE || 'none',
   providers: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,

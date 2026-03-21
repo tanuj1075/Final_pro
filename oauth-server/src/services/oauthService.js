@@ -12,7 +12,11 @@ export function assertProvider(name) {
   if (!providers.has(name)) {
     throw new OAuthError('Unsupported OAuth provider', 404);
   }
-  return providers.get(name);
+  const provider = providers.get(name);
+  if (typeof provider.validateConfig === 'function') {
+    provider.validateConfig();
+  }
+  return provider;
 }
 
 export async function authenticateWithProvider(providerName, code) {

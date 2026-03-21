@@ -10,6 +10,17 @@ function redirectUri() {
   return `${env.baseUrl}/auth/google/callback`;
 }
 
+export function validateGoogleConfig() {
+  if (!env.providers.google.clientId || !env.providers.google.clientSecret) {
+    throw new OAuthError('Google OAuth credentials are not configured', 500);
+  }
+  try {
+    new URL(redirectUri());
+  } catch {
+    throw new OAuthError('BASE_URL is invalid; redirect URI cannot be constructed', 500);
+  }
+}
+
 export function buildGoogleAuthUrl(state) {
   const params = new URLSearchParams({
     client_id: env.providers.google.clientId,
@@ -39,8 +50,13 @@ export async function googleExchangeCode(code) {
       timeout: 10_000
     });
 
+    if (!data?.access_token || !data?.id_token) {
+      throw new OAuthError('Google token response missing access_token or id_token', 502, data);
+    }
+
     return data;
   } catch (error) {
+    if (error instanceof OAuthError) throw error;
     throw new OAuthError('Google token exchange failed', 502, error.response?.data);
   }
 }
@@ -49,6 +65,7 @@ export async function googleProfileFromTokens(tokens) {
   if (!tokens.id_token) throw new OAuthError('Google ID token missing', 401);
 
   const payload = await validateGoogleIdToken(tokens.id_token, env.providers.google.clientId);
+  if (!payload.email_verified) throw new OAuthError('Google email is not verified', 422);
   if (!payload.email) throw new OAuthError('Email not provided by Google', 422);
 
   return {
