@@ -1,4 +1,4 @@
- <?php
+<?php
 // PROTECTED ANIME SITE - Only accessible after user login
 require_once 'security.php';
 secure_session_start();
@@ -153,8 +153,8 @@ if(isset($_GET['logout'])) {
         <div class="carousel-overlay"></div>
         <img src="LordOfMysteries.jpg" class="carousel-img" alt="Lord of Mysteries" height="650" width="600">
         <div class="carousel-content">
-          <!-- BUG FIX #2: Filename had double extension "lord-logo.avg.avif" → "lord-logo.avif" -->
-          <img src="lord-logo.avif" alt="Lord of Mysteries" class="anime-logo">
+          <!-- Asset fix: use existing logo file "lord-logo.avg.avif" -->
+          <img src="lord-logo.avg.avif" alt="Lord of Mysteries" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Action</span>
