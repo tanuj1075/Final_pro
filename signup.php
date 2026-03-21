@@ -257,27 +257,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<!-- Firebase SDK and initialization -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
-        authDomain: "ackerstream-d52e9.firebaseapp.com",
-        projectId: "ackerstream-d52e9",
-        storageBucket: "ackerstream-d52e9.firebasestorage.app",
-        messagingSenderId: "251934106668",
-        appId: "1:251934106668:web:2b2365b78df3254ac19d89",
-        measurementId: "G-JHK30XWT7R"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const analytics = getAnalytics(app);
-
-    // Get form elements
+<script>
+    // Keep native form submission so PHP signup logic executes server-side.
     const form = document.getElementById('signupForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -285,90 +266,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     const usernameInput = document.getElementById('username');
     const errorDiv = document.getElementById('firebaseError');
 
-    // Intercept form submission
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent PHP POST
-
+    form.addEventListener('submit', function (e) {
         const email = emailInput.value.trim();
         const password = passwordInput.value;
         const confirm = confirmInput.value;
         const username = usernameInput.value.trim();
 
-        // Reset error
+        usernameInput.value = username;
+        emailInput.value = email;
+
         errorDiv.classList.add('hidden');
         errorDiv.innerText = '';
 
-        // Basic client-side validation
         if (!username || !email || !password || !confirm) {
+            e.preventDefault();
             errorDiv.innerText = 'All fields are required!';
             errorDiv.classList.remove('hidden');
             return;
         }
 
         if (!email.includes('@')) {
+            e.preventDefault();
             errorDiv.innerText = 'Please enter a valid email address.';
             errorDiv.classList.remove('hidden');
             return;
         }
 
         if (password.length < 8) {
+            e.preventDefault();
             errorDiv.innerText = 'Password must be at least 8 characters.';
             errorDiv.classList.remove('hidden');
             return;
         }
 
         if (password !== confirm) {
+            e.preventDefault();
             errorDiv.innerText = 'Passwords do not match.';
-            errorDiv.classList.remove('hidden');
-            return;
-        }
-
-        // Attempt Firebase registration
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log("Firebase user created:", user.email);
-
-            // Optional: store additional user data (like username) in Firebase Firestore or Realtime Database
-            // For now, just show success and redirect
-            alert("Account created successfully! You can now sign in.");
-            window.location.href = "login.php"; // Redirect to login page
-        } catch (error) {
-            console.error("Firebase Signup Error:", error.code);
-            let msg = "Registration failed. ";
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    msg = "This email is already registered. Please sign in instead.";
-                    break;
-                case 'auth/invalid-email':
-                    msg = "Invalid email address.";
-                    break;
-                case 'auth/weak-password':
-                    msg = "Password is too weak. Use at least 8 characters with a mix of letters, numbers, and symbols.";
-                    break;
-                default:
-                    msg = "Unable to create account. Please try again later.";
-            }
-            errorDiv.innerText = msg;
             errorDiv.classList.remove('hidden');
         }
     });
 
-    // Password strength checker (keep existing)
-    const passwordField = document.getElementById('password');
+    // Password strength checker
     const strengthDiv = document.getElementById('strength');
-    passwordField.addEventListener('input', function() {
+    passwordInput.addEventListener('input', function() {
         const password = this.value;
         if (password.length === 0) {
             strengthDiv.textContent = '';
             return;
         }
+
         let strength = 0;
         if (password.length >= 8) strength++;
         if (password.length >= 10) strength++;
         if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
         if (/\d/.test(password)) strength++;
         if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
         if (strength <= 2) {
             strengthDiv.textContent = '⚠️ Weak password';
             strengthDiv.className = 'password-strength strength-weak';
@@ -378,15 +331,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             strengthDiv.textContent = '✅ Strong password';
             strengthDiv.className = 'password-strength strength-strong';
-        }
-    });
-
-    // Optional: Check if already signed in
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("User already signed in:", user.email);
-            // Optionally redirect away if already logged in
-            // window.location.href = "user_panel.php";
         }
     });
 </script>

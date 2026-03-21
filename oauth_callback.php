@@ -25,10 +25,15 @@ if ($providerError !== '') {
 $state = trim((string)($_GET['state'] ?? ($_POST['state'] ?? '')));
 $stateCookieName = 'oauth_state_' . $provider;
 $stateCookieValue = $_COOKIE[$stateCookieName] ?? '';
-$statePayload = parse_oauth_state_cookie_value($stateCookieValue);
-
-// Always clear one-time state cookie once callback is reached.
-setcookie($stateCookieName, '', oauth_cookie_options(time() - 3600));
+try {
+    $statePayload = parse_oauth_state_cookie_value($stateCookieValue);
+    // Always clear one-time state cookie once callback is reached.
+    setcookie($stateCookieName, '', oauth_cookie_options(time() - 3600));
+} catch (Throwable $e) {
+    error_log('OAuth callback state processing failed: ' . $e->getMessage());
+    header('Location: login.php?error=' . urlencode('OAuth state validation unavailable due to server configuration.'));
+    exit;
+}
 
 if (!is_array($statePayload)) {
     header('Location: login.php?error=Missing or invalid OAuth state cookie. Please try again.');
