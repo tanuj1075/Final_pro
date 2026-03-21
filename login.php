@@ -293,25 +293,70 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
 </div>
 
 <!-- Firebase SDK and initialization -->
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
+        authDomain: "ackerstream-d52e9.firebaseapp.com",
+        projectId: "ackerstream-d52e9",
+        storageBucket: "ackerstream-d52e9.firebasestorage.app",
+        messagingSenderId: "251934106668",
+        appId: "1:251934106668:web:2b2365b78df3254ac19d89",
+        measurementId: "G-JHK30XWT7R"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
-    authDomain: "ackerstream-d52e9.firebaseapp.com",
-    projectId: "ackerstream-d52e9",
-    storageBucket: "ackerstream-d52e9.firebasestorage.app",
-    messagingSenderId: "251934106668",
-    appId: "1:251934106668:web:2b2365b78df3254ac19d89",
-    measurementId: "G-JHK30XWT7R"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+      // --- LOGIN LOGIC ---
+      window.doLogin = async () => {
+        const email = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+    
+        // Admin Bypass (Optional)
+        if (email === "admin@college.edu" && password === "admin123") {
+            window.location.href = "ash.php";
+            return;
+        }
+    
+        try {
+          // This command asks Firebase: "Does this user exist and is the password correct?"
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+    
+          console.log("Logged in as:", user.email);
+          
+          // Store user session so other pages know they are logged in
+          sessionStorage.setItem('userEmail', user.email);
+          
+          // Redirect to your main page
+          window.location.href = "ash.php";
+          
+        } catch (error) {
+          console.error("Login Error:", error.code);
+          
+          // Friendly error messages
+          if (error.code === 'auth/invalid-credential') {
+            errElement.innerText = "Invalid email or password.";
+          } else {
+            errElement.innerText = "Login failed. Please try again.";
+          }
+          errElement.classList.remove('hidden');
+        }
+      };
+    
+      // 3. Persistance Check (Optional)
+      // This checks if a user is already logged in when they open the page
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User is already signed in:", user.email);
+        }
+      });
+    </script>
 </body>
 </html>
