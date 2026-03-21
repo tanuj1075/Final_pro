@@ -8,18 +8,20 @@ $message = '';
 $message_type = '';
 $allowed_types = ['success', 'error', 'info'];
 
+// Handle logout
 if (isset($_GET['logout'])) {
     destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
 }
 
+// Handle error from GET parameter
 if (isset($_GET['error']) && trim($_GET['error']) !== '') {
     $message = trim($_GET['error']);
     $message_type = 'error';
 }
 
-// Process login form submission (only if no JavaScript or fallback)
+// Process login form submission (fallback for non-JS clients)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
         $message = 'Invalid request token. Please refresh and try again.';
@@ -45,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $result['user']['id'];
                     $_SESSION['username'] = $result['user']['username'];
                     $_SESSION['email'] = $result['user']['email'];
+
                     header('Location: user_panel.php');
                     exit;
                 } else {
@@ -216,7 +219,6 @@ $csrf_token = csrf_token();
             font-weight: 700;
         }
         .social-note a:hover { text-decoration: underline; }
-        .hidden { display: none; }
         .error-message {
             background: #f8d7da;
             color: #721c24;
@@ -226,6 +228,7 @@ $csrf_token = csrf_token();
             font-size: 14px;
             text-align: center;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
