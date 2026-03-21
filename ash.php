@@ -151,7 +151,7 @@ if(isset($_GET['logout'])) {
       <!-- Slide 1 -->
       <div class="carousel-item active">
         <div class="carousel-overlay"></div>
-        <img src="lord-logo.avg.avif" class="carousel-img" alt="Lord of Mysteries" height="650" width="600">
+        <img src="LordOfMysteries.jpg" class="carousel-img" alt="Lord of Mysteries" height="650" width="600">
         <div class="carousel-content">
           <img src="lord-logo.avg.avif" alt="Lord of Mysteries" class="anime-logo lord-mysteries-logo">
           <div class="genre-badges">
