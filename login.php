@@ -276,88 +276,16 @@ $csrf_token = csrf_token();
     </div>
 </div>
 
-<!-- Firebase SDK and initialization -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
-        authDomain: "ackerstream-d52e9.firebaseapp.com",
-        projectId: "ackerstream-d52e9",
-        storageBucket: "ackerstream-d52e9.firebasestorage.app",
-        messagingSenderId: "251934106668",
-        appId: "1:251934106668:web:2b2365b78df3254ac19d89",
-        measurementId: "G-JHK30XWT7R"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const analytics = getAnalytics(app);
-
-    // Get form elements
-    const form = document.getElementById('loginForm');
+<script>
+    // Keep native form submission so PHP authentication handles login.
+    const loginForm = document.getElementById('loginForm');
     const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const errorDiv = document.getElementById('firebaseError');
 
-    // Intercept form submission
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent PHP POST
-
-        const emailOrUsername = usernameInput.value.trim();
-        const password = passwordInput.value;
-
-        // Reset error message
-        errorDiv.classList.add('hidden');
-        errorDiv.innerText = '';
-
-        // Admin bypass (optional, for testing)
-        if (emailOrUsername === "admin@college.edu" && password === "admin123") {
-            window.location.href = "ash.php";
-            return;
-        }
-
-        // For Firebase, we need an email address.
-        // If the user entered a username, you may need to map it to email.
-        // Here we assume the user enters their email. If not, you could show a message.
-        if (!emailOrUsername.includes('@')) {
-            errorDiv.innerText = "Please enter a valid email address.";
-            errorDiv.classList.remove('hidden');
-            return;
-        }
-
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, emailOrUsername, password);
-            const user = userCredential.user;
-            console.log("Logged in as:", user.email);
-            sessionStorage.setItem('userEmail', user.email);
-            // Redirect after successful login
-            window.location.href = "ash.php";
-        } catch (error) {
-            console.error("Firebase Login Error:", error.code);
-            if (error.code === 'auth/invalid-credential') {
-                errorDiv.innerText = "Invalid email or password.";
-            } else if (error.code === 'auth/user-not-found') {
-                errorDiv.innerText = "No account found with this email.";
-            } else if (error.code === 'auth/wrong-password') {
-                errorDiv.innerText = "Incorrect password.";
-            } else {
-                errorDiv.innerText = "Login failed. Please try again.";
-            }
-            errorDiv.classList.remove('hidden');
-        }
-    });
-
-    // Check if user is already logged in (persistence)
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("User already signed in:", user.email);
-            // Optionally redirect if already logged in
-            // window.location.href = "ash.php";
-        }
-    });
+    if (loginForm && usernameInput) {
+        loginForm.addEventListener('submit', () => {
+            usernameInput.value = usernameInput.value.trim();
+        });
+    }
 </script>
 </body>
 </html>
