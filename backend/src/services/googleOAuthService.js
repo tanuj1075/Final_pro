@@ -24,6 +24,10 @@ export function buildGoogleAuthUrl(state) {
 }
 
 export async function exchangeGoogleCode(code) {
+  if (typeof code !== 'string' || code.trim() === '') {
+    throw new Error('Missing Google authorization code');
+  }
+
   const payload = new URLSearchParams({
     code,
     client_id: env.googleClientId,
@@ -32,10 +36,19 @@ export async function exchangeGoogleCode(code) {
     grant_type: 'authorization_code',
   });
 
-  const { data } = await axios.post(GOOGLE_TOKEN_URL, payload.toString(), {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    timeout: 10000,
-  });
+  let data;
+  try {
+    const response = await axios.post(GOOGLE_TOKEN_URL, payload.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      timeout: 10000,
+    });
+    data = response?.data;
+  } catch (error) {
+    const status = error?.response?.status;
+    const providerError = error?.response?.data?.error_description || error?.response?.data?.error;
+    const detail = providerError ? `: ${providerError}` : '';
+    throw new Error(`Failed to exchange Google code${status ? ` (HTTP ${status})` : ''}${detail}`);
+  }
 
   if (!data?.id_token || !data?.access_token) {
     throw new Error('Google token response missing id_token or access_token');
@@ -45,10 +58,20 @@ export async function exchangeGoogleCode(code) {
 }
 
 export async function verifyGoogleIdToken(idToken) {
-  const { payload } = await jwtVerify(idToken, JWKS, {
-    issuer: GOOGLE_ISSUERS,
-    audience: env.googleClientId,
-  });
+  if (typeof idToken !== 'string' || idToken.trim() === '') {
+    throw new Error('Missing Google id_token');
+  }
+
+  let payload;
+  try {
+    const verified = await jwtVerify(idToken, JWKS, {
+      issuer: GOOGLE_ISSUERS,
+      audience: env.googleClientId,
+    });
+    payload = verified.payload;
+  } catch (error) {
+    throw new Error('Invalid Google ID token');
+  }
 
   if (payload.email_verified !== true) {
     throw new Error('Google email is not verified');
