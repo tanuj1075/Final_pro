@@ -1,4 +1,4 @@
-<!-- <?php
+ <?php
 // PROTECTED ANIME SITE - Only accessible after user login
 require_once 'security.php';
 secure_session_start();
@@ -18,7 +18,7 @@ if(isset($_GET['logout'])) {
     header('Location: login.php?logout=1');
     exit;
 }
-?> -->
+?> 
 <!DOCTYPE html>
 <html lang="en">
 
