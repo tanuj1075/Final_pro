@@ -2,30 +2,25 @@
 require_once 'security.php';
 require_once 'db_helper.php';
 
-secure_session_start(); // Ensure this sets secure cookie flags
+secure_session_start();
 
 $message = '';
 $message_type = '';
-
-// Whitelist for alert types (prevents injection into CSS class)
 $allowed_types = ['success', 'error', 'info'];
 
-// Handle logout
 if (isset($_GET['logout'])) {
     destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
 }
 
-// Handle error from GET parameter
 if (isset($_GET['error']) && trim($_GET['error']) !== '') {
     $message = trim($_GET['error']);
     $message_type = 'error';
 }
 
-// Process login form submission
+// Process login form submission (only if no JavaScript or fallback)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate CSRF token
     if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
         $message = 'Invalid request token. Please refresh and try again.';
         $message_type = 'error';
@@ -33,11 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
 
-        // Validate input
         if (empty($username) || empty($password)) {
             $message = 'Please enter both username and password!';
             $message_type = 'error';
-        } elseif (strlen($username) > 50) { // example limit
+        } elseif (strlen($username) > 50) {
             $message = 'Username is too long.';
             $message_type = 'error';
         } else {
@@ -46,20 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $db->loginUser($username, $password);
 
                 if ($result['success']) {
-                    // Regenerate session ID to prevent fixation
                     session_regenerate_id(true);
-
                     $_SESSION['user_logged_in'] = true;
                     $_SESSION['user_id'] = $result['user']['id'];
                     $_SESSION['username'] = $result['user']['username'];
                     $_SESSION['email'] = $result['user']['email'];
-
-                    // Redirect to user panel
                     header('Location: user_panel.php');
                     exit;
                 } else {
                     $message = $result['message'];
-                    // Avoid exposing "pending approval" to the user if you consider it sensitive
                     $message_type = ($result['message'] === 'Account pending admin approval') ? 'info' : 'error';
                 }
                 $db->close();
@@ -72,11 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Generate a CSRF token for the form
 $csrf_token = csrf_token();
-
-// Generate OAuth state parameter (if your security.php has a function for it)
-$oauth_state = generate_oauth_state(); // implement this in security.php
+$oauth_state = generate_oauth_state(); // ensure this function exists in security.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +72,7 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
     <title>Login - Crunchrolly</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (CSS remains the same as previously improved) */
+        /* (CSS unchanged) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -168,18 +154,6 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
         .btn-login:active { transform: translateY(0); }
-        .footer-text {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        .footer-text a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .footer-text a:hover { text-decoration: underline; }
         .alert {
             padding: 12px 15px;
             border-radius: 10px;
@@ -243,6 +217,16 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
             font-weight: 700;
         }
         .social-note a:hover { text-decoration: underline; }
+        .hidden { display: none; }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -259,13 +243,13 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
         </div>
     <?php endif; ?>
 
-    <form method="POST" action="">
+    <form id="loginForm" method="POST" action="">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
         <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">Email or Username</label>
             <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+                <i class="fas fa-envelope"></i>
+                <input type="text" id="username" name="username" placeholder="Enter your email or username" required autofocus>
             </div>
         </div>
 
@@ -280,6 +264,7 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
         <button type="submit" class="btn-login">
             <i class="fas fa-sign-in-alt"></i> Sign In
         </button>
+        <div id="firebaseError" class="error-message hidden"></div>
     </form>
 
     <div class="social-login-section" aria-label="Social authentication options">
@@ -293,13 +278,12 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
 </div>
 
 <!-- Firebase SDK and initialization -->
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-    
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+    const firebaseConfig = {
         apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
         authDomain: "ackerstream-d52e9.firebaseapp.com",
         projectId: "ackerstream-d52e9",
@@ -307,56 +291,74 @@ $oauth_state = generate_oauth_state(); // implement this in security.php
         messagingSenderId: "251934106668",
         appId: "1:251934106668:web:2b2365b78df3254ac19d89",
         measurementId: "G-JHK30XWT7R"
-      };
-    
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
+    };
 
-      // --- LOGIN LOGIC ---
-      window.doLogin = async () => {
-        const email = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-    
-        // Admin Bypass (Optional)
-        if (email === "admin@college.edu" && password === "admin123") {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const analytics = getAnalytics(app);
+
+    // Get form elements
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorDiv = document.getElementById('firebaseError');
+
+    // Intercept form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent PHP POST
+
+        const emailOrUsername = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        // Reset error message
+        errorDiv.classList.add('hidden');
+        errorDiv.innerText = '';
+
+        // Admin bypass (optional, for testing)
+        if (emailOrUsername === "admin@college.edu" && password === "admin123") {
             window.location.href = "ash.php";
             return;
         }
-    
+
+        // For Firebase, we need an email address.
+        // If the user entered a username, you may need to map it to email.
+        // Here we assume the user enters their email. If not, you could show a message.
+        if (!emailOrUsername.includes('@')) {
+            errorDiv.innerText = "Please enter a valid email address.";
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
         try {
-          // This command asks Firebase: "Does this user exist and is the password correct?"
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-    
-          console.log("Logged in as:", user.email);
-          
-          // Store user session so other pages know they are logged in
-          sessionStorage.setItem('userEmail', user.email);
-          
-          // Redirect to your main page
-          window.location.href = "ash.php";
-          
+            const userCredential = await signInWithEmailAndPassword(auth, emailOrUsername, password);
+            const user = userCredential.user;
+            console.log("Logged in as:", user.email);
+            sessionStorage.setItem('userEmail', user.email);
+            // Redirect after successful login
+            window.location.href = "ash.php";
         } catch (error) {
-          console.error("Login Error:", error.code);
-          
-          // Friendly error messages
-          if (error.code === 'auth/invalid-credential') {
-            errElement.innerText = "Invalid email or password.";
-          } else {
-            errElement.innerText = "Login failed. Please try again.";
-          }
-          errElement.classList.remove('hidden');
+            console.error("Firebase Login Error:", error.code);
+            if (error.code === 'auth/invalid-credential') {
+                errorDiv.innerText = "Invalid email or password.";
+            } else if (error.code === 'auth/user-not-found') {
+                errorDiv.innerText = "No account found with this email.";
+            } else if (error.code === 'auth/wrong-password') {
+                errorDiv.innerText = "Incorrect password.";
+            } else {
+                errorDiv.innerText = "Login failed. Please try again.";
+            }
+            errorDiv.classList.remove('hidden');
         }
-      };
-    
-      // 3. Persistance Check (Optional)
-      // This checks if a user is already logged in when they open the page
-      onAuthStateChanged(auth, (user) => {
+    });
+
+    // Check if user is already logged in (persistence)
+    onAuthStateChanged(auth, (user) => {
         if (user) {
-          console.log("User is already signed in:", user.email);
+            console.log("User already signed in:", user.email);
+            // Optionally redirect if already logged in
+            // window.location.href = "ash.php";
         }
-      });
-    </script>
+    });
+</script>
 </body>
 </html>
