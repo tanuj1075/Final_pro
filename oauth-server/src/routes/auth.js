@@ -14,9 +14,10 @@ router.get('/auth/:provider', (req, res, next) => {
     const state = issueState(providerName);
     res.cookie(env.stateCookieName, state, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: env.cookieSameSite,
       secure: env.cookieSecure,
       signed: true,
+      path: '/',
       maxAge: env.stateTtlMs
     });
 

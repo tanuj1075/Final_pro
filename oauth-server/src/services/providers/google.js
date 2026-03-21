@@ -14,6 +14,11 @@ export function validateGoogleConfig() {
   if (!env.providers.google.clientId || !env.providers.google.clientSecret) {
     throw new OAuthError('Google OAuth credentials are not configured', 500);
   }
+  try {
+    new URL(redirectUri());
+  } catch {
+    throw new OAuthError('BASE_URL is invalid; redirect URI cannot be constructed', 500);
+  }
 }
 
 export function buildGoogleAuthUrl(state) {
@@ -45,8 +50,13 @@ export async function googleExchangeCode(code) {
       timeout: 10_000
     });
 
+    if (!data?.access_token || !data?.id_token) {
+      throw new OAuthError('Google token response missing access_token or id_token', 502, data);
+    }
+
     return data;
   } catch (error) {
+    if (error instanceof OAuthError) throw error;
     throw new OAuthError('Google token exchange failed', 502, error.response?.data);
   }
 }

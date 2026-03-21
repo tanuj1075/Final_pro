@@ -14,6 +14,7 @@ Secure OAuth 2.0 Authorization Code flow backend supporting:
   - `POST /auth/:provider/callback`
 - CSRF protection with `state` parameter + HttpOnly state cookie validation
 - Signed state cookie validation (`cookie-parser` secret)
+- Vercel-friendly cookie defaults: `secure=true`, `sameSite=none`
 - ID token validation for Google and Apple (JWKS + JWT verification)
 - User normalization format:
   ```json
@@ -59,6 +60,6 @@ Use these in provider consoles:
 
 ## Security Notes
 - Keep `JWT_SECRET` and OAuth client secrets on the server only.
-- Set `COOKIE_SECURE=true` in production (HTTPS).
+- For Vercel deployments, keep `COOKIE_SECURE=true` and `COOKIE_SAME_SITE=none`.
 - Use a strong `COOKIE_SECRET` to sign state cookies.
 - Rotate secrets and monitor OAuth errors.
