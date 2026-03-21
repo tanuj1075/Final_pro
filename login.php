@@ -62,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $csrf_token = csrf_token();
-$oauth_state = generate_oauth_state(); // ensure this function exists in security.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -269,9 +268,9 @@ $oauth_state = generate_oauth_state(); // ensure this function exists in securit
 
     <div class="social-login-section" aria-label="Social authentication options">
         <div class="social-login-buttons">
-            <a href="oauth_start.php?provider=google&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-google"></i> Google</a>
-            <a href="oauth_start.php?provider=facebook&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
-            <a href="oauth_start.php?provider=apple&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+            <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
+            <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
         </div>
         <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
     </div>
