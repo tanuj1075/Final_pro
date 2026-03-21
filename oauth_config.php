@@ -11,6 +11,7 @@ return [
         'authorize_url' => 'https://accounts.google.com/o/oauth2/v2/auth',
         'token_url' => 'https://oauth2.googleapis.com/token',
         'userinfo_url' => 'https://openidconnect.googleapis.com/v1/userinfo',
+        'issuer' => 'https://accounts.google.com',
         'scope' => 'openid email profile',
     ],
     'facebook' => [
