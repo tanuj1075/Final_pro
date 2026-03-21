@@ -366,121 +366,149 @@ if(isset($_GET['logout'])) {
           </a>
 
           <!-- Card 2 -->
-          <a href="watch2.html" target="_blank" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="attack-on-titan card.jpg" alt="Attack on Titan">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Attack on Titan"><i class="fas fa-play"></i></button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Attack on Titan</h3>
-                <p class="anime-synopsis">
-                  Humanity stands on the brink. Giant titans roam. One boy sparks the fight for survival.
-                </p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 9.1</span>
-                  <span class="episodes">87 Episodes</span>
-                </div>
-              </div>
-            </div>
-          </a>
+      <a href="watch2.html" target="_blank" class="anime-card-link">
+  <div class="anime-card">
+    <div class="card-image">
+      <img src="attack-on-titan card.jpg" alt="Attack on Titan">
+      
+      <div class="card-overlay">
+        <button class="quick-play" type="button" aria-label="Play Attack on Titan">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
 
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">Attack on Titan</h3>
+      <p class="anime-synopsis">
+        Humanity stands on the brink. Giant titans roam. One boy sparks the fight for survival.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating"><i class="fas fa-star"></i> 9.1</span>
+        <span class="episodes">87 Episodes</span>
+      </div>
+    </div>
+  </div>
+</a>
           <!-- Card 3 -->
           <!-- BUG FIX #9: href="#" causes page-jump; replaced with javascript:void(0) as placeholder -->
-          <a href="javascript:void(0)" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="I Want to Eat Your Pancreas card.jpg" alt="I Want to Eat Your Pancreas">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play I Want to Eat Your Pancreas"><i class="fas fa-play"></i></button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">I Want to Eat Your Pancreas</h3>
-                <p class="anime-synopsis">
-                  A boy discovers a girl's diary and forms an unexpected bond with her.
-                </p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.2</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
+      <a href="#" class="anime-card-link">
+  <div class="anime-card">
+    <div class="card-image">
+      <img src="I Want to Eat Your Pancreas card.jpg" alt="I Want to Eat Your Pancreas">
+
+      <div class="card-overlay">
+        <button class="quick-play" type="button" aria-label="Play I Want to Eat Your Pancreas">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">I Want to Eat Your Pancreas</h3>
+      <p class="anime-synopsis">
+        A boy discovers a girl's diary and forms an unexpected bond with her.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating"><i class="fas fa-star"></i> 8.2</span>
+        <span class="episodes">Movie</span>
+      </div>
+    </div>
+  </div>
+</a>
 
           <!-- Card 4 -->
-          <a href="javascript:void(0)" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="Weathering With You  card.jpg" alt="Weathering with You">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Weathering with You"><i class="fas fa-play"></i></button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Weathering with You</h3>
-                <p class="anime-synopsis">
-                  A runaway boy meets a girl who can manipulate the weather.
-                </p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.9</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
+      <a href="#" class="anime-card-link">
+  <div class="anime-card">
+    <div class="card-image">
+      <img src="weathering-with-you.jpg" alt="Weathering with You">
+
+      <div class="card-overlay">
+        <button class="quick-play" type="button" aria-label="Play Weathering with You">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">Weathering with You</h3>
+      <p class="anime-synopsis">
+        A runaway boy meets a girl who can manipulate the weather.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating"><i class="fas fa-star"></i> 7.9</span>
+        <span class="episodes">Movie</span>
+      </div>
+    </div>
+  </div>
+</a>
 
           <!-- Card 5 -->
-          <a href="javascript:void(0)" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="5 centimeters per second card.jpg" alt="5 Centimeters per Second">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second"><i class="fas fa-play"></i></button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">5 Centimeters per Second</h3>
-                <p class="anime-synopsis">
-                  A story of distance, time, and fading connection between two people.
-                </p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.6</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
+         <a href="#" class="anime-card-link">
+  <div class="anime-card">
+    <div class="card-image">
+      <img src="5-centimeters-per-second.jpg" alt="5 Centimeters per Second">
+
+      <div class="card-overlay">
+        <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">5 Centimeters per Second</h3>
+      <p class="anime-synopsis">
+        A story of distance, time, and fading connection between two people.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating"><i class="fas fa-star"></i> 7.6</span>
+        <span class="episodes">Movie</span>
+      </div>
+    </div>
+  </div>
+</a>
 
           <!-- Card 6 -->
-          <a href="javascript:void(0)" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="The garden of words card.jpg" alt="The Garden of Words">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play The Garden of Words"><i class="fas fa-play"></i></button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">The Garden of Words</h3>
-                <p class="anime-synopsis">
-                  A quiet bond forms between two strangers during rainy days.
-                </p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.5</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
+         <a href="#" class="anime-card-link">
+  <div class="anime-card">
+    <div class="card-image">
+      <img src="the-garden-of-words.jpg" alt="The Garden of Words">
 
+      <div class="card-overlay">
+        <button class="quick-play" type="button" aria-label="Play The Garden of Words">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">The Garden of Words</h3>
+      <p class="anime-synopsis">
+        A quiet bond forms between two strangers during rainy days.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating"><i class="fas fa-star"></i> 7.5</span>
+        <span class="episodes">Movie</span>
+      </div>
+    </div>
+  </div>
+</a>
         </div><!-- /.anime-grid -->
         
         <button class="slider-nav next" type="button" onclick="scrollSlider(1)" aria-label="Scroll right">
