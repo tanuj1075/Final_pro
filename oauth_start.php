@@ -26,8 +26,14 @@ $statePayload = [
     'exp' => $expiresAt,
 ];
 
-$stateCookie = build_oauth_state_cookie_value($statePayload);
-setcookie('oauth_state_' . $provider, $stateCookie, oauth_cookie_options($expiresAt));
+try {
+    $stateCookie = build_oauth_state_cookie_value($statePayload);
+    setcookie('oauth_state_' . $provider, $stateCookie, oauth_cookie_options($expiresAt));
+} catch (Throwable $e) {
+    error_log('OAuth start failed for provider ' . $provider . ': ' . $e->getMessage());
+    header('Location: login.php?error=' . urlencode('OAuth is unavailable due to server configuration.'));
+    exit;
+}
 
 $params = [
     'client_id' => $providerConfig['client_id'],

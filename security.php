@@ -71,8 +71,7 @@ function get_oauth_state_secret() {
         return hash('sha256', $clientSecret . '|oauth-state-secret', false);
     }
 
-    // Last-resort fallback. Works functionally but should not be used in production.
-    return hash('sha256', __FILE__ . '|development-fallback', false);
+    throw new RuntimeException('Missing OAuth state secret configuration.');
 }
 
 function build_oauth_state_cookie_value(array $payload) {
