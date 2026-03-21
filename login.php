@@ -1,64 +1,82 @@
 <?php
-// Start session at the very beginning before any output
 require_once 'security.php';
-secure_session_start();
 require_once 'db_helper.php';
+
+secure_session_start(); // Ensure this sets secure cookie flags
 
 $message = '';
 $message_type = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
-        $message = 'Invalid request token. Please refresh and try again.';
-        $message_type = 'error';
-    } else {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+// Whitelist for alert types (prevents injection into CSS class)
+$allowed_types = ['success', 'error', 'info'];
 
-    if (empty($username) || empty($password)) {
-        $message = 'Please enter both username and password!';
-        $message_type = 'error';
-    } else {
-        try {
-            $db = new DatabaseHelper();
-            $result = $db->loginUser($username, $password);
-            
-            if ($result['success']) {
-                // Set session
-                session_regenerate_id(true);
-                $_SESSION['user_logged_in'] = true;
-                $_SESSION['user_id'] = $result['user']['id'];
-                $_SESSION['username'] = $result['user']['username'];
-                $_SESSION['email'] = $result['user']['email'];
-
-                // Redirect to anime site
-                header('Location: user_panel.php');
-                exit;
-            } else {
-                $message = $result['message'];
-                $message_type = $result['message'] == 'Account pending admin approval' ? 'info' : 'error';
-            }
-            $db->close();
-        } catch (Exception $e) {
-            error_log('Login failure: ' . $e->getMessage());
-            $message = 'Login failed due to a server error. Please try again.';
-            $message_type = 'error';
-        }
-    }
-    }
-}
-
-// Check for logout
+// Handle logout
 if (isset($_GET['logout'])) {
     destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
 }
 
+// Handle error from GET parameter
 if (isset($_GET['error']) && trim($_GET['error']) !== '') {
     $message = trim($_GET['error']);
     $message_type = 'error';
 }
+
+// Process login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate CSRF token
+    if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+        $message = 'Invalid request token. Please refresh and try again.';
+        $message_type = 'error';
+    } else {
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        // Validate input
+        if (empty($username) || empty($password)) {
+            $message = 'Please enter both username and password!';
+            $message_type = 'error';
+        } elseif (strlen($username) > 50) { // example limit
+            $message = 'Username is too long.';
+            $message_type = 'error';
+        } else {
+            try {
+                $db = new DatabaseHelper();
+                $result = $db->loginUser($username, $password);
+
+                if ($result['success']) {
+                    // Regenerate session ID to prevent fixation
+                    session_regenerate_id(true);
+
+                    $_SESSION['user_logged_in'] = true;
+                    $_SESSION['user_id'] = $result['user']['id'];
+                    $_SESSION['username'] = $result['user']['username'];
+                    $_SESSION['email'] = $result['user']['email'];
+
+                    // Redirect to user panel
+                    header('Location: user_panel.php');
+                    exit;
+                } else {
+                    $message = $result['message'];
+                    // Avoid exposing "pending approval" to the user if you consider it sensitive
+                    $message_type = ($result['message'] === 'Account pending admin approval') ? 'info' : 'error';
+                }
+                $db->close();
+            } catch (Exception $e) {
+                error_log('Login failure: ' . $e->getMessage());
+                $message = 'Unable to log in at this time. Please try again later.';
+                $message_type = 'error';
+            }
+        }
+    }
+}
+
+// Generate a CSRF token for the form
+$csrf_token = csrf_token();
+
+// Generate OAuth state parameter (if your security.php has a function for it)
+$oauth_state = generate_oauth_state(); // implement this in security.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,12 +86,8 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
     <title>Login - Crunchrolly</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* (CSS remains the same as previously improved) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -83,7 +97,6 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             align-items: center;
             padding: 20px;
         }
-
         .login-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -94,23 +107,11 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             max-width: 420px;
             animation: slideIn 0.5s ease-out;
         }
-
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
+        .logo { text-align: center; margin-bottom: 30px; }
         .logo h1 {
             font-size: 36px;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -118,17 +119,8 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             -webkit-text-fill-color: transparent;
             font-weight: bold;
         }
-
-        .logo p {
-            color: #666;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        .logo p { color: #666; margin-top: 5px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -136,11 +128,7 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             font-weight: 500;
             font-size: 14px;
         }
-
-        .input-wrapper {
-            position: relative;
-        }
-
+        .input-wrapper { position: relative; }
         .input-wrapper i {
             position: absolute;
             left: 15px;
@@ -148,7 +136,6 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             transform: translateY(-50%);
             color: #667eea;
         }
-
         .form-group input {
             width: 100%;
             padding: 12px 15px 12px 45px;
@@ -158,13 +145,11 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             transition: all 0.3s;
             background: white;
         }
-
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-
         .btn-login {
             width: 100%;
             padding: 14px;
@@ -178,70 +163,54 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             transition: transform 0.2s, box-shadow 0.2s;
             margin-top: 10px;
         }
-
         .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
+        .btn-login:active { transform: translateY(0); }
         .footer-text {
             text-align: center;
             margin-top: 20px;
             color: #666;
             font-size: 14px;
         }
-
         .footer-text a {
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
         }
-
-        .footer-text a:hover {
-            text-decoration: underline;
-        }
-
+        .footer-text a:hover { text-decoration: underline; }
         .alert {
             padding: 12px 15px;
             border-radius: 10px;
             margin-bottom: 20px;
             font-size: 14px;
         }
-
         .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
         .alert-info {
             background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-
         .social-login-section {
             margin-top: 18px;
             text-align: center;
         }
-
         .social-login-buttons {
             display: flex;
             justify-content: center;
             gap: 12px;
             flex-wrap: wrap;
         }
-
         .social-btn {
             border: 1px solid #e5e7eb;
             background: #f8fafc;
@@ -259,78 +228,90 @@ if (isset($_GET['error']) && trim($_GET['error']) !== '') {
             gap: 8px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
         .social-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
         }
-
         .social-note {
             margin-top: 12px;
             color: #64748b;
             font-size: 13px;
         }
-
         .social-note a {
             color: #667eea;
             text-decoration: none;
             font-weight: 700;
         }
-
-        .social-note a:hover {
-            text-decoration: underline;
-        }
+        .social-note a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <h1>🎬 AckerStream</h1>
-            <p>Sign in to continue watching</p>
-        </div>
-
-
-
-        <?php if ($message): ?>
-            <div class="alert alert-<?= $message_type ?>">
-                <i class="fas fa-<?= $message_type == 'success' ? 'check-circle' : ($message_type == 'info' ? 'info-circle' : 'exclamation-circle') ?>"></i>
-                <?= htmlspecialchars($message) ?>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST" action="">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </button>
-        </form>
-
-
-
-        <div class="social-login-section" aria-label="Social authentication options">
-            <div class="social-login-buttons">
-                <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
-                <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
-                <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
-            </div>
-            <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
-        </div>
+<div class="login-container">
+    <div class="logo">
+        <h1>🎬 Crunchrolly</h1>
+        <p>Sign in to continue watching</p>
     </div>
+
+    <?php if ($message && in_array($message_type, $allowed_types)): ?>
+        <div class="alert alert-<?= htmlspecialchars($message_type) ?>">
+            <i class="fas fa-<?= $message_type === 'success' ? 'check-circle' : ($message_type === 'info' ? 'info-circle' : 'exclamation-circle') ?>"></i>
+            <?= htmlspecialchars($message) ?>
+        </div>
+    <?php endif; ?>
+
+    <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+    </form>
+
+    <div class="social-login-section" aria-label="Social authentication options">
+        <div class="social-login-buttons">
+            <a href="oauth_start.php?provider=google&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-google"></i> Google</a>
+            <a href="oauth_start.php?provider=facebook&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="oauth_start.php?provider=apple&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+        </div>
+        <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+    </div>
+</div>
+
+<!-- Firebase SDK and initialization -->
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
+    authDomain: "ackerstream-d52e9.firebaseapp.com",
+    projectId: "ackerstream-d52e9",
+    storageBucket: "ackerstream-d52e9.firebasestorage.app",
+    messagingSenderId: "251934106668",
+    appId: "1:251934106668:web:2b2365b78df3254ac19d89",
+    measurementId: "G-JHK30XWT7R"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
