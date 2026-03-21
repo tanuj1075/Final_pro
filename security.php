@@ -41,6 +41,14 @@ function is_valid_csrf_token($token) {
     return hash_equals($_SESSION['csrf_token'], $token);
 }
 
+/**
+ * Backward-compatible helper for templates that still call generate_oauth_state().
+ * OAuth flow state is generated/validated in oauth_start.php and oauth_callback.php.
+ */
+function generate_oauth_state() {
+    return bin2hex(random_bytes(32));
+}
+
 function destroy_session_and_cookie() {
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
