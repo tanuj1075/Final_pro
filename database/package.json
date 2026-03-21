@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "db:check": "node -e \"import('./src/client.js').then(() => console.log('db client ok'))\""
+    "db:check": "node -e \"import('./config/db.js').then(() => console.log('db client ok'))\""
   },
   "dependencies": {
     "dotenv": "^16.5.0",
