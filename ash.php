@@ -393,7 +393,7 @@ if(isset($_GET['logout'])) {
           <a href="javascript:void(0)" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="pancreas.jpg" alt="I Want to Eat Your Pancreas">
+                <img src="I Want to Eat Your Pancreas card.jpg" alt="I Want to Eat Your Pancreas">
                 <div class="card-overlay">
                   <button class="quick-play" type="button" aria-label="Play I Want to Eat Your Pancreas"><i class="fas fa-play"></i></button>
                 </div>
@@ -416,7 +416,7 @@ if(isset($_GET['logout'])) {
           <a href="javascript:void(0)" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="weathering.jpg" alt="Weathering with You">
+                <img src="Weathering With You  card.jpg" alt="Weathering with You">
                 <div class="card-overlay">
                   <button class="quick-play" type="button" aria-label="Play Weathering with You"><i class="fas fa-play"></i></button>
                 </div>
@@ -439,7 +439,7 @@ if(isset($_GET['logout'])) {
           <a href="javascript:void(0)" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="5cm.jpg" alt="5 Centimeters per Second">
+                <img src="5 centimeters per second card.jpg" alt="5 Centimeters per Second">
                 <div class="card-overlay">
                   <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second"><i class="fas fa-play"></i></button>
                 </div>
@@ -462,7 +462,7 @@ if(isset($_GET['logout'])) {
           <a href="javascript:void(0)" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="garden.jpg" alt="The Garden of Words">
+                <img src="The garden of words card.jpg" alt="The Garden of Words">
                 <div class="card-overlay">
                   <button class="quick-play" type="button" aria-label="Play The Garden of Words"><i class="fas fa-play"></i></button>
                 </div>
