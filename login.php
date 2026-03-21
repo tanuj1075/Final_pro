@@ -8,18 +8,20 @@ $message = '';
 $message_type = '';
 $allowed_types = ['success', 'error', 'info'];
 
+// Handle logout
 if (isset($_GET['logout'])) {
     destroy_session_and_cookie();
     $message = 'You have been logged out successfully!';
     $message_type = 'success';
 }
 
+// Handle error from GET parameter
 if (isset($_GET['error']) && trim($_GET['error']) !== '') {
     $message = trim($_GET['error']);
     $message_type = 'error';
 }
 
-// Process login form submission (only if no JavaScript or fallback)
+// Process login form submission (fallback for non-JS clients)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
         $message = 'Invalid request token. Please refresh and try again.';
@@ -45,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $result['user']['id'];
                     $_SESSION['username'] = $result['user']['username'];
                     $_SESSION['email'] = $result['user']['email'];
+
                     header('Location: user_panel.php');
                     exit;
                 } else {
@@ -62,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $csrf_token = csrf_token();
+$oauth_state = generate_oauth_state(); // ensure this function exists in security.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -216,7 +220,6 @@ $csrf_token = csrf_token();
             font-weight: 700;
         }
         .social-note a:hover { text-decoration: underline; }
-        .hidden { display: none; }
         .error-message {
             background: #f8d7da;
             color: #721c24;
@@ -226,6 +229,7 @@ $csrf_token = csrf_token();
             font-size: 14px;
             text-align: center;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -268,24 +272,103 @@ $csrf_token = csrf_token();
 
     <div class="social-login-section" aria-label="Social authentication options">
         <div class="social-login-buttons">
-            <a href="oauth_start.php?provider=google" class="social-btn"><i class="fab fa-google"></i> Google</a>
-            <a href="oauth_start.php?provider=facebook" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
-            <a href="oauth_start.php?provider=apple" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
+            <a href="oauth_start.php?provider=google&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-google"></i> Google</a>
+            <a href="oauth_start.php?provider=facebook&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="oauth_start.php?provider=apple&state=<?= urlencode($oauth_state) ?>" class="social-btn"><i class="fab fa-apple"></i> Apple</a>
         </div>
         <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
     </div>
 </div>
 
-<script>
-    // Keep native form submission so PHP authentication handles login.
-    const loginForm = document.getElementById('loginForm');
-    const usernameInput = document.getElementById('username');
+<!-- Firebase SDK and initialization -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 
-    if (loginForm && usernameInput) {
-        loginForm.addEventListener('submit', () => {
-            usernameInput.value = usernameInput.value.trim();
-        });
-    }
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
+        authDomain: "ackerstream-d52e9.firebaseapp.com",
+        projectId: "ackerstream-d52e9",
+        storageBucket: "ackerstream-d52e9.firebasestorage.app",
+        messagingSenderId: "251934106668",
+        appId: "1:251934106668:web:2b2365b78df3254ac19d89",
+        measurementId: "G-JHK30XWT7R"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const analytics = getAnalytics(app);
+
+    // Get form elements
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorDiv = document.getElementById('firebaseError');
+
+    // Intercept form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent PHP POST
+
+        const emailOrUsername = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        // Reset error
+        errorDiv.classList.add('hidden');
+        errorDiv.innerText = '';
+
+        // Admin bypass (optional, for testing)
+        if (emailOrUsername === "admin@college.edu" && password === "admin123") {
+            window.location.href = "ash.php";
+            return;
+        }
+
+        // For Firebase, we need an email address.
+        if (!emailOrUsername.includes('@')) {
+            errorDiv.innerText = "Please enter a valid email address.";
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, emailOrUsername, password);
+            const user = userCredential.user;
+            console.log("Logged in as:", user.email);
+            sessionStorage.setItem('userEmail', user.email);
+            // Redirect after successful login
+            window.location.href = "user_panel.php";
+        } catch (error) {
+            console.error("Firebase Login Error:", error.code);
+            let msg = "Login failed. ";
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                    msg = "Invalid email or password.";
+                    break;
+                case 'auth/user-not-found':
+                    msg = "No account found with this email.";
+                    break;
+                case 'auth/wrong-password':
+                    msg = "Incorrect password.";
+                    break;
+                case 'auth/too-many-requests':
+                    msg = "Too many failed attempts. Please try again later.";
+                    break;
+                default:
+                    msg = "Unable to sign in. Please check your credentials.";
+            }
+            errorDiv.innerText = msg;
+            errorDiv.classList.remove('hidden');
+        }
+    });
+
+    // Optional: check if already signed in
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("User already signed in:", user.email);
+            // You could redirect automatically:
+            // window.location.href = "user_panel.php";
+        }
+    });
 </script>
 </body>
 </html>
