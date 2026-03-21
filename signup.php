@@ -324,6 +324,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 strengthDiv.className = 'password-strength strength-strong';
             }
         });
+          import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+          import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+        
+          // Your web app's Firebase configuration
+          const firebaseConfig = {
+            apiKey: "AIzaSyDqNVllEX66Tuma5E-Mom-nH-7muh3d59k",
+            authDomain: "ackerstream-d52e9.firebaseapp.com",
+            projectId: "ackerstream-d52e9",
+            storageBucket: "ackerstream-d52e9.firebasestorage.app",
+            messagingSenderId: "251934106668",
+            appId: "1:251934106668:web:2b2365b78df3254ac19d89",
+            measurementId: "G-JHK30XWT7R"
+          };
+        
+          // Initialize Firebase
+          const app = initializeApp(firebaseConfig);
+          const auth = getAuth(app);
+              // --- REGISTRATION LOGIC ---
+        window.doRegister = async () => {
+        // Grabbing data from your HTML IDs
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+    
+        if (!email || !password) {
+          alert("Please fill in all fields");
+          return;
+        }
+    
+        try {
+          // This command sends the data to Firebase to create a new user
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+          
+          console.log("Registered successfully:", user.email);
+          alert("Account Created! You can now Sign In.");
+          
+          // Optional: Automatically switch to login tab after success
+          switchTab('login'); 
+        } catch (error) {
+          console.error("Reg Error:", error.code);
+          msgElement.innerText = "Error: " + error.message;
+          msgElement.classList.remove('hidden');
+        }
+      };
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User is already signed in:", user.email);
+        }
+      });
     </script>
 </body>
 </html>
