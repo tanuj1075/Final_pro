@@ -22,7 +22,7 @@ if (in_array($serverAddr, $localHosts, true) || in_array($remoteAddr, $localHost
 
 $isUsingDefaultAdminCredentials = ($envAdminUsername === '' || $envAdminPassword === '');
 $ADMIN_USERNAME = $envAdminUsername !== '' ? $envAdminUsername : 'admin';
-$ADMIN_PASSWORD = $envAdminPassword !== '' ? $envAdminPassword : 'password123';
+$ADMIN_PASSWORD = $envAdminPassword !== '' ? $envAdminPassword : 'rkmb123#';
 $adminCredentialsConfigured = !$isUsingDefaultAdminCredentials || $allowDefaultCredentials;
 
 // Optional hash override for production (set ADMIN_PASSWORD_HASH in env)
