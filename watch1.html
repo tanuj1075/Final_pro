@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Stream the best anime online. Watch Demon Slayer, Jujutsu Kaisen, and more in high quality.">
+  <title>AnimeStream — Premium Anime Streaming</title>
+  <!-- Font Awesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- player.style sutro theme -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/player.style/sutro/+esm"></script>
+  <style>
+    /* ------------------------------
+      CSS VARIABLES (Dark Theme)
+    ------------------------------ */
+    :root {
+      --primary: #e50914;
+      --primary-dark: #b81b24;
+      --secondary: #6c63ff;
+      --dark-bg: #0a0a0f;
+      --dark-card: #14141c;
+      --dark-elevated: #1e1e2a;
+      --text-light: #ffffff;
+      --text-muted: #b3b3b3;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --shadow-lg: 0 25px 40px -12px rgba(0, 0, 0, 0.6);
+      --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ---------- HEADER (STICKY, NO SEARCH) ---------- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, #fff, var(--primary), #ff7b6e);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 1rem;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-light);
+    }
+
+    /* ---------- HERO SECTION (FULLSCREEN BACKGROUND IMAGE) ---------- */
+    .hero-section {
+      position: relative;
+      height: 100vh;
+      min-height: 680px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      filter: brightness(0.45) contrast(1.1);
+      animation: slowZoom 28s infinite alternate ease-in-out;
+    }
+
+    @keyframes slowZoom {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%);
+      z-index: 2;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      max-width: 880px;
+      padding: 20px;
+      animation: fadeUp 0.9s ease-out;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(35px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title {
+      font-size: 4.5rem;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(to right, #fff, #ff9a8b, var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+
+    .hero-desc {
+      font-size: 1.2rem;
+      color: #e0e0e0;
+      margin-bottom: 24px;
+      font-weight: 400;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .meta-badge {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      padding: 8px 20px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-badge i {
+      color: var(--primary);
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-play {
+      background: linear-gradient(100deg, var(--primary), #ff3b4a);
+      border: none;
+      padding: 14px 40px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 12px 28px rgba(229, 9, 20, 0.4);
+    }
+
+    .btn-play:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 35px rgba(229, 9, 20, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(229, 9, 20, 0.2);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* ---------- VIDEO PLAYER MODAL (SUTRO THEME) ---------- */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: #000000dd;
+      backdrop-filter: blur(20px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .video-container {
+      width: 90%;
+      max-width: 1200px;
+      background: #0a0a0a;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .video-header {
+      background: #0f0f12;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2a2a2f;
+    }
+
+    .video-header h3 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-video {
+      background: var(--primary);
+      border: none;
+      padding: 8px 24px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+
+    .close-video:hover {
+      background: var(--primary-dark);
+      transform: scale(0.97);
+    }
+
+    /* Sutro player styling */
+    media-theme-sutro {
+      display: block;
+      width: 100%;
+      background: black;
+    }
+
+    /* ---------- TABS SECTION ---------- */
+    .tabs-nav {
+      background: var(--dark-card);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 72px;
+      z-index: 99;
+      backdrop-filter: blur(8px);
+    }
+
+    .tabs-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      list-style: none;
+      padding: 0 20px;
+    }
+
+    .tab-btn {
+      padding: 18px 36px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: 0.2s;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+    }
+
+    .tab-btn i {
+      margin-right: 8px;
+    }
+
+    .tab-btn:hover {
+      color: white;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* Tab content panels */
+    .tab-panel {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      display: none;
+      animation: fadeSlide 0.4s ease;
+    }
+
+    #overview-panel { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-head {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 5px solid var(--primary);
+      padding-left: 20px;
+    }
+
+    .desc-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #cfcfdf;
+      margin-bottom: 24px;
+      max-width: 85%;
+    }
+
+    /* Related grid */
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 28px;
+      margin-top: 20px;
+    }
+
+    .anime-card {
+      background: var(--dark-elevated);
+      border-radius: 24px;
+      padding: 24px;
+      transition: var(--transition);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+
+    .anime-card:hover {
+      transform: translateY(-8px);
+      background: #292936;
+      border-color: rgba(229, 9, 20, 0.5);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+    }
+
+    .anime-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .anime-card p {
+      color: #b0b0c2;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Info panel */
+    .info-split {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+    }
+    .info-left {
+      flex: 2;
+      min-width: 260px;
+    }
+    .info-right {
+      flex: 1.2;
+      background: rgba(30,30,38,0.6);
+      border-radius: 28px;
+      padding: 32px;
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border-subtle);
+    }
+    .metadata-list {
+      list-style: none;
+    }
+    .metadata-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .metadata-list strong {
+      width: 130px;
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: #050507;
+      margin-top: 60px;
+      padding: 48px 0 24px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .footer-inner {
+      max-width: 1300px;
+      margin: auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+    .footer-col h4 {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .footer-links a:hover { color: var(--primary); padding-left: 4px; }
+    .social-icons {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .social-icons a {
+      background: #22222a;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: 0.2s;
+    }
+    .social-icons a:hover { background: var(--primary); transform: translateY(-3px);}
+    .copyright {
+      text-align: center;
+      padding-top: 40px;
+      color: #6f6f7a;
+      font-size: 0.8rem;
+    }
+
+    /* Scroll-to-top */
+    .scroll-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 99;
+      box-shadow: 0 5px 20px rgba(229,9,20,0.5);
+      transition: 0.2s;
+    }
+    .scroll-top:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 780px) {
+      .header-container { padding: 0 20px; }
+      .nav-links { gap: 18px; }
+      .hero-title { font-size: 2.8rem; }
+      .desc-text { max-width: 100%; }
+      .tab-btn { padding: 12px 18px; font-size: 0.85rem; }
+      .hero-meta .meta-badge { padding: 5px 12px; font-size: 0.75rem; }
+      .btn-play, .btn-secondary { padding: 10px 24px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================== HEADER (NO SEARCH BAR) ================== -->
+<header class="site-header" id="mainHeader">
+  <div class="header-container">
+    <a href="#" class="logo">
+      <i class="fas fa-infinity logo-icon"></i>
+      <span class="logo-text">AnimeStream</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link active">Home</a>
+      <a href="#" class="nav-link">Movies</a>
+      <a href="#" class="nav-link">Series</a>
+      <a href="#" class="nav-link">Trending</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================== HERO SECTION WITH BACKGROUND IMAGE ================== -->
+<section class="hero-section" id="heroSection">
+  <img class="hero-bg" src="https://images.pexels.com/photos/1282727/pexels-photo-1282727.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Anime sky background">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">Demon Slayer: Kimetsu no Yaiba</h1>
+    <p class="hero-desc">A boy becomes a demon slayer after his family is slaughtered, seeking a cure for his demon-turned sister.</p>
+    <div class="hero-meta">
+      <span class="meta-badge"><i class="fas fa-calendar-alt"></i> 2019</span>
+      <span class="meta-badge"><i class="fas fa-clock"></i> 26 eps</span>
+      <span class="meta-badge"><i class="fas fa-tag"></i> Action / Fantasy</span>
+      <span class="meta-badge"><i class="fas fa-star"></i> 8.6/10</span>
+    </div>
+    <div class="btn-group">
+      <button class="btn-play" id="playHeroBtn"><i class="fas fa-play"></i> Watch Now</button>
+      <button class="btn-secondary" id="moreInfoBtn"><i class="fas fa-info-circle"></i> More Info</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================== VIDEO PLAYER MODAL (SUTRO THEME) ================== -->
+<div class="video-modal" id="videoModal">
+  <div class="video-container">
+    <div class="video-header">
+      <h3><i class="fas fa-film"></i> Demon Slayer - Episode 1</h3>
+      <button class="close-video" id="closeVideoBtn"><i class="fas fa-times"></i> Close</button>
+    </div>
+    <media-theme-sutro id="sutroPlayer" style="width:100%">
+      <video
+        slot="media"
+        src="https://stream.mux.com/fXNzVtmtWuyz00xnSrJg4OJH6PyNo6D02UzmgeKGkP5YQ/low.mp4"
+        playsinline
+        crossorigin="anonymous"
+      ></video>
+    </media-theme-sutro>
+  </div>
+</div>
+
+<!-- ================== TABS NAVIGATION ================== -->
+<div class="tabs-nav">
+  <div class="tabs-container">
+    <button class="tab-btn active" data-tab="overview"><i class="fas fa-scroll"></i> Overview</button>
+    <button class="tab-btn" data-tab="related"><i class="fas fa-fire"></i> Related</button>
+    <button class="tab-btn" data-tab="info"><i class="fas fa-circle-info"></i> Info</button>
+  </div>
+</div>
+
+<!-- ================== TAB CONTENT PANELS ================== -->
+<!-- Overview Panel -->
+<div class="tab-panel" id="overview-panel">
+  <h2 class="section-head"><i class="fas fa-feather-alt"></i> Synopsis</h2>
+  <p class="desc-text">Tanjiro Kamado, a kind-hearted boy, returns home to find his family slaughtered by a demon. His sister Nezuko is the only survivor, but she has been turned into a demon herself. To restore her humanity and avenge his family, Tanjiro joins the Demon Slayer Corps. Together with his fierce companions, he embarks on a perilous journey through shadows, swords, and unbreakable bonds.</p>
+  <p class="desc-text">The series redefined modern anime with breathtaking animation by Ufotable, emotional depth, and legendary fight sequences. Winner of numerous awards including Anime of the Year.</p>
+</div>
+
+<!-- Related Panel -->
+<div class="tab-panel" id="related-panel">
+  <h2 class="section-head"><i class="fas fa-compass"></i> You Might Also Like</h2>
+  <div class="related-grid">
+    <div class="anime-card"><h3><i class="fas fa-skull"></i> Jujutsu Kaisen</h3><p>Cursed energy, sorcerers, and intense battles — a modern classic.</p></div>
+    <div class="anime-card"><h3><i class="fas fa-dragon"></i> Attack on Titan</h3><p>Humanity's last stand against giant titans; epic storytelling.</p></div>
+    <div class="anime-card"><h3><i class="fas fa-water"></i> Demon Slayer: Mugen Train</h3><p>The blockbuster film that broke records worldwide.</p></div>
+    <div class="anime-card"><h3><i class="fas fa-mask"></i> My Hero Academia</h3><p>Heroes, quirks, and the rise of a new generation.</p></div>
+    <div class="anime-card"><h3><i class="fas fa-crown"></i> One Punch Man</h3><p>A hero for fun — spectacular action and satire.</p></div>
+  </div>
+</div>
+
+<!-- Info Panel -->
+<div class="tab-panel" id="info-panel">
+  <h2 class="section-head"><i class="fas fa-database"></i> Details & Credits</h2>
+  <div class="info-split">
+    <div class="info-left">
+      <p>Demon Slayer (Kimetsu no Yaiba) adapts the hit manga by Koyoharu Gotouge. Produced by Ufotable, the series became a global phenomenon with its stunning visual effects and emotional storytelling. The first season aired in 2019, followed by the Mugen Train arc and subsequent seasons.</p>
+      <p style="margin-top: 20px;">Experience the breathtaking journey of Tanjiro and Nezuko as they face the Twelve Kizuki and the terrifying Muzan Kibutsuji.</p>
+    </div>
+    <div class="info-right">
+      <ul class="metadata-list">
+        <li><strong>Original Creator:</strong> Koyoharu Gotouge</li>
+        <li><strong>Director:</strong> Haruo Sotozaki</li>
+        <li><strong>Studio:</strong> Ufotable</li>
+        <li><strong>Genre:</strong> Action, Dark Fantasy, Adventure</li>
+        <li><strong>Episodes:</strong> 26 (Season 1)</li>
+        <li><strong>Aired:</strong> Apr 2019 – Sep 2019</li>
+        <li><strong>Streaming:</strong> Crunchyroll, Hulu, Netflix</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================== FOOTER ================== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4><i class="fas fa-play-circle"></i> AnimeStream</h4><p style="color:#9a9aac;">Watch high-quality anime, simulcasts, and exclusive series.</p><div class="social-icons"><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-discord"></i></a><a href="#"><i class="fab fa-instagram"></i></a></div></div>
+    <div class="footer-col"><h4>Explore</h4><ul class="footer-links"><li><a href="#">New Seasons</a></li><li><a href="#">Popular</a></li><li><a href="#">Upcoming</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul class="footer-links"><li><a href="#">Help Center</a></li><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
+  </div>
+  <div class="copyright"><p>© 2025 AnimeStream — For educational and fan purposes. All rights belong to respective owners.</p></div>
+</footer>
+
+<!-- ================== SCROLL TO TOP BUTTON ================== -->
+<div class="scroll-top" id="scrollTopBtn"><i class="fas fa-chevron-up"></i></div>
+
+<script>
+  // ---------- MODULAR JAVASCRIPT ----------
+  (function() {
+    // DOM elements
+    const videoModal = document.getElementById('videoModal');
+    const playBtn = document.getElementById('playHeroBtn');
+    const closeVideoBtn = document.getElementById('closeVideoBtn');
+    const sutroPlayer = document.getElementById('sutroPlayer');
+    const heroSection = document.getElementById('heroSection');
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    const header = document.getElementById('mainHeader');
+    const moreInfoBtn = document.getElementById('moreInfoBtn');
+
+    // Helper to get the actual video element inside the sutro player
+    function getVideoElement() {
+      if (!sutroPlayer) return null;
+      // The video is inside the shadow DOM of the custom element
+      // We can query for the slot's assigned element, but easier: use querySelector on the whole document
+      return document.querySelector('#sutroPlayer video');
+    }
+
+    // ----- Video Player Functions (using Sutro) -----
+    function openVideoPlayer() {
+      if (videoModal) {
+        heroSection.style.display = 'none';
+        videoModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        // Attempt autoplay
+        const videoEl = getVideoElement();
+        if (videoEl) {
+          videoEl.play().catch(e => console.log('Autoplay blocked, user can click play'));
+        }
+      }
+    }
+
+    function closeVideoPlayer() {
+      if (videoModal) {
+        videoModal.style.display = 'none';
+        heroSection.style.display = 'flex';
+        document.body.style.overflow = 'auto';
+        // Pause the video
+        const videoEl = getVideoElement();
+        if (videoEl) {
+          videoEl.pause();
+          videoEl.currentTime = 0;
+        }
+      }
+    }
+
+    if (playBtn) playBtn.addEventListener('click', openVideoPlayer);
+    if (closeVideoBtn) closeVideoBtn.addEventListener('click', closeVideoPlayer);
+    // close on backdrop click
+    if (videoModal) {
+      videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) closeVideoPlayer();
+      });
+    }
+    // Escape key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && videoModal && videoModal.style.display === 'flex') closeVideoPlayer();
+    });
+
+    // More info button: smooth scroll to tabs
+    if (moreInfoBtn) {
+      moreInfoBtn.addEventListener('click', () => {
+        const tabsNav = document.querySelector('.tabs-nav');
+        if (tabsNav) tabsNav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    // ----- TAB SWITCHING -----
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const panels = {
+      overview: document.getElementById('overview-panel'),
+      related: document.getElementById('related-panel'),
+      info: document.getElementById('info-panel')
+    };
+
+    function activateTab(tabId) {
+      Object.values(panels).forEach(panel => { if (panel) panel.style.display = 'none'; });
+      if (panels[tabId]) panels[tabId].style.display = 'block';
+      tabBtns.forEach(btn => {
+        const btnTab = btn.getAttribute('data-tab');
+        if (btnTab === tabId) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+        if (target && panels[target]) {
+          activateTab(target);
+          document.querySelector('.tabs-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ----- SCROLL TO TOP & HEADER BACKGROUND CHANGE -----
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollBtn.style.display = 'flex';
+      } else {
+        scrollBtn.style.display = 'none';
+      }
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(5, 5, 8, 0.96)';
+        header.style.backdropFilter = 'blur(20px)';
+      } else {
+        header.style.background = 'rgba(10, 10, 15, 0.85)';
+        header.style.backdropFilter = 'blur(16px)';
+      }
+    });
+
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initial state
+    if (videoModal) videoModal.style.display = 'none';
+    if (heroSection) heroSection.style.display = 'flex';
+    activateTab('overview');
+  })();
+</script>
+</body>
+</html>
