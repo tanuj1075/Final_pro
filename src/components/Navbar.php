@@ -6,7 +6,7 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
   <div class="nav-container">
     <!-- Logo Section -->
     <a href="ash.php" class="logo-section" aria-label="AckerStream home">
-      <img src="../assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+      <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
       <span class="logo-text">Ackerstream</span>
     </a>
 

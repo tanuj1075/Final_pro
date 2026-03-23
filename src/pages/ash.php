@@ -62,10 +62,10 @@ if(isset($_GET['logout'])) {
       <!-- Slide 1 -->
       <div class="carousel-item active">
         <div class="carousel-overlay"></div>
-        <img src="../assets/images/LordOfMysteries.jpg" class="carousel-img" alt="Lord of Mysteries" height="650" width="600">
+        <img src="/src/assets/images/LordOfMysteries.jpg" class="carousel-img" alt="Lord of Mysteries" height="650" width="600">
         <div class="carousel-content">
           <!-- Asset fix: use existing logo file "lord-logo.avg.avif" -->
-          <img src="../assets/images/lord-logo.avg.avif" alt="Lord of Mysteries" class="anime-logo">
+          <img src="/src/assets/images/lord-logo.avg.avif" alt="Lord of Mysteries" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Action</span>
@@ -92,9 +92,9 @@ if(isset($_GET['logout'])) {
       <!-- Slide 2 -->
       <div class="carousel-item">
         <div class="carousel-overlay"></div>
-        <img src="../assets/images/attack-on-titan.jpg" class="carousel-img" alt="Attack on Titan">
+        <img src="/src/assets/images/attack-on-titan.jpg" class="carousel-img" alt="Attack on Titan">
         <div class="carousel-content">
-          <img src="../assets/images/Attack-on-Titan-Logo.png" alt="Attack on Titan" class="anime-logo">
+          <img src="/src/assets/images/Attack-on-Titan-Logo.png" alt="Attack on Titan" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Action</span>
@@ -123,10 +123,10 @@ if(isset($_GET['logout'])) {
       <div class="carousel-item">
         <div class="carousel-overlay"></div>
         <!-- BUG FIX #3: alt was "Attack on Titan" for a "Your Name" slide — corrected -->
-        <img src="../assets/images/your-name.jpg" class="carousel-img" alt="Your Name">
+        <img src="/src/assets/images/your-name.jpg" class="carousel-img" alt="Your Name">
         <div class="carousel-content">
           <!-- BUG FIX #3 continued: logo alt also said "Attack on Titan" — corrected -->
-          <img src="../assets/images/logo.svg" alt="Your Name" class="anime-logo">
+          <img src="/src/assets/images/logo.svg" alt="Your Name" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Romance</span>
@@ -155,10 +155,10 @@ if(isset($_GET['logout'])) {
       <div class="carousel-item">
         <div class="carousel-overlay"></div>
         <!-- BUG FIX #4: alt was "Attack on Titan" for "Weathering with You" slide — corrected -->
-        <img src="../assets/images/weathering-with-you.jpg" class="carousel-img" alt="Weathering with You">
+        <img src="/src/assets/images/weathering-with-you.jpg" class="carousel-img" alt="Weathering with You">
         <div class="carousel-content">
           <!-- BUG FIX #4 continued: logo alt also wrong — corrected -->
-          <img src="../assets/images/logo3.webp" alt="Weathering with You" class="anime-logo">
+          <img src="/src/assets/images/logo3.webp" alt="Weathering with You" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Romance</span>
@@ -188,10 +188,10 @@ if(isset($_GET['logout'])) {
       <div class="carousel-item">
         <div class="carousel-overlay"></div>
         <!-- BUG FIX #5: alt was "Attack on Titan" for "I Want to Eat Your Pancreas" — corrected -->
-        <img src="../assets/images/iwteyp.png" class="carousel-img" alt="I Want to Eat Your Pancreas">
+        <img src="/src/assets/images/iwteyp.png" class="carousel-img" alt="I Want to Eat Your Pancreas">
         <div class="carousel-content">
           <!-- BUG FIX #5 continued: logo alt also wrong — corrected -->
-          <img src="../assets/images/logo2.jpg" alt="I Want to Eat Your Pancreas" class="anime-logo">
+          <img src="/src/assets/images/logo2.jpg" alt="I Want to Eat Your Pancreas" class="anime-logo">
           <div class="genre-badges">
             <span class="badge">Sub | Dub</span>
             <span class="badge">Romance</span>
@@ -256,7 +256,7 @@ if(isset($_GET['logout'])) {
           <a href="watch1.html" target="_blank" class="anime-card-link">
             <div class="anime-card featured">
               <div class="card-image">
-                <img src="../assets/images/your-name card.jpg" alt="Your Name">
+                <img src="/src/assets/images/your-name card.jpg" alt="Your Name">
                 <div class="card-overlay">
                   <!-- BUG FIX #8: Added type="button" and aria-label to all quick-play buttons -->
                   <button class="quick-play" type="button" aria-label="Play Your Name"><i class="fas fa-play"></i></button>
@@ -280,7 +280,7 @@ if(isset($_GET['logout'])) {
       <a href="watch2.html" target="_blank" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
-      <img src="../assets/images/attack-on-titan card.jpg" alt="Attack on Titan">
+      <img src="/src/assets/images/attack-on-titan card.jpg" alt="Attack on Titan">
       
       <div class="card-overlay">
         <button class="quick-play" type="button" aria-label="Play Attack on Titan">
@@ -309,7 +309,7 @@ if(isset($_GET['logout'])) {
       <a href="#" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
-      <img src="../assets/images/I Want to Eat Your Pancreas card.jpg" alt="I Want to Eat Your Pancreas">
+      <img src="/src/assets/images/I Want to Eat Your Pancreas card.jpg" alt="I Want to Eat Your Pancreas">
 
       <div class="card-overlay">
         <button class="quick-play" type="button" aria-label="Play I Want to Eat Your Pancreas">
@@ -338,7 +338,7 @@ if(isset($_GET['logout'])) {
       <a href="#" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
-      <img src="../assets/images/weathering-with-you.jpg" alt="Weathering with You">
+      <img src="/src/assets/images/weathering-with-you.jpg" alt="Weathering with You">
 
       <div class="card-overlay">
         <button class="quick-play" type="button" aria-label="Play Weathering with You">
@@ -367,7 +367,7 @@ if(isset($_GET['logout'])) {
          <a href="#" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
-      <img src="../assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
+      <img src="/src/assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
 
       <div class="card-overlay">
         <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second">
@@ -396,7 +396,7 @@ if(isset($_GET['logout'])) {
          <a href="#" class="anime-card-link">
   <div class="anime-card">
     <div class="card-image">
-      <img src="../assets/images/The garden of words card.jpg" alt="The Garden of Words">
+      <img src="/src/assets/images/The garden of words card.jpg" alt="The Garden of Words">
 
       <div class="card-overlay">
         <button class="quick-play" type="button" aria-label="Play The Garden of Words">
@@ -446,7 +446,7 @@ if(isset($_GET['logout'])) {
           <a href="w.html" target="_blank" class="anime-card-link">
             <div class="anime-card featured">
               <div class="card-image">
-                <img src="../assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
+                <img src="/src/assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
                 <div class="card-overlay">
                   <button class="quick-play" aria-label="Play 5 Centimeters per Second" type="button">
                     <i class="fas fa-play"></i>
@@ -468,7 +468,7 @@ if(isset($_GET['logout'])) {
           <a href="video.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="../assets/images/Weathering With You  card.jpg" alt="Weathering With You">
+                <img src="/src/assets/images/Weathering With You  card.jpg" alt="Weathering With You">
                 <div class="card-overlay">
                   <button class="quick-play" aria-label="Play Weathering With You" type="button">
                     <i class="fas fa-play"></i>
@@ -490,7 +490,7 @@ if(isset($_GET['logout'])) {
           <a href="video.html" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="../assets/images/The garden of words card.jpg" alt="The Garden of Words">
+                <img src="/src/assets/images/The garden of words card.jpg" alt="The Garden of Words">
                 <div class="card-overlay">
                   <button class="quick-play" aria-label="Play The Garden of Words" type="button">
                     <i class="fas fa-play"></i>
@@ -512,7 +512,7 @@ if(isset($_GET['logout'])) {
           <a href="manga.html" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
-                <img src="../assets/images/your-name-vol-1-manga-1.jpg" alt="Your Name Manga">
+                <img src="/src/assets/images/your-name-vol-1-manga-1.jpg" alt="Your Name Manga">
                 <div class="card-overlay">
                   <button class="quick-play" aria-label="Open Your Name Manga" type="button">
                     <i class="fas fa-book-open"></i>
