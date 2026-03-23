@@ -37,7 +37,7 @@ if(isset($_GET['logout'])) {
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Custom CSS -->
-  <link href="../styles/AT.css" rel="stylesheet">
+  <link href="/src/styles/AT.css" rel="stylesheet">
 </head>
 
 <body>
