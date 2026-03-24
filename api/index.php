@@ -9,7 +9,7 @@ $projectRoot = dirname(__DIR__);
 $route = trim((string)($_GET['route'] ?? 'login.php'), '/');
 
 /**
- * Whitelist of all allowed PHP files (relative to src/pages/ OR src/services/).
+ * Whitelist of all allowed page/API files (relative to src/pages/ OR src/services/).
  */
 $allowedRoutes = [
     // ── User-facing pages ──────────────────────────────────────────────────
@@ -26,6 +26,9 @@ $allowedRoutes = [
     'anime_detail.php',
     'manage_anime.php',
     'manga_reader.php',
+    'manga.php',
+    'subscription.html',
+    'video.html',
 
     // ── Admin panel pages (inside src/pages/admin/) ────────────────────────
     'admin/dashboard.php',
@@ -54,6 +57,9 @@ $aliases = [
     'anime_detail'   => 'anime_detail.php',
     'manage_anime'   => 'manage_anime.php',
     'manga_reader'   => 'manga_reader.php',
+    'manga'          => 'manga.php',
+    'subscription'   => 'subscription.html',
+    'video'          => 'video.html',
     // Admin routes → root index.php handles admin login
     'admin'          => 'index.php',
     'admin/'         => 'index.php',

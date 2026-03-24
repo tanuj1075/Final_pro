@@ -5,7 +5,7 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
 <nav class="navbar" role="navigation" aria-label="Main navigation">
   <div class="nav-container">
     <!-- Logo Section -->
-    <a href="ash.php" class="logo-section" aria-label="AckerStream home">
+    <a href="/ash.php" class="logo-section" aria-label="AckerStream home">
       <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
       <span class="logo-text">Ackerstream</span>
     </a>
@@ -32,9 +32,9 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
           </div>
         </li>
         
-        <li class="nav-link"><a href="manga.php">Manga</a></li>
-        <li class="nav-link"><a href="subscription.html">Subscription</a></li>
-        <li class="nav-link"><a href="anime_hub.php">Anime Hub</a></li>
+        <li class="nav-link"><a href="/manga.php">Manga</a></li>
+        <li class="nav-link"><a href="/subscription.html">Subscription</a></li>
+        <li class="nav-link"><a href="/anime_hub.php">Anime Hub</a></li>
         
         <!-- News Dropdown -->
         <li class="nav-dropdown">
@@ -42,9 +42,9 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
             News <i class="fas fa-chevron-down"></i>
           </a>
           <div class="dropdown-menu">
-            <a href="video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
-            <a href="video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
-            <a href="ash.php" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
+            <a href="/video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
+            <a href="/video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
+            <a href="/ash.php" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
           </div>
         </li>
       </ul>
@@ -58,7 +58,7 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
       </button>
       
       <!-- Premium Button -->
-      <a href="subscription.html" class="premium-btn" aria-label="Open subscription plans">
+      <a href="/subscription.html" class="premium-btn" aria-label="Open subscription plans">
         <div class="premium-icon">
           <i class="fas fa-crown"></i>
         </div>
@@ -70,9 +70,18 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
       
       <!-- Action Icons -->
       <div class="action-icons">
-        <button class="action-btn" aria-label="Search" type="button">
-          <i class="fas fa-search"></i>
-        </button>
+        <form action="/anime_hub.php" method="get" style="display:inline-flex; align-items:center; gap:6px;">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search anime..."
+            aria-label="Search anime"
+            style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 10px; border-radius: 999px; width: 160px;"
+          >
+          <button class="action-btn" aria-label="Search" type="submit" title="Search anime">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
         <a href="#most-watched" class="action-btn" aria-label="Bookmarks" title="Jump to most watched">
           <i class="fas fa-bookmark"></i>
         </a>

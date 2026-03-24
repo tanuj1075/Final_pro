@@ -6,7 +6,15 @@ use App\Database\Connection;
 use App\Repositories\AnimeRepository;
 
 if (empty($_SESSION['admin_logged_in'])) {
-    header('Location: index.php?error=Admin login required');
+    header('Location: /index.php?error=Admin login required');
+    exit;
+}
+
+// Canonicalize this screen under /admin for a single admin-only navigation path.
+$requestUri = (string)($_SERVER['REQUEST_URI'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $requestUri !== '' && strpos($requestUri, '/admin/manage_anime.php') === false) {
+    $query = (string)($_SERVER['QUERY_STRING'] ?? '');
+    header('Location: /admin/manage_anime.php' . ($query !== '' ? ('?' . $query) : ''));
     exit;
 }
 
@@ -40,7 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['manage_anime_flash'] = $saveResult;
         }
     }
-    header('Location: manage_anime.php');
+    // Keep this tool inside the admin namespace URL for consistent navigation.
+    header('Location: /admin/manage_anime.php');
     exit;
 }
 
@@ -58,7 +67,10 @@ $animeList = $animeRepo->getAllAnime();
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3">Admin: Manage Anime Data</h1>
-    <a href="index.php" class="btn btn-outline-secondary">Admin Panel</a>
+    <div class="d-flex gap-2">
+      <a href="/admin/upload_video.php" class="btn btn-outline-primary mr-2">Upload Video</a>
+      <a href="/index.php" class="btn btn-outline-secondary">Admin Panel</a>
+    </div>
   </div>
 
   <?php if ($flash !== ''): ?><div class="alert alert-info"><?php echo htmlspecialchars($flash); ?></div><?php endif; ?>
