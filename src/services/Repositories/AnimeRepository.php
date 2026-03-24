@@ -9,6 +9,9 @@ use PDO;
  */
 class AnimeRepository
 {
+    private const MAX_SEARCH_LENGTH = 120;
+    private const MAX_SEARCH_RESULTS = 200;
+
     private PDO $db;
 
     public function __construct(PDO $db)
@@ -24,7 +27,7 @@ class AnimeRepository
                 ORDER BY a.created_at DESC";
         
         if ($limit !== null) {
-            $sql .= ' LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . max(1, (int)$limit);
         }
 
         return $this->db->query($sql)->fetchAll();
@@ -38,7 +41,7 @@ class AnimeRepository
                 WHERE a.status = :status ORDER BY a.created_at DESC";
         
         if ($limit !== null) {
-            $sql .= ' LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . max(1, (int)$limit);
         }
 
         $stmt = $this->db->prepare($sql);
@@ -51,13 +54,17 @@ class AnimeRepository
         $sql = "SELECT a.*, d.synopsis, d.trailer_url, d.poster_url, d.manga_image_url, d.stream_url, d.total_episodes
                 FROM admin_panel_anime a
                 LEFT JOIN admin_panel_anime_detail d ON d.anime_id = a.id
-                WHERE a.rating >= 8.0 ORDER BY a.rating DESC LIMIT " . $limit;
+                WHERE a.rating >= 8.0 ORDER BY a.rating DESC LIMIT " . max(1, $limit);
                 
         return $this->db->query($sql)->fetchAll();
     }
 
     public function searchAnime(string $query = '', string $genre = '', string $status = '', string $sort = 'rating_desc'): array
     {
+        $query = $this->normalizeSearchQuery($query);
+        $genre = trim($genre);
+        $status = trim($status);
+
         $sortSql = 'a.rating DESC';
         if ($sort === 'title_asc') {
             $sortSql = 'a.title ASC';
@@ -75,8 +82,12 @@ class AnimeRepository
         $params = [];
 
         if ($query !== '') {
-            $sql .= " AND (a.title LIKE :query OR d.synopsis LIKE :query)";
-            $params['query'] = '%' . $query . '%';
+            // Escape LIKE wildcards so user input is treated as text, not as pattern syntax.
+            $sql .= " AND (
+                        a.title LIKE :query ESCAPE '\\' COLLATE NOCASE
+                        OR COALESCE(d.synopsis, '') LIKE :query ESCAPE '\\' COLLATE NOCASE
+                    )";
+            $params['query'] = '%' . $this->escapeSqlLike($query) . '%';
         }
 
         if ($genre !== '') {
@@ -89,11 +100,37 @@ class AnimeRepository
             $params['status'] = $status;
         }
 
-        $sql .= " ORDER BY " . $sortSql;
+        $sql .= " ORDER BY " . $sortSql . " LIMIT " . self::MAX_SEARCH_RESULTS;
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Normalize and constrain user search input so DB queries remain predictable and fast.
+     */
+    private function normalizeSearchQuery(string $query): string
+    {
+        $query = trim($query);
+        // Remove control characters that can cause odd matching behavior.
+        $query = (string)preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $query);
+        $query = (string)preg_replace('/\s+/u', ' ', $query);
+
+        if (mb_strlen($query) > self::MAX_SEARCH_LENGTH) {
+            $query = mb_substr($query, 0, self::MAX_SEARCH_LENGTH);
+        }
+
+        return trim($query);
+    }
+
+    private function escapeSqlLike(string $value): string
+    {
+        return strtr($value, [
+            '\\' => '\\\\',
+            '%' => '\%',
+            '_' => '\_',
+        ]);
     }
 
     public function getAnimeDetailsById(int $animeId): ?array
