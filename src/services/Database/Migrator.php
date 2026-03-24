@@ -115,6 +115,13 @@ class Migrator
         try {
             $this->db->exec("ALTER TABLE admin_panel_siteuser ADD COLUMN last_logout TEXT NULL");
         } catch (\Exception $e) {}
+
+        // Query performance indexes for browse/search/filter endpoints.
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_title ON admin_panel_anime(title)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_status ON admin_panel_anime(status)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_created_at ON admin_panel_anime(created_at)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_detail_anime_id ON admin_panel_anime_detail(anime_id)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_genres_genre_id ON admin_panel_anime_genres(genre_id)");
     }
 
     /**

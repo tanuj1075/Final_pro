@@ -17,8 +17,25 @@ $genre  = trim((string)($_GET['genre']  ?? ''));
 $status = trim((string)($_GET['status'] ?? ''));
 $sort   = trim((string)($_GET['sort']   ?? 'newest'));
 
+// Keep filters in a known-safe set to avoid invalid combinations and confusing UX.
+$allowedStatus = ['', 'published', 'ongoing'];
+$allowedSort = ['newest', 'rating_desc', 'title_asc'];
+if (!in_array($status, $allowedStatus, true)) {
+    $status = '';
+}
+if (!in_array($sort, $allowedSort, true)) {
+    $sort = 'newest';
+}
+
 $animeList = $animeRepo->searchAnime($query, $genre, $status, $sort);
 $genres    = $animeRepo->getAllGenres();
+
+// If the selected genre was removed/renamed, reset instead of querying a stale value.
+$knownGenres = array_column($genres, 'name');
+if ($genre !== '' && !in_array($genre, $knownGenres, true)) {
+    $genre = '';
+    $animeList = $animeRepo->searchAnime($query, $genre, $status, $sort);
+}
 ?>
 <!doctype html>
 <html lang="en">
