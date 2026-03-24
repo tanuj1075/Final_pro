@@ -1,3 +1,37 @@
+<?php
+require_once __DIR__ . '/../../utils/security.php';
+secure_session_start();
+require_once __DIR__ . '/../../utils/bootstrap.php';
+
+use App\Database\Connection;
+use App\Repositories\AnimeRepository;
+use App\Repositories\UserRepository;
+
+if (empty($_SESSION['admin_logged_in'])) {
+    header('Location: /index.php?error=Admin login required');
+    exit;
+}
+
+// When this file is reached directly (not through AdminController), hydrate dashboard data here.
+if (!isset($userStats, $animeCount, $pendingUsers)) {
+    $flashMessage = $_SESSION['admin_flash'] ?? null;
+    unset($_SESSION['admin_flash']);
+
+    try {
+        $db = Connection::getInstance();
+        $userRepo = new UserRepository($db);
+        $animeRepo = new AnimeRepository($db);
+        $pendingUsers = $userRepo->getPendingUsers();
+        $userStats = $userRepo->getUserStats();
+        $animeCount = $animeRepo->getAnimeCount();
+    } catch (\Exception $e) {
+        $flashMessage = 'Database warning: unable to load admin metrics right now.';
+        $pendingUsers = [];
+        $userStats = ['total' => 0, 'pending' => 0];
+        $animeCount = 0;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,11 +143,12 @@
             <span>Admin Central</span>
         </div>
         <div class="nav-items">
-            <a href="index.php" class="nav-item active"><i class="fas fa-home"></i> Metrics</a>
-            <a href="manage_anime.php" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
-            <a href="ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+            <a href="/index.php" class="nav-item active"><i class="fas fa-home"></i> Metrics</a>
+            <a href="/admin/manage_anime.php" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
+            <a href="/admin/upload_video.php" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
+            <a href="/ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
-        <a href="?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="/index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">
@@ -192,7 +227,7 @@
 
     <script>
         function loadUsers() {
-            fetch('/src/services/api/users.php')
+            fetch('/api/users.php')
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('users-tbody');

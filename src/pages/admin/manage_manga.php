@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../utils/security.php';
 secure_session_start();
 
 if (empty($_SESSION['admin_logged_in'])) {
-    header('Location: index.php?error=Admin login required');
+    header('Location: /index.php?error=Admin login required');
     exit;
 }
 ?>
@@ -56,13 +56,13 @@ if (empty($_SESSION['admin_logged_in'])) {
             <span>Admin Central</span>
         </div>
         <div class="nav-items">
-            <a href="index.php" class="nav-item"><i class="fas fa-home"></i> Metrics</a>
-            <a href="manage_anime.php" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
-            <a href="upload_video.php" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
-            <a href="manage_manga.php" class="nav-item active"><i class="fas fa-book-open"></i> Manage Manga</a>
-            <a href="ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+            <a href="/index.php" class="nav-item"><i class="fas fa-home"></i> Metrics</a>
+            <a href="/admin/manage_anime.php" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
+            <a href="/admin/upload_video.php" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
+            <a href="/admin/manage_manga.php" class="nav-item active"><i class="fas fa-book-open"></i> Manage Manga</a>
+            <a href="/ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
-        <a href="index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="/index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">
@@ -136,7 +136,7 @@ if (empty($_SESSION['admin_logged_in'])) {
             const formData = new FormData();
             formData.append('action', 'list_manga');
             
-            fetch('/src/services/api/upload_manga.php', { method: 'POST', body: formData })
+            fetch('/api/upload_manga.php', { method: 'POST', body: formData })
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
@@ -154,7 +154,7 @@ if (empty($_SESSION['admin_logged_in'])) {
                 btnElement.disabled = true;
                 const formData = new FormData(formElement);
                 
-                fetch('/src/services/api/upload_manga.php', {
+                fetch('/api/upload_manga.php', {
                     method: 'POST',
                     body: formData
                 })
