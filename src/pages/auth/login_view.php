@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Crunchrolly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* (CSS unchanged) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        .logo p { color: #666; margin-top: 5px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .input-wrapper { position: relative; }
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn-login:active { transform: translateY(0); }
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .social-login-section {
+            margin-top: 18px;
+            text-align: center;
+        }
+        .social-login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .social-btn {
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            color: #334155;
+            border-radius: 12px;
+            min-width: 110px;
+            padding: 10px 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            text-decoration: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        }
+        .social-note {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 13px;
+        }
+        .social-note a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .social-note a:hover { text-decoration: underline; }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">
+        <h1>ðŸŽ¬ Crunchrolly</h1>
+        <p>Sign in to continue watching</p>
+    </div>
+
+    <?php if ($message && in_array($messageType, $allowedTypes)): ?>
+        <div class="alert alert-<?= htmlspecialchars($messageType) ?>">
+            <i class="fas fa-<?= $messageType === 'success' ? 'check-circle' : ($messageType === 'info' ? 'info-circle' : 'exclamation-circle') ?>"></i>
+            <?= htmlspecialchars($message) ?>
+        </div>
+    <?php endif; ?>
+
+    <form id="loginForm" method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+        <div class="form-group">
+            <label for="username">Email or Username</label>
+            <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="text" id="username" name="username" placeholder="Enter your email or username" required autofocus>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+        <div id="firebaseError" class="error-message hidden"></div>
+    </form>
+
+    <div class="social-login-section" aria-label="Social authentication options">
+        <div class="social-login-buttons">
+            <a href="oauth_start.php?provider=google" class="social-btn google" title="Sign in with Google">
+            <i class="fab fa-google"></i>
+          </a>
+          <a href="oauth_start.php?provider=apple" class="social-btn apple" title="Sign in with Apple">
+            <i class="fab fa-apple"></i>
+          </a>
+          <a href="oauth_start.php?provider=facebook" class="social-btn facebook" title="Sign in with Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+        </div>
+        <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+    </div>
+</div>
+
+<script>
+    // Keep native form submission so PHP authentication handles login.
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+
+    if (loginForm && usernameInput) {
+        loginForm.addEventListener('submit', () => {
+            usernameInput.value = usernameInput.value.trim();
+        });
+    }
+</script>
+</body>
+</html>
+
