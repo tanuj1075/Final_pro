@@ -13,7 +13,7 @@ secure_session_start();
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles/AT.css">
+  <link rel="stylesheet" href="/src/styles/AT.css">
   <style>
     :root {
       --primary: #ff4c60;
@@ -388,7 +388,7 @@ secure_session_start();
       <button class="btn-watch" id="watchOverviewBtn" type="button">
         <i class="fas fa-play"></i> Watch Overview
       </button>
-      <a class="btn-watch" href="manga.php" style="color: inherit; text-decoration: none;">
+      <a class="btn-watch" href="/manga.php" style="color: inherit; text-decoration: none;">
         <i class="fas fa-star"></i> Manga
       </a>
     </div>
@@ -404,7 +404,7 @@ secure_session_start();
     <h3>Attack on Titan - Official Trailer</h3>
   </div>
   <video id="aotTrailer" controls>
-    <source src="../assets/videos/your-name.mp4" type="video/mp4" />
+    <source src="/src/assets/videos/your-name.mp4" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
 </section>
@@ -456,9 +456,9 @@ secure_session_start();
     <div class="footer-section">
         <h3>Explore</h3>
         <ul class="footer-links">
-            <li><a href="ash.php">Home</a></li>
-            <li><a href="anime_hub.php">Movies</a></li>
-            <li><a href="manga.php">Manga</a></li>
+            <li><a href="/ash.php">Home</a></li>
+            <li><a href="/anime_hub.php">Movies</a></li>
+            <li><a href="/manga.php">Manga</a></li>
         </ul>
     </div>
   </div>

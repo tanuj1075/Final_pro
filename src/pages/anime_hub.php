@@ -193,11 +193,11 @@ if ($genre !== '' && !in_array($genre, $knownGenres, true)) {
 <form method="get" id="filterForm">
   <!-- Nav -->
   <nav>
-    <a href="ash.php" class="nav-brand"><i class="fas fa-bolt"></i> AnimePlex</a>
+    <a href="/ash.php" class="nav-brand"><i class="fas fa-bolt"></i> AnimePlex</a>
     <div class="nav-links">
-      <a href="ash.php" class="nav-link"><i class="fas fa-home"></i> Home</a>
-      <a href="anime_hub.php" class="nav-link active"><i class="fas fa-film"></i> Browse</a>
-      <a href="manga.php" class="nav-link"><i class="fas fa-book-open"></i> Manga</a>
+      <a href="/ash.php" class="nav-link"><i class="fas fa-home"></i> Home</a>
+      <a href="/anime_hub.php" class="nav-link active"><i class="fas fa-film"></i> Browse</a>
+      <a href="/manga.php" class="nav-link"><i class="fas fa-book-open"></i> Manga</a>
     </div>
   </nav>
 
@@ -234,7 +234,7 @@ if ($genre !== '' && !in_array($genre, $knownGenres, true)) {
       <option value="title_asc"   <?php echo $sort === 'title_asc'   ? 'selected' : ''; ?>>Title A–Z</option>
     </select>
     <?php if ($query || $genre || $status): ?>
-      <a href="anime_hub.php" style="color: var(--muted); font-size: 13px; text-decoration: none; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);">
+      <a href="/anime_hub.php" style="color: var(--muted); font-size: 13px; text-decoration: none; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);">
         <i class="fas fa-times"></i> Clear
       </a>
     <?php endif; ?>
@@ -257,7 +257,7 @@ if ($genre !== '' && !in_array($genre, $knownGenres, true)) {
   <?php endif; ?>
 
   <?php foreach ($animeList as $anime): ?>
-    <a href="anime_detail.php?id=<?php echo (int)$anime['id']; ?>" class="anime-card">
+    <a href="/anime_detail.php?id=<?php echo (int)$anime['id']; ?>" class="anime-card">
       <?php if (!empty($anime['poster_url'])): ?>
         <img src="<?php echo htmlspecialchars(resolve_asset_url($anime['poster_url'])); ?>" class="card-poster" alt="<?php echo htmlspecialchars($anime['title']); ?>" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="poster-placeholder" style="display:none;"><i class="fas fa-image"></i></div>

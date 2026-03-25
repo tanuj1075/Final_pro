@@ -10,7 +10,7 @@ secure_session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <!-- Shared Styles for Navbar -->
-  <link href="../styles/AT.css" rel="stylesheet">
+  <link href="/src/styles/AT.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -566,7 +566,7 @@ secure_session_start();
     <div class="hero-content">
       <h1 class="hero-title">Your Name</h1>
       <p class="hero-subtitle">The complete manga adaptation of Makoto Shinkai's masterpiece. Follow Mitsuha and Taki's journey across time and space in this beautiful three-volume series.</p>
-      <a href="manga_reader.php" class="btn" style="margin-bottom: 32px; display: inline-block;">
+      <a href="/manga_reader.php" class="btn" style="margin-bottom: 32px; display: inline-block;">
         <i class="fas fa-book-reader"></i> Browse &amp; Read All Manga
       </a>
       <div class="hero-stats">
@@ -904,7 +904,7 @@ secure_session_start();
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="#home">Home</a></li>
+          <li><a href="/ash.php">Home</a></li>
           <li><a href="#about">About the Manga</a></li>
           <li><a href="#volumes">Volumes</a></li>
           <li><a href="#read">Read Online</a></li>

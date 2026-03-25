@@ -75,10 +75,10 @@ try {
             <span>Admin Central</span>
         </div>
         <div class="nav-items">
-            <a href="/index.php" class="nav-item"><i class="fas fa-home"></i> Metrics</a>
-            <a href="/admin/manage_anime.php" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
-            <a href="/admin/upload_video.php" class="nav-item active"><i class="fas fa-upload"></i> Upload Video</a>
-            <a href="/admin/manage_manga.php" class="nav-item"><i class="fas fa-book-open"></i> Manage Manga</a>
+            <a href="/admin/dashboard" class="nav-item"><i class="fas fa-home"></i> Metrics</a>
+            <a href="/admin/manage_anime" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
+            <a href="/admin/upload_video" class="nav-item active"><i class="fas fa-upload"></i> Upload Video</a>
+            <a href="/admin/manage_manga" class="nav-item"><i class="fas fa-book-open"></i> Manage Manga</a>
             <a href="/ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
         <a href="/index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>

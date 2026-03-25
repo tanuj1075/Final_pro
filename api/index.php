@@ -66,12 +66,12 @@ $aliases = [
     'watch_yourname' => 'watch_yourname.php',
     'watch_aot'      => 'watch_aot.php',
     'watch_demonslayer' => 'watch_demonslayer.php',
-    // Admin routes → root index.php handles admin login
-    'admin'          => 'index.php',
-    'admin/'         => 'index.php',
-    'admin/index.php'=> 'index.php',
+    'admin/dashboard'       => 'admin/dashboard.php',
+    'admin/upload_video'    => 'admin/upload_video.php',
+    'admin/manage_manga'    => 'admin/manage_manga.php',
+    'admin/manage_anime'    => 'manage_anime.php',
     'admin/manage_anime.php' => 'manage_anime.php',
-    'admin/ash.php'  => 'ash.php',
+    'admin/ash.php'         => 'ash.php',
 ];
 
 if (isset($aliases[$route])) {

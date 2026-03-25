@@ -157,8 +157,8 @@ if ($mangaId && $mangaList) {
 <body>
 
 <nav>
-  <a href="manga_reader.php" class="nav-brand"><i class="fas fa-book-open" style="color:var(--accent);"></i> Manga Reader</a>
-  <a href="manga.php" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Manga</a>
+  <a href="/manga_reader.php" class="nav-brand"><i class="fas fa-book-open" style="color:var(--accent);"></i> Manga Reader</a>
+  <a href="/manga.php" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Manga</a>
 </nav>
 
 <div class="layout">

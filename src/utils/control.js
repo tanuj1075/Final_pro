@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     Home: '#home',
     Popular: '#popular',
     New: '#new',
-    Manga: 'manga.php',
-    News: 'video.html',
+    Manga: '/manga.php',
+    News: '/video.html',
   };
 
   document.querySelectorAll('.nav-menu a').forEach((link) => {
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  const carouselWatchTargets = ['anime_hub.php', 'watch_aot.php', 'watch_yourname.php', 'anime_hub.php', 'anime_hub.php'];
+  const carouselWatchTargets = ['/anime_hub.php', '/watch_aot.php', '/watch_yourname.php', '/anime_hub.php', '/anime_hub.php'];
   document.querySelectorAll('.watch-btn').forEach((button) => {
     button.setAttribute('type', 'button');
     button.addEventListener('click', () => {

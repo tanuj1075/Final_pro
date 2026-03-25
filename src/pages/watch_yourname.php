@@ -14,7 +14,7 @@ secure_session_start();
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles/AT.css">
+  <link rel="stylesheet" href="/src/styles/AT.css">
   <style>
     * {
       margin: 0;
@@ -577,7 +577,7 @@ secure_session_start();
     </div>
     <div class="btn-group">
       <button class="btn-watch" id="watchTrailerBtn"><i class="fas fa-play"></i> Watch Trailer</button>
-      <a href="manga.php" class="btn-watch btn-outline" id="mangaExploreBtn"><i class="fas fa-book-open"></i> Manga Edition</a>
+      <a href="/manga.php" class="btn-watch btn-outline" id="mangaExploreBtn"><i class="fas fa-book-open"></i> Manga Edition</a>
     </div>
   </div>
 </section>
@@ -659,7 +659,7 @@ secure_session_start();
         <a href="#"><i class="fab fa-discord"></i></a>
       </div>
     </div>
-    <div class="footer-section"><h3>Explore</h3><ul class="footer-links"><li><a href="ash.php">Home</a></li><li><a href="anime_hub.php">Movies</a></li><li><a href="manga.php">Manga</a></li></ul></div>
+    <div class="footer-section"><h3>Explore</h3><ul class="footer-links"><li><a href="/ash.php">Home</a></li><li><a href="/anime_hub.php">Movies</a></li><li><a href="/manga.php">Manga</a></li></ul></div>
     <div class="footer-section"><h3>Support</h3><ul class="footer-links"><li><a href="#">FAQ</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
   </div>
   <div class="copyright">

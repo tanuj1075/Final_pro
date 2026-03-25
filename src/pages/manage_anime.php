@@ -68,8 +68,8 @@ $animeList = $animeRepo->getAllAnime();
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3">Admin: Manage Anime Data</h1>
     <div class="d-flex gap-2">
-      <a href="/admin/upload_video.php" class="btn btn-outline-primary mr-2">Upload Video</a>
-      <a href="/index.php" class="btn btn-outline-secondary">Admin Panel</a>
+      <a href="/admin/upload_video" class="btn btn-outline-primary mr-2">Upload Video</a>
+      <a href="/admin/dashboard" class="btn btn-outline-secondary">Admin Panel</a>
     </div>
   </div>
 
