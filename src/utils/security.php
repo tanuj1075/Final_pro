@@ -8,19 +8,15 @@ function secure_session_start() {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
-    // PHP < 7.3 does not support array form for session_set_cookie_params.
-    if (PHP_VERSION_ID >= 70300) {
-        session_set_cookie_params([
-            'lifetime' => 0,
-            'path' => '/',
-            'domain' => '',
-            'secure' => $isHttps,
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ]);
-    } else {
-        session_set_cookie_params(0, '/; samesite=Lax', '', $isHttps, true);
-    }
+    // Use the array form for session_set_cookie_params (PHP 7.3+).
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 
     session_start();
 }
@@ -176,7 +172,6 @@ function build_app_url($pathWithQuery) {
     $path = '/' . ltrim((string)$pathWithQuery, '/');
     return get_app_base_url() . $path;
 }
-
 /**
  * Check if the currently logged-in user is still active and approved.
  * If not, destroy the session and redirect to login.

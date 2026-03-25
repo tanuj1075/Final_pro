@@ -161,7 +161,6 @@ class UserRepository
         
         return $stmt->rowCount() > 0;
     }
-
     public function rejectUser(int $userId): bool
     {
         $stmt = $this->db->prepare("UPDATE admin_panel_siteuser SET is_active = 0 WHERE id = :id");

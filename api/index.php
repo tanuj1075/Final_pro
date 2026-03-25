@@ -29,6 +29,9 @@ $allowedRoutes = [
     'manga.php',
     'subscription.html',
     'video.html',
+    'watch_yourname.php',
+    'watch_aot.php',
+    'watch_demonslayer.php',
 
     // ── Admin panel pages (inside src/pages/admin/) ────────────────────────
     'admin/dashboard.php',
@@ -60,6 +63,9 @@ $aliases = [
     'manga'          => 'manga.php',
     'subscription'   => 'subscription.html',
     'video'          => 'video.html',
+    'watch_yourname' => 'watch_yourname.php',
+    'watch_aot'      => 'watch_aot.php',
+    'watch_demonslayer' => 'watch_demonslayer.php',
     // Admin routes → root index.php handles admin login
     'admin'          => 'index.php',
     'admin/'         => 'index.php',
