@@ -172,7 +172,7 @@
 <div class="login-container">
     <div class="logo">
     <h1>
-        <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+        <img src="/mainlogo.png" alt="AckerStream Logo" class="logo-img">
         AckerStream
     </h1>
     <p>Sign in to continue watching</p>
