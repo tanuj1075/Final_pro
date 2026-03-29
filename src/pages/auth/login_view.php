@@ -39,6 +39,11 @@
             -webkit-text-fill-color: transparent;
             font-weight: bold;
         }
+         .logo-img {
+          width: 70px;   /* increase size */
+          height: 70px;
+          margin-right: 12px;
+        }
         .logo p { color: #666; margin-top: 5px; font-size: 14px; }
         .form-group { margin-bottom: 20px; }
         .form-group label {
