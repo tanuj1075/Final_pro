@@ -242,7 +242,7 @@ if (isset($_GET['logout'])) {
             <div class="anime-card">
               <div class="card-image">
                 <!-- TODO: swap this out for the actual demon slayer card image when we get it -->
-                <img src="/src/assets/images/LordOfMysteries.jpg" alt="Demon Slayer">
+                <img src="https://images.squarespace-cdn.com/content/v1/571abd61e3214001fb3b9966/1613769110440-T2W236VNWNRGUSDEXS39/Demon+Slayer%3A+Mugen+Train+Movie+Edition+Novelized" alt="Demon Slayer">
                 <div class="card-overlay">
                   <button class="quick-play" type="button" aria-label="Play Demon Slayer">
                     <i class="fas fa-play"></i>
