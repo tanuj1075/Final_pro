@@ -94,7 +94,7 @@
 <body>
     <div class="login-card">
         <div class="header">
-            <img src="/mainlogo.png" alt="AckerStream Logo" class="header-logo">
+            <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="header-logo">
             <h1>Admin Access</h1>
         </div>
 
