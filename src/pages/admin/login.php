@@ -34,7 +34,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .header { text-align: center; margin-bottom: 32px; }
-        .header i { font-size: 48px; color: var(--primary); margin-bottom: 16px; }
+        .header-logo {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin-bottom: 16px;
+        }
         .header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #94a3b8; }
@@ -89,7 +94,7 @@
 <body>
     <div class="login-card">
         <div class="header">
-            <i class="fas fa-shield-alt"></i>
+            <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="header-logo">
             <h1>Admin Access</h1>
         </div>
 
