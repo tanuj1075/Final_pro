@@ -194,27 +194,35 @@ if (isset($_GET['logout'])) {
 
         <div class="anime-grid" id="cardSlider">
 
-          <a href="watch_yourname.php" target="_blank" class="anime-card-link">
-            <div class="anime-card featured">
-              <div class="card-image">
-                <img src="/src/assets/images/your-name card.jpg" alt="Your Name">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Your Name">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Your Name</h3>
-                <p class="anime-synopsis">Two strangers connected by fate begin a journey to uncover a forgotten connection.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.4</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
+         <a href="watch_yourname.php" target="_blank" class="anime-card-link">
+  <div class="anime-card featured">
+
+    <div class="card-image">
+      <img src="/src/assets/images/your-name card.jpg" alt="Your Name">
+
+      <div class="card-overlay">
+        <button class="quick-play">
+          ▶
+        </button>
+      </div>
+
+      <div class="episode-tag">Sub | Dub</div>
+    </div>
+
+    <div class="card-content">
+      <h3 class="anime-title">Your Name</h3>
+      <p class="anime-synopsis">
+        Two strangers connected by fate begin a journey to uncover a forgotten connection.
+      </p>
+
+      <div class="card-meta">
+        <span class="rating">⭐ 8.4</span>
+        <span class="episodes">Movie</span>
+      </div>
+    </div>
+
+  </div>
+</a>
 
           <a href="watch_aot.php" target="_blank" class="anime-card-link">
             <div class="anime-card">
