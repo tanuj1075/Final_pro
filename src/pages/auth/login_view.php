@@ -32,17 +32,25 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .logo { text-align: center; margin-bottom: 30px; }
-        .logo h1 {
+        .logo-title {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+        }
+        .logo-title h1 {
             font-size: 36px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: bold;
+            line-height: 1;
         }
-         .logo-img {
-          width: 70px;   /* increase size */
-          height: 70px;
-          margin-right: 12px;
+        .logo-img {
+          width: 56px;
+          height: 56px;
+          object-fit: contain;
         }
         .logo p { color: #666; margin-top: 5px; font-size: 14px; }
         .form-group { margin-bottom: 20px; }
