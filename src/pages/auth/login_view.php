@@ -179,12 +179,12 @@
 <body>
 <div class="login-container">
     <div class="logo">
-        <div class="logo-title">
-            <img src="/mainlogo.png" alt="AckerStream Logo" class="logo-img">
-            <h1>AckerStream</h1>
-        </div>
-        <p>Sign in to continue watching</p>
-    </div>
+    <h1>
+        <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+        AckerStream
+    </h1>
+    <p>Sign in to continue watching</p>
+</div>
 
     <?php if ($message && in_array($messageType, $allowedTypes)): ?>
         <div class="alert alert-<?= htmlspecialchars($messageType) ?>">
