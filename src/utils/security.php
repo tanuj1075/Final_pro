@@ -190,6 +190,10 @@ function check_user_active() {
     }
 
     try {
+        if (!class_exists(\App\Database\Connection::class, false)) {
+            require_once __DIR__ . '/bootstrap.php';
+        }
+
         $db = \App\Database\Connection::getInstance();
         $stmt = $db->prepare("SELECT is_active, is_approved FROM admin_panel_siteuser WHERE id = :id");
         $stmt->execute(['id' => $_SESSION['user_id']]);
