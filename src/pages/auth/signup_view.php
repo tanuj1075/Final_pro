@@ -142,9 +142,12 @@
 <body>
 <div class="signup-container">
     <div class="logo">
-        <h1>ðŸŽ¬ Crunchrolly</h1>
-        <p>Create your account to start watching</p>
-    </div>
+    <h1>
+        <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+        AckerStream
+    </h1>
+    <p>Create your account to start watching</p>
+</div>
 
     <?php if ($message): ?>
         <div class="alert alert-<?= $messageType ?>">
