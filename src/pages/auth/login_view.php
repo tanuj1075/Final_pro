@@ -1,4 +1,4 @@
- <?php
+<!-- <?php
 session_start();
 
 // ------------------------------
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Generate CSRF token for the form
 $csrf_token = generate_csrf_token();
-?> 
+?> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
