@@ -3,151 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Crunchrolly</title>
+    <title>Sign Up - AckerStream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (CSS unchanged) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: url("mainlogo.png") no-repeat center center fixed;
+            background-size: cover;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
+
+        /* Softer overlay for better text contrast */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+
+        /* ========== SIGNUP CARD ========== */
         .signup-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-            animation: slideIn 0.5s ease-out;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            padding: 2rem 1.8rem;
+            width: 90%;
+            max-width: 440px;
+            transition: all 0.3s ease;
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Logo & header */
+        .logo {
+            text-align: center;
+            margin-bottom: 1.8rem;
         }
-        .logo { text-align: center; margin-bottom: 30px; }
+
         .logo h1 {
-            font-size: 36px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Bebas Neue', 'Segoe UI', sans-serif;
+            font-size: 1.9rem;
+            letter-spacing: 0.08em;
+            background: linear-gradient(100deg, #f0b90b 0%, #e6a017 45%, #fff0c0 100%);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
         }
-        .logo p { color: #666; margin-top: 5px; font-size: 14px; }
-        .form-group { margin-bottom: 20px; }
+
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .logo p {
+            color: #f0f0f0;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
+            margin-bottom: 0.5rem;
+            color: #fff;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 0.9rem;
         }
-        .input-wrapper { position: relative; }
+
+        .input-wrapper {
+            position: relative;
+        }
+
         .input-wrapper i {
             position: absolute;
-            left: 15px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #667eea;
+            color: #c0c0ff;
+            font-size: 1rem;
+            pointer-events: none;
         }
+
         .form-group input {
             width: 100%;
-            padding: 12px 15px 12px 45px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s;
-            background: white;
+            padding: 12px 15px 12px 42px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(2px);
         }
+
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #8a6eff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+            background: rgba(255, 255, 255, 0.15);
         }
-        .btn-signup {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 400;
         }
-        .btn-signup:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-        .btn-signup:active { transform: translateY(0); }
-        .footer-text {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        .footer-text a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .footer-text a:hover { text-decoration: underline; }
-        .alert {
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+
+        /* Password strength */
         .password-strength {
             margin-top: 5px;
             font-size: 12px;
         }
-        .strength-weak { color: #f44336; }
-        .strength-medium { color: #ff9800; }
-        .strength-strong { color: #4caf50; }
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
+        .strength-weak { color: #ffaa88; }
+        .strength-medium { color: #ffd966; }
+        .strength-strong { color: #b0ffb0; }
+
+        /* Button */
+        .btn-signup {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .hidden { display: none; }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-signup:active {
+            transform: translateY(1px);
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            backdrop-filter: blur(4px);
+            border-left: 3px solid #2ecc71;
+            color: #d0ffd0;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            backdrop-filter: blur(4px);
+            border-left: 3px solid #e74c3c;
+            color: #ffc9c9;
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #ffaeae;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Footer link */
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #ddd;
+            font-size: 14px;
+        }
+        .footer-text a {
+            color: #cbb3ff;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted rgba(203, 179, 255, 0.6);
+        }
+        .footer-text a:hover {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 520px) {
+            .signup-container {
+                padding: 1.5rem;
+                width: 95%;
+            }
+
+            .logo h1 {
+                font-size: 1.6rem;
+                white-space: normal;
+                flex-wrap: wrap;
+            }
+
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="signup-container">
     <div class="logo">
-    <h1>
-        <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
-        AckerStream
-    </h1>
-    <p>Create your account to start watching</p>
-</div>
+        <h1>
+            <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+            AckerStream
+        </h1>
+        <p>Create your account to start watching</p>
+    </div>
 
     <?php if ($message): ?>
         <div class="alert alert-<?= $messageType ?>">
@@ -162,15 +272,27 @@
             <label for="username">Username</label>
             <div class="input-wrapper">
                 <i class="fas fa-user"></i>
-                <input type="text" id="username" name="username" placeholder="Choose a username" value="<?= htmlspecialchars($formValues['username']) ?>" required>
-            </div>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Choose a username" 
+                required
+            >            
+        </div>
         </div>
 
         <div class="form-group">
             <label for="email">Email Address</label>
             <div class="input-wrapper">
                 <i class="fas fa-envelope"></i>
-                <input type="email" id="email" name="email" placeholder="your@email.com" value="<?= htmlspecialchars($formValues['email']) ?>" required>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="your@email.com" 
+                    required
+                >          
             </div>
         </div>
 
@@ -268,17 +390,16 @@
         if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
         if (strength <= 2) {
-            strengthDiv.textContent = 'âš ï¸ Weak password';
+            strengthDiv.textContent = '⚠️ Weak password';
             strengthDiv.className = 'password-strength strength-weak';
         } else if (strength <= 4) {
-            strengthDiv.textContent = 'âš¡ Medium password';
+            strengthDiv.textContent = '⚡ Medium password';
             strengthDiv.className = 'password-strength strength-medium';
         } else {
-            strengthDiv.textContent = 'âœ… Strong password';
+            strengthDiv.textContent = '✅ Strong password';
             strengthDiv.className = 'password-strength strength-strong';
         }
     });
 </script>
 </body>
 </html>
-
