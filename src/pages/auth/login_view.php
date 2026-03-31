@@ -343,21 +343,6 @@
         </button>
         <div id="firebaseError" class="error-message hidden"></div>
     </form>
-
-    <div class="social-login-section" aria-label="Social authentication options">
-        <div class="social-login-buttons">
-            <a href="oauth_start.php?provider=google" class="social-btn google" title="Sign in with Google">
-                <i class="fab fa-google"></i> Google
-            </a>
-            <a href="oauth_start.php?provider=apple" class="social-btn apple" title="Sign in with Apple">
-                <i class="fab fa-apple"></i> Apple
-            </a>
-            <a href="oauth_start.php?provider=facebook" class="social-btn facebook" title="Sign in with Facebook">
-                <i class="fab fa-facebook-f"></i> Facebook
-            </a>
-        </div>
-        <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
-    </div>
 </div>
 
 <script>
