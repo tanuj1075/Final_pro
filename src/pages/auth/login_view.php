@@ -343,6 +343,10 @@
         </button>
         <div id="firebaseError" class="error-message hidden"></div>
     </form>
+    <div class="social-login-section" aria-label="Social authentication options">
+        
+        <div class="social-note">Don't have an account? <a href="signup.php">Register Now</a></div>
+    </div>
 </div>
 
 <script>
