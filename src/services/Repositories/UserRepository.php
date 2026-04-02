@@ -29,6 +29,7 @@ class UserRepository
     {
         $normalizedUsername = $this->normalizeUsername($username);
         $normalizedEmail = $this->normalizeEmail($email);
+        $clientMetadata = $this->getClientMetadata();
 
         if (!$this->isValidUsername($normalizedUsername)) {
             return ['success' => false, 'message' => 'Username must be 3-30 characters and use only letters, numbers, or underscores'];
@@ -54,14 +55,42 @@ class UserRepository
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
             $stmt = $this->db->prepare(
-                "INSERT INTO admin_panel_siteuser (username, email, password_hash, is_approved, is_active, created_at, status)
-                 VALUES (:username, :email, :password_hash, 0, 1, datetime('now'), 'offline')"
+                "INSERT INTO admin_panel_siteuser (
+                    username,
+                    email,
+                    password_hash,
+                    is_approved,
+                    is_active,
+                    created_at,
+                    status,
+                    registration_ip,
+                    registration_user_agent,
+                    last_seen_ip,
+                    last_seen_user_agent
+                )
+                 VALUES (
+                    :username,
+                    :email,
+                    :password_hash,
+                    0,
+                    1,
+                    datetime('now'),
+                    'offline',
+                    :registration_ip,
+                    :registration_user_agent,
+                    :last_seen_ip,
+                    :last_seen_user_agent
+                )"
             );
 
             $stmt->execute([
                 'username' => $normalizedUsername,
                 'email' => $normalizedEmail,
                 'password_hash' => $passwordHash,
+                'registration_ip' => $clientMetadata['ip'],
+                'registration_user_agent' => $clientMetadata['user_agent'],
+                'last_seen_ip' => $clientMetadata['ip'],
+                'last_seen_user_agent' => $clientMetadata['user_agent'],
             ]);
 
             return ['success' => true, 'message' => 'Registration successful. Waiting for admin approval.'];
@@ -169,6 +198,14 @@ class UserRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function deleteUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM admin_panel_siteuser WHERE id = :id");
+        $stmt->execute(['id' => $userId]);
+
+        return $stmt->rowCount() > 0;
+    }
+
     public function getUserByEmail(string $email): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM admin_panel_siteuser WHERE email = :email LIMIT 1");
@@ -193,14 +230,38 @@ class UserRepository
 
     public function touchLastLogin(int $userId): void
     {
-        $stmt = $this->db->prepare("UPDATE admin_panel_siteuser SET last_login = datetime('now'), status = 'online' WHERE id = :id");
-        $stmt->execute(['id' => $userId]);
+        $clientMetadata = $this->getClientMetadata();
+        $stmt = $this->db->prepare(
+            "UPDATE admin_panel_siteuser
+             SET last_login = datetime('now'),
+                 status = 'online',
+                 last_seen_ip = :last_seen_ip,
+                 last_seen_user_agent = :last_seen_user_agent
+             WHERE id = :id"
+        );
+        $stmt->execute([
+            'id' => $userId,
+            'last_seen_ip' => $clientMetadata['ip'],
+            'last_seen_user_agent' => $clientMetadata['user_agent'],
+        ]);
     }
 
     public function touchLastLogout(int $userId): void
     {
-        $stmt = $this->db->prepare("UPDATE admin_panel_siteuser SET last_logout = datetime('now'), status = 'offline' WHERE id = :id");
-        $stmt->execute(['id' => $userId]);
+        $clientMetadata = $this->getClientMetadata();
+        $stmt = $this->db->prepare(
+            "UPDATE admin_panel_siteuser
+             SET last_logout = datetime('now'),
+                 status = 'offline',
+                 last_seen_ip = :last_seen_ip,
+                 last_seen_user_agent = :last_seen_user_agent
+             WHERE id = :id"
+        );
+        $stmt->execute([
+            'id' => $userId,
+            'last_seen_ip' => $clientMetadata['ip'],
+            'last_seen_user_agent' => $clientMetadata['user_agent'],
+        ]);
     }
 
     public function getUserStats(): array
@@ -255,5 +316,21 @@ class UserRepository
     private function isValidUsername(string $username): bool
     {
         return (bool)preg_match('/^[A-Za-z0-9_]{3,30}$/', $username);
+    }
+
+    /**
+     * @return array{ip: ?string, user_agent: ?string}
+     */
+    private function getClientMetadata(): array
+    {
+        $forwardedFor = trim((string)($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''));
+        $candidateIp = $forwardedFor !== '' ? explode(',', $forwardedFor)[0] : ($_SERVER['REMOTE_ADDR'] ?? '');
+        $ip = trim((string)$candidateIp);
+        $userAgent = trim((string)($_SERVER['HTTP_USER_AGENT'] ?? ''));
+
+        return [
+            'ip' => $ip !== '' ? substr($ip, 0, 64) : null,
+            'user_agent' => $userAgent !== '' ? substr($userAgent, 0, 255) : null,
+        ];
     }
 }

@@ -54,6 +54,10 @@ class AdminController
                     $this->unblockUser((int)$_POST['unblock_user']);
                     return;
                 }
+                if ($action === 'delete' && isset($_POST['delete_user'])) {
+                    $this->handleDeleteUser((int)$_POST['delete_user']);
+                    return;
+                }
             }
         }
 
@@ -72,18 +76,18 @@ class AdminController
     private function handleMainAccess(): void
     {
         if (!$this->isAdminLoggedIn()) {
-            header('Location: index.php?error=Please login first to access the main site');
+            header('Location: /index.php?error=Please login first to access the main site');
             exit;
         }
         // Redirect to main site
-        header('Location: ash.php');
+        header('Location: /ash.php');
         exit;
     }
 
     private function logout(): void
     {
         destroy_session_and_cookie();
-        header('Location: index.php');
+        header('Location: /index.php');
         exit;
     }
 
@@ -115,7 +119,7 @@ class AdminController
             $_SESSION['admin_username'] = $username;
             $_SESSION['login_time'] = time();
 
-            header('Location: index.php');
+            header('Location: /index.php');
             exit;
         }
 
@@ -126,7 +130,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: index.php');
+            header('Location: /index.php');
             exit;
         }
 
@@ -139,7 +143,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: index.php');
+        header('Location: /index.php');
         exit;
     }
 
@@ -147,7 +151,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: index.php');
+            header('Location: /index.php');
             exit;
         }
 
@@ -160,7 +164,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: index.php');
+        header('Location: /index.php');
         exit;
     }
 
@@ -168,7 +172,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: index.php');
+            header('Location: /index.php');
             exit;
         }
 
@@ -181,7 +185,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: index.php');
+        header('Location: /index.php');
         exit;
     }
 
@@ -189,7 +193,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: index.php');
+            header('Location: /index.php');
             exit;
         }
 
@@ -202,7 +206,28 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: index.php');
+        header('Location: /index.php');
+        exit;
+    }
+
+    private function handleDeleteUser(int $userId): void
+    {
+        if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+            $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
+            header('Location: /index.php');
+            exit;
+        }
+
+        try {
+            $deleted = $this->userRepo->deleteUser($userId);
+            $_SESSION['admin_flash'] = $deleted
+                ? 'User deleted permanently.'
+                : 'Unable to delete user.';
+        } catch (Exception $e) {
+            $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
+        }
+
+        header('Location: /index.php');
         exit;
     }
 

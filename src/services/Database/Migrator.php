@@ -32,8 +32,14 @@ class Migrator
             last_login TEXT NULL,
             approved_at TEXT NULL,
             status TEXT NOT NULL DEFAULT 'offline',
-            last_logout TEXT NULL
+            last_logout TEXT NULL,
+            registration_ip TEXT NULL,
+            registration_user_agent TEXT NULL,
+            last_seen_ip TEXT NULL,
+            last_seen_user_agent TEXT NULL
         )");
+
+        $this->ensureSiteUserColumns();
 
         $this->db->exec("CREATE TABLE IF NOT EXISTS admin_panel_anime (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,6 +113,39 @@ class Migrator
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_created_at ON admin_panel_anime(created_at)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_detail_anime_id ON admin_panel_anime_detail(anime_id)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_genres_genre_id ON admin_panel_anime_genres(genre_id)");
+    }
+
+    /**
+     * Ensure user tracking columns exist for already-created databases.
+     */
+    private function ensureSiteUserColumns(): void
+    {
+        $columns = [
+            'registration_ip' => "TEXT NULL",
+            'registration_user_agent' => "TEXT NULL",
+            'last_seen_ip' => "TEXT NULL",
+            'last_seen_user_agent' => "TEXT NULL",
+        ];
+
+        foreach ($columns as $name => $definition) {
+            if (!$this->siteUserHasColumn($name)) {
+                $this->db->exec("ALTER TABLE admin_panel_siteuser ADD COLUMN {$name} {$definition}");
+            }
+        }
+    }
+
+    private function siteUserHasColumn(string $columnName): bool
+    {
+        $stmt = $this->db->query("PRAGMA table_info(admin_panel_siteuser)");
+        $rows = $stmt->fetchAll();
+
+        foreach ($rows as $row) {
+            if (($row['name'] ?? '') === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

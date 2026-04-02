@@ -192,12 +192,12 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                             <td><?= htmlspecialchars($u['email']) ?></td>
                             <td><?= htmlspecialchars($u['created_at'] ?? 'N/A') ?></td>
                             <td>
-                                <form method="POST" action="?action=approve" style="display:inline;">
+                                <form method="POST" action="/index.php?action=approve" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="approve_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-approve">Approve</button>
                                 </form>
-                                <form method="POST" action="?action=reject" style="display:inline;">
+                                <form method="POST" action="/index.php?action=reject" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="reject_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-reject">Reject</button>
@@ -215,13 +215,16 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                     <th>User</th>
                     <th>Email</th>
                     <th>Status</th>
+                    <th>Registered IP</th>
+                    <th>Last Seen IP</th>
                     <th>Last Login</th>
                     <th>Last Logout</th>
+                    <th>User Agent</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="users-tbody">
-                <tr><td colspan="6" style="text-align: center; color: #64748b;">Loading active users...</td></tr>
+                <tr><td colspan="9" style="text-align: center; color: #64748b;">Loading active users...</td></tr>
             </tbody>
         </table>
     </div>
@@ -241,6 +244,9 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                             const statusHtml = `<span style="color: ${statusColor}; font-weight: bold;"><i class="fas fa-circle" style="font-size: 10px;"></i> ${u.status.toUpperCase()}</span>`;
                             const loginTxt = u.last_login ? u.last_login : 'Never';
                             const logoutTxt = u.last_logout ? u.last_logout : '-';
+                            const registrationIp = u.registration_ip ? u.registration_ip : '-';
+                            const lastSeenIp = u.last_seen_ip ? u.last_seen_ip : '-';
+                            const userAgent = u.last_seen_user_agent || u.registration_user_agent || '-';
                             
                             const isActive = parseInt(u.is_active) === 1;
                             const actionBtnClass = isActive ? 'btn-reject' : 'btn-approve';
@@ -253,20 +259,28 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                                     <td>${u.username}</td>
                                     <td>${u.email}</td>
                                     <td>${statusHtml}</td>
+                                    <td>${registrationIp}</td>
+                                    <td>${lastSeenIp}</td>
                                     <td>${loginTxt}</td>
                                     <td>${logoutTxt}</td>
+                                    <td title="${userAgent.replace(/"/g, '&quot;')}">${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}</td>
                                     <td>
-                                        <form method="POST" action="?action=${actionType}" style="display:inline;">
+                                        <form method="POST" action="/index.php?action=${actionType}" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                                             <input type="hidden" name="${actionInputName}" value="${u.id}">
                                             <button class="btn-action ${actionBtnClass}">${actionBtnText}</button>
+                                        </form>
+                                        <form method="POST" action="/index.php?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
+                                            <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
+                                            <input type="hidden" name="delete_user" value="${u.id}">
+                                            <button class="btn-action btn-reject">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             `;
                         });
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">No users found.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">No users found.</td></tr>';
                     }
                 })
                 .catch(err => console.error('Error fetching users:', err));
