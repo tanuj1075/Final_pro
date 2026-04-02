@@ -8,7 +8,7 @@ use App\Repositories\AnimeRepository;
 use App\Repositories\UserRepository;
 
 if (empty($_SESSION['admin_logged_in'])) {
-    header('Location: /index.php?error=Admin login required');
+    header('Location: /admin?error=Admin login required');
     exit;
 }
 
@@ -148,7 +148,7 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
             <a href="/admin/upload_video" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
             <a href="/ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
-        <a href="/index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="/admin?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">
@@ -192,12 +192,12 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                             <td><?= htmlspecialchars($u['email']) ?></td>
                             <td><?= htmlspecialchars($u['created_at'] ?? 'N/A') ?></td>
                             <td>
-                                <form method="POST" action="/index.php?action=approve" style="display:inline;">
+                                <form method="POST" action="/admin?action=approve" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="approve_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-approve">Approve</button>
                                 </form>
-                                <form method="POST" action="/index.php?action=reject" style="display:inline;">
+                                <form method="POST" action="/admin?action=reject" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="reject_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-reject">Reject</button>
@@ -265,12 +265,12 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                                     <td>${logoutTxt}</td>
                                     <td title="${userAgent.replace(/"/g, '&quot;')}">${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}</td>
                                     <td>
-                                        <form method="POST" action="/index.php?action=${actionType}" style="display:inline;">
+                                        <form method="POST" action="/admin?action=${actionType}" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                                             <input type="hidden" name="${actionInputName}" value="${u.id}">
                                             <button class="btn-action ${actionBtnClass}">${actionBtnText}</button>
                                         </form>
-                                        <form method="POST" action="/index.php?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
+                                        <form method="POST" action="/admin?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
                                             <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                                             <input type="hidden" name="delete_user" value="${u.id}">
                                             <button class="btn-action btn-reject">Delete</button>
