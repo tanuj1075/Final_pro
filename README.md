@@ -30,3 +30,12 @@ This project is optimized for deployment on **Vercel** using the `vercel.json` c
 
 ---
 © 2026 AckerStream Elite
+
+## Access URLs
+- **User login (default homepage):** `/` or `/index.php`
+- **Admin panel login:** `/admin`
+
+### Admin login notes
+- Admin auth is handled by `src/pages/index.php` (admin controller entrypoint) routed via `/admin` in `vercel.json`.
+- If admin login says it is disabled, set environment variables on Vercel: `ADMIN_USERNAME` and `ADMIN_PASSWORD` (or `ADMIN_PASSWORD_HASH`).
+
