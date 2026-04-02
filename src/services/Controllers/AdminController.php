@@ -55,7 +55,7 @@ class AdminController
                     return;
                 }
                 if ($action === 'delete' && isset($_POST['delete_user'])) {
-                    $this->deleteUser((int)$_POST['delete_user']);
+                    $this->handleDeleteUser((int)$_POST['delete_user']);
                     return;
                 }
             }
@@ -210,7 +210,7 @@ class AdminController
         exit;
     }
 
-    private function deleteUser(int $userId): void
+    private function handleDeleteUser(int $userId): void
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
@@ -228,27 +228,6 @@ class AdminController
         }
 
         header('Location: /index.php');
-        exit;
-    }
-
-    private function deleteUser(int $userId): void
-    {
-        if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
-            $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: index.php');
-            exit;
-        }
-
-        try {
-            $deleted = $this->userRepo->deleteUser($userId);
-            $_SESSION['admin_flash'] = $deleted
-                ? 'User deleted permanently.'
-                : 'Unable to delete user.';
-        } catch (Exception $e) {
-            $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
-        }
-
-        header('Location: index.php');
         exit;
     }
 
