@@ -76,7 +76,7 @@ class AdminController
     private function handleMainAccess(): void
     {
         if (!$this->isAdminLoggedIn()) {
-            header('Location: /index.php?error=Please login first to access the main site');
+            header('Location: /admin?error=Please login first to access the main site');
             exit;
         }
         // Redirect to main site
@@ -87,7 +87,7 @@ class AdminController
     private function logout(): void
     {
         destroy_session_and_cookie();
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -119,7 +119,7 @@ class AdminController
             $_SESSION['admin_username'] = $username;
             $_SESSION['login_time'] = time();
 
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -130,7 +130,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -143,7 +143,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -151,7 +151,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -164,7 +164,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -172,7 +172,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -185,7 +185,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -193,7 +193,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -206,7 +206,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -214,7 +214,7 @@ class AdminController
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
             $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
-            header('Location: /index.php');
+            header('Location: /admin');
             exit;
         }
 
@@ -227,7 +227,7 @@ class AdminController
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
 
-        header('Location: /index.php');
+        header('Location: /admin');
         exit;
     }
 

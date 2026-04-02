@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../utils/security.php';
 secure_session_start();
 
 if (empty($_SESSION['admin_logged_in'])) {
-    header('Location: /index.php?error=Admin login required');
+    header('Location: /admin?error=Admin login required');
     exit;
 }
 
@@ -81,7 +81,7 @@ try {
             <a href="/admin/manage_manga" class="nav-item"><i class="fas fa-book-open"></i> Manage Manga</a>
             <a href="/ash.php" class="nav-item"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
-        <a href="/index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="/admin?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">

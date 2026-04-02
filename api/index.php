@@ -54,7 +54,7 @@ $allowedRoutes = [
 
 /** Pretty-URL aliases → real filenames */
 $aliases = [
-    ''               => 'index.php',
+    ''               => 'login.php',
     'login'          => 'login.php',
     'signup'         => 'signup.php',
     'index'          => 'index.php',
@@ -72,6 +72,8 @@ $aliases = [
     'watch_yourname' => 'watch_yourname.php',
     'watch_aot'      => 'watch_aot.php',
     'watch_demonslayer' => 'watch_demonslayer.php',
+    'admin/login'      => 'index.php',
+    'admin/login.php'  => 'index.php',
     'admin/dashboard'       => 'admin/dashboard.php',
     'admin/upload_video'    => 'admin/upload_video.php',
     'admin/manage_manga'    => 'admin/manage_manga.php',
