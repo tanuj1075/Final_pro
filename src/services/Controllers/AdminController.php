@@ -54,6 +54,10 @@ class AdminController
                     $this->unblockUser((int)$_POST['unblock_user']);
                     return;
                 }
+                if ($action === 'delete' && isset($_POST['delete_user'])) {
+                    $this->deleteUser((int)$_POST['delete_user']);
+                    return;
+                }
             }
         }
 
@@ -198,6 +202,27 @@ class AdminController
             $_SESSION['admin_flash'] = $unblocked
                 ? 'User unblocked successfully.'
                 : 'Unable to unblock user.';
+        } catch (Exception $e) {
+            $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
+        }
+
+        header('Location: index.php');
+        exit;
+    }
+
+    private function deleteUser(int $userId): void
+    {
+        if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
+            $_SESSION['admin_flash'] = 'Invalid request token. Please try again.';
+            header('Location: index.php');
+            exit;
+        }
+
+        try {
+            $deleted = $this->userRepo->deleteUser($userId);
+            $_SESSION['admin_flash'] = $deleted
+                ? 'User deleted permanently.'
+                : 'Unable to delete user.';
         } catch (Exception $e) {
             $_SESSION['admin_flash'] = 'Action failed: ' . $e->getMessage();
         }
