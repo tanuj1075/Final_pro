@@ -7,8 +7,7 @@
     }
   },
   "routes": [
-    { "src": "^/$", "dest": "/api/index.php?route=index.php" },
-
+    { "src": "^/$", "dest": "/api/index.php?route=login" },
     {
       "src": "^/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|anime_hub|anime_detail|manage_anime|manga_reader|watch_yourname|watch_aot|watch_demonslayer|manga)\\.php$",
       "dest": "/api/index.php?route=$1.php"
@@ -20,7 +19,7 @@
     },
     {
       "src": "^/admin/?$",
-      "dest": "/api/index.php?route=index.php"
+      "dest": "/api/index.php?route=admin/login.php"
     },
 
     {

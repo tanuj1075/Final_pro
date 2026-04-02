@@ -54,7 +54,7 @@ $allowedRoutes = [
 
 /** Pretty-URL aliases → real filenames */
 $aliases = [
-    ''               => 'index.php',
+    ''               => 'login.php',
     'login'          => 'login.php',
     'signup'         => 'signup.php',
     'index'          => 'index.php',
