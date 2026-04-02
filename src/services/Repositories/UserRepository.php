@@ -198,6 +198,14 @@ class UserRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function deleteUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM admin_panel_siteuser WHERE id = :id");
+        $stmt->execute(['id' => $userId]);
+
+        return $stmt->rowCount() > 0;
+    }
+
     public function getUserByEmail(string $email): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM admin_panel_siteuser WHERE email = :email LIMIT 1");
