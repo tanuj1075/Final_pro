@@ -8,6 +8,12 @@ declare(strict_types=1);
 $projectRoot = dirname(__DIR__);
 $route = trim((string)($_GET['route'] ?? 'login.php'), '/');
 
+// Support malformed links like "index.php/admin/dashboard" by canonicalizing
+// them to "admin/dashboard" before alias/whitelist checks.
+if (str_starts_with($route, 'index.php/')) {
+    $route = substr($route, strlen('index.php/'));
+}
+
 /**
  * Whitelist of all allowed page/API files (relative to src/pages/ OR src/services/).
  */
