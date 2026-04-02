@@ -192,12 +192,12 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                             <td><?= htmlspecialchars($u['email']) ?></td>
                             <td><?= htmlspecialchars($u['created_at'] ?? 'N/A') ?></td>
                             <td>
-                                <form method="POST" action="?action=approve" style="display:inline;">
+                                <form method="POST" action="/index.php?action=approve" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="approve_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-approve">Approve</button>
                                 </form>
-                                <form method="POST" action="?action=reject" style="display:inline;">
+                                <form method="POST" action="/index.php?action=reject" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="reject_user" value="<?= (int)$u['id'] ?>">
                                     <button class="btn-action btn-reject">Reject</button>
@@ -265,12 +265,12 @@ if (!isset($userStats, $animeCount, $pendingUsers)) {
                                     <td>${logoutTxt}</td>
                                     <td title="${userAgent.replace(/"/g, '&quot;')}">${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}</td>
                                     <td>
-                                        <form method="POST" action="?action=${actionType}" style="display:inline;">
+                                        <form method="POST" action="/index.php?action=${actionType}" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                                             <input type="hidden" name="${actionInputName}" value="${u.id}">
                                             <button class="btn-action ${actionBtnClass}">${actionBtnText}</button>
                                         </form>
-                                        <form method="POST" action="?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
+                                        <form method="POST" action="/index.php?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
                                             <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                                             <input type="hidden" name="delete_user" value="${u.id}">
                                             <button class="btn-action btn-reject">Delete</button>
