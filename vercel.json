@@ -21,7 +21,7 @@
     },
     {
       "src": "^/admin/?$",
-      "dest": "/api/index.php?route=index.php"
+      "dest": "/api/index.php?route=admin/login.php"
     },
 
     {
