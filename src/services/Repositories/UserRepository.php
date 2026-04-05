@@ -93,6 +93,11 @@ class UserRepository
                 'last_seen_user_agent' => $clientMetadata['user_agent'],
             ]);
 
+            $newUserId = (int)$this->db->lastInsertId();
+            if ($newUserId > 0) {
+                $this->syncUserInfoTableByUserId($newUserId);
+            }
+
             return ['success' => true, 'message' => 'Registration successful. Waiting for admin approval.'];
         } catch (PDOException $e) {
             $errorMsg = $e->getMessage();
@@ -200,6 +205,9 @@ class UserRepository
 
     public function deleteUser(int $userId): bool
     {
+        $cleanup = $this->db->prepare("DELETE FROM admin_panel_siteuser_info WHERE user_id = :id");
+        $cleanup->execute(['id' => $userId]);
+
         $stmt = $this->db->prepare("DELETE FROM admin_panel_siteuser WHERE id = :id");
         $stmt->execute(['id' => $userId]);
 
@@ -244,6 +252,8 @@ class UserRepository
             'last_seen_ip' => $clientMetadata['ip'],
             'last_seen_user_agent' => $clientMetadata['user_agent'],
         ]);
+
+        $this->syncUserInfoTableByUserId($userId);
     }
 
     public function touchLastLogout(int $userId): void
@@ -262,6 +272,8 @@ class UserRepository
             'last_seen_ip' => $clientMetadata['ip'],
             'last_seen_user_agent' => $clientMetadata['user_agent'],
         ]);
+
+        $this->syncUserInfoTableByUserId($userId);
     }
 
     public function getUserStats(): array
@@ -316,6 +328,84 @@ class UserRepository
     private function isValidUsername(string $username): bool
     {
         return (bool)preg_match('/^[A-Za-z0-9_]{3,30}$/', $username);
+    }
+
+    private function syncUserInfoTableByUserId(int $userId): void
+    {
+        $select = $this->db->prepare(
+            "SELECT
+                id,
+                username,
+                email,
+                registration_ip,
+                registration_user_agent,
+                last_seen_ip,
+                last_seen_user_agent,
+                last_login,
+                last_logout,
+                status
+             FROM admin_panel_siteuser
+             WHERE id = :id
+             LIMIT 1"
+        );
+        $select->execute(['id' => $userId]);
+        $row = $select->fetch();
+
+        if (!$row) {
+            return;
+        }
+
+        $upsert = $this->db->prepare(
+            "INSERT INTO admin_panel_siteuser_info (
+                user_id,
+                username,
+                email,
+                registration_ip,
+                registration_user_agent,
+                last_seen_ip,
+                last_seen_user_agent,
+                last_login,
+                last_logout,
+                status,
+                updated_at
+            ) VALUES (
+                :user_id,
+                :username,
+                :email,
+                :registration_ip,
+                :registration_user_agent,
+                :last_seen_ip,
+                :last_seen_user_agent,
+                :last_login,
+                :last_logout,
+                :status,
+                datetime('now')
+            )
+            ON CONFLICT(user_id) DO UPDATE SET
+                username = excluded.username,
+                email = excluded.email,
+                registration_ip = excluded.registration_ip,
+                registration_user_agent = excluded.registration_user_agent,
+                last_seen_ip = excluded.last_seen_ip,
+                last_seen_user_agent = excluded.last_seen_user_agent,
+                last_login = excluded.last_login,
+                last_logout = excluded.last_logout,
+                status = excluded.status,
+                updated_at = datetime('now')"
+        );
+
+        $upsert->execute([
+            'user_id' => (int)$row['id'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'registration_ip' => $row['registration_ip'] ?? null,
+            'registration_user_agent' => $row['registration_user_agent'] ?? null,
+            'last_seen_ip' => $row['last_seen_ip'] ?? null,
+            'last_seen_user_agent' => $row['last_seen_user_agent'] ?? null,
+            'last_login' => $row['last_login'] ?? null,
+            'last_logout' => $row['last_logout'] ?? null,
+            'status' => $row['status'] ?? 'offline',
+        ]);
     }
 
     /**

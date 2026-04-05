@@ -104,6 +104,21 @@ class Migrator
             UNIQUE (user_id, provider)
         )");
 
+        // Denormalized table used for online/admin-facing user info snapshots.
+        $this->db->exec("CREATE TABLE IF NOT EXISTS admin_panel_siteuser_info (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL,
+            registration_ip TEXT NULL,
+            registration_user_agent TEXT NULL,
+            last_seen_ip TEXT NULL,
+            last_seen_user_agent TEXT NULL,
+            last_login TEXT NULL,
+            last_logout TEXT NULL,
+            status TEXT NOT NULL DEFAULT 'offline',
+            updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )");
+
         // Siteuser tracking schema updates
         // (Columns already included in initial table definitions)
 
