@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.3",
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    { "src": "^/$", "dest": "/api/index.php?route=login" },
+    { "src": "^/index\\.php$", "dest": "/api/index.php?route=login" },
+    { "src": "^/admin/login(?:\\.php)?$", "dest": "/api/index.php?route=index.php" },
+    {
+      "src": "^/(index|login|signup|ash|user_panel|oauth_start|oauth_callback|anime_hub|anime_detail|manage_anime|manga_reader|watch_yourname|watch_aot|watch_demonslayer|manga)\\.php$",
+      "dest": "/api/index.php?route=$1.php"
+    },
+
+    {
+      "src": "^/admin/?(dashboard|upload_video|manage_manga|manage_anime|login)?\\.php$",
+      "dest": "/api/index.php?route=admin/$1.php"
+    },
+    {
+      "src": "^/admin/?$",
+      "dest": "/api/index.php?route=admin/login.php"
+    },
+
+    {
+      "src": "^/src/services/api/(users|manga|upload_manga|upload_video)\\.php(\\?.*)?$",
+      "dest": "/api/index.php?route=api/$1.php"
+    },
+
+    {
+      "src": "^/(login|signup|ash|user_panel|oauth_start|oauth_callback|anime_hub|anime_detail|manage_anime|manga_reader|watch_yourname|watch_aot|watch_demonslayer|manga)/?$",
+      "dest": "/api/index.php?route=$1"
+    },
+
+    { "handle": "filesystem" },
+
+    { "src": "^/(.*)$", "dest": "/api/index.php?route=$1" }
+  ]
+}

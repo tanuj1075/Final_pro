@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Events - AckerStream</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #f47521;
+            --bg: #0b1a33;
+            --card-bg: #162447;
+            --text: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 40px;
+        }
+        .header { text-align: center; margin-bottom: 60px; }
+        .header h1 { font-size: 48px; font-weight: 800; margin-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .news-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; transition: transform 0.3s; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .news-card:hover { transform: translateY(-10px); }
+        .news-image { height: 200px; background: #23315a; position: relative; display: flex; align-items: center; justify-content: center; }
+        .news-image i { font-size: 64px; color: rgba(255, 255, 255, 0.1); }
+        .news-content { padding: 24px; }
+        .category { color: var(--primary); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+        .title { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #fff; }
+        .back-btn { display: inline-block; margin-bottom: 30px; color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .back-btn:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <a href="ash.php" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    <div class="header">
+        <h1>Latest News</h1>
+        <p style="color: #94a3b8;">Stay updated with the latest in the anime world</p>
+    </div>
+
+    <div class="grid">
+        <div class="news-card">
+            <div class="news-image"><i class="fas fa-medal"></i></div>
+            <div class="news-content">
+                <div class="category">Awards</div>
+                <div class="title">Anime of the Year Nominees Announced</div>
+            </div>
+        </div>
+        <div class="news-card">
+            <div class="news-image"><i class="fas fa-calendar-check"></i></div>
+            <div class="news-content">
+                <div class="category">Events</div>
+                <div class="title">AckerStream Summer Festival 2026</div>
+            </div>
+        </div>
+        <div class="news-card">
+            <div class="news-image"><i class="fas fa-broadcast-tower"></i></div>
+            <div class="news-content">
+                <div class="category">Streaming</div>
+                <div class="title">New Simulcasts Coming Parallel to Japan</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
