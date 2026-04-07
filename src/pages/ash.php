@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
 
 $cacheDir = __DIR__ . '/../cache';
 if (!is_dir($cacheDir)) {
@@ -56,9 +55,6 @@ ksort($animeByGenre); // Sort genres alphabetically
 
 require_once __DIR__ . '/../utils/security.php';
 include 'anime.php';
-=======
-require_once __DIR__ . '/../utils/security.php';
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 secure_session_start();
 check_user_active();
 
@@ -88,11 +84,7 @@ if (isset($_GET['logout'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<<<<<<< HEAD
   <link href="../styles/AT.css" rel="stylesheet">
-=======
-  <link href="/src/styles/AT.css" rel="stylesheet">
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 </head>
 
 <body>
@@ -242,7 +234,6 @@ if (isset($_GET['logout'])) {
 
   <main class="main-content">
 
-<<<<<<< HEAD
 <?php if (empty($allAnime)): ?>
     <section class="anime-section">
       <div style="color: white; padding: 20px; text-align: center; width: 100%;">
@@ -274,66 +265,12 @@ if (isset($_GET['logout'])) {
                 <img src="<?php echo $anime['images']['jpg']['image_url'] ?? ''; ?>" alt="<?php echo htmlspecialchars($anime['title']); ?>">
                 <div class="card-overlay">
                   <button class="quick-play" type="button">
-=======
-    <section class="anime-section" id="most-watched">
-      <div class="section-header">
-        <h2 class="section-title">
-          <i class="fas fa-lightbulb"></i> Featured Light Performances
-        </h2>
-        <a href="video.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-      </div>
-
-      <div class="slider-container">
-        <button class="slider-nav prev" type="button" onclick="scrollSlider(-1)" aria-label="Scroll left">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <div class="anime-grid" id="cardSlider">
-
-         <a href="watch_yourname.php" target="_blank" class="anime-card-link">
-  <div class="anime-card featured">
-
-    <div class="card-image">
-      <img src="/src/assets/images/your-name card.jpg" alt="Your Name">
-
-      <div class="card-overlay">
-        <button class="quick-play">
-          ▶
-        </button>
-      </div>
-
-      <div class="episode-tag">Sub | Dub</div>
-    </div>
-
-    <div class="card-content">
-      <h3 class="anime-title">Your Name</h3>
-      <p class="anime-synopsis">
-        Two strangers connected by fate begin a journey to uncover a forgotten connection.
-      </p>
-
-      <div class="card-meta">
-        <span class="rating">⭐ 8.4</span>
-        <span class="episodes">Movie</span>
-      </div>
-    </div>
-
-  </div>
-</a>
-
-          <a href="watch_aot.php" target="_blank" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/attack-on-titan card.jpg" alt="Attack on Titan">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Attack on Titan">
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
                     <i class="fas fa-play"></i>
                   </button>
                 </div>
                 <div class="episode-tag">Sub | Dub</div>
               </div>
               <div class="card-content">
-<<<<<<< HEAD
                 <h3 class="anime-title"><?php echo htmlspecialchars($anime['title']); ?></h3>
                 <p class="anime-synopsis">
                   <?php echo htmlspecialchars(substr($anime['synopsis'] ?? '', 0, 100)); ?>...
@@ -345,126 +282,20 @@ if (isset($_GET['logout'])) {
                   <span class="episodes">
                     <?php echo htmlspecialchars($anime['episodes'] ?? '?'); ?> Episodes
                   </span>
-=======
-                <h3 class="anime-title">Attack on Titan</h3>
-                <p class="anime-synopsis">Humanity stands on the brink. Giant titans roam. One boy sparks the fight for survival.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 9.1</span>
-                  <span class="episodes">87 Episodes</span>
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
                 </div>
               </div>
             </div>
           </a>
-<<<<<<< HEAD
 <?php } ?>
         </div>
 
         <button class="slider-nav next" type="button" onclick="scrollDynamicSlider('<?php echo $sliderId; ?>', 1)" aria-label="Scroll right">
-=======
-
-          <a href="watch_demonslayer.php" target="_blank" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <!-- TODO: swap this out for the actual demon slayer card image when we get it -->
-                <img src="https://images.squarespace-cdn.com/content/v1/571abd61e3214001fb3b9966/1613769110440-T2W236VNWNRGUSDEXS39/Demon+Slayer%3A+Mugen+Train+Movie+Edition+Novelized" alt="Demon Slayer">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Demon Slayer">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Demon Slayer</h3>
-                <p class="anime-synopsis">A boy seeks a cure for his sister and vengeance against the demon that killed his family.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.6</span>
-                  <span class="episodes">26 Episodes</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <a href="#" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/weathering-with-you.jpg" alt="Weathering with You">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Weathering with You">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Weathering with You</h3>
-                <p class="anime-synopsis">A runaway boy meets a girl who can manipulate the weather.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.9</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <a href="#" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">5 Centimeters per Second</h3>
-                <p class="anime-synopsis">A story of distance, time, and fading connection between two people.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.6</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <a href="#" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/The garden of words card.jpg" alt="The Garden of Words">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play The Garden of Words">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Sub | Dub</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">The Garden of Words</h3>
-                <p class="anime-synopsis">A quiet bond forms between two strangers during rainy days.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.5</span>
-                  <span class="episodes">Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-        </div>
-
-        <button class="slider-nav next" type="button" onclick="scrollSlider(1)" aria-label="Scroll right">
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>
     </section>
-<<<<<<< HEAD
 <?php endforeach; ?>
 <?php endif; ?>
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 
     <section class="anime-section" id="anime-journey">
       <div class="section-header">
@@ -480,7 +311,6 @@ if (isset($_GET['logout'])) {
         </button>
 
         <div class="anime-grid" id="cardSlider2">
-<<<<<<< HEAD
 <?php foreach ($immersiveList as $anime): ?>
           <a href="<?php echo $anime['link']; ?>" target="_blank" class="anime-card-link">
             <div class="anime-card">
@@ -501,101 +331,11 @@ if (isset($_GET['logout'])) {
                     <i class="fas fa-star"></i> <?php echo $anime['rating']; ?>
                   </span>
                   <span class="episodes"><?php echo $anime['episodes']; ?></span>
-=======
-
-          <a href="anime_hub.php" target="_blank" class="anime-card-link">
-            <div class="anime-card featured">
-              <div class="card-image">
-                <img src="/src/assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play 5 Centimeters per Second">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Movie</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">5 Centimeters per Second</h3>
-                <p class="anime-synopsis">A bittersweet story about distance, time, and first love.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.1</span>
-                  <span class="episodes">1 Movie</span>
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
                 </div>
               </div>
             </div>
           </a>
-<<<<<<< HEAD
 <?php endforeach; ?>
-=======
-
-          <a href="video.html" target="_blank" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/Weathering With You  card.jpg" alt="Weathering With You">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play Weathering With You">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Movie</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Weathering With You</h3>
-                <p class="anime-synopsis">A runaway boy meets a girl with the power to clear the skies.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.3</span>
-                  <span class="episodes">1 Movie</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <a href="video.html" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/The garden of words card.jpg" alt="The Garden of Words">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Play The Garden of Words">
-                    <i class="fas fa-play"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Special</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">The Garden of Words</h3>
-                <p class="anime-synopsis">Two lonely souls meet on rainy mornings and change each other.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 7.9</span>
-                  <span class="episodes">1 Special</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
-          <a href="manga.php" class="anime-card-link">
-            <div class="anime-card">
-              <div class="card-image">
-                <img src="/src/assets/images/your-name-vol-1-manga-1.jpg" alt="Your Name Manga">
-                <div class="card-overlay">
-                  <button class="quick-play" type="button" aria-label="Open Your Name Manga">
-                    <i class="fas fa-book-open"></i>
-                  </button>
-                </div>
-                <div class="episode-tag">Manga</div>
-              </div>
-              <div class="card-content">
-                <h3 class="anime-title">Your Name (Manga)</h3>
-                <p class="anime-synopsis">Read the original manga adaptation of the hit story.</p>
-                <div class="card-meta">
-                  <span class="rating"><i class="fas fa-star"></i> 8.8</span>
-                  <span class="episodes">3 Volumes</span>
-                </div>
-              </div>
-            </div>
-          </a>
-
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
         </div>
 
         <button class="slider-nav next" type="button" onclick="scrollSlider2(1)" aria-label="Scroll right">
@@ -697,7 +437,6 @@ if (isset($_GET['logout'])) {
       };
     }
 
-<<<<<<< HEAD
     if (typeof scrollDynamicSlider !== 'function') {
       window.scrollDynamicSlider = function(id, dir) {
         const grid = document.getElementById(id);
@@ -705,8 +444,6 @@ if (isset($_GET['logout'])) {
       };
     }
 
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
     if (typeof scrollSlider2 !== 'function') {
       window.scrollSlider2 = function(dir) {
         const grid = document.getElementById('cardSlider2');
