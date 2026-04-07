@@ -1,12 +1,19 @@
 <?php
 require_once __DIR__ . '/../utils/security.php';
 secure_session_start();
+<<<<<<< HEAD
+=======
+require_once __DIR__ . '/../utils/bootstrap.php';
+use App\Database\Connection;
+use App\Repositories\AnimeRepository;
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 
 if (empty($_SESSION['user_logged_in']) && empty($_SESSION['admin_logged_in'])) {
     header('Location: login.php');
     exit;
 }
 
+<<<<<<< HEAD
 $query      = trim((string)($_GET['q'] ?? ''));
 $genre_id   = trim((string)($_GET['genre'] ?? ''));
 $status     = trim((string)($_GET['status'] ?? ''));
@@ -65,6 +72,34 @@ $genres = [
     ['id' => 24, 'name' => 'Sci-Fi'],
     ['id' => 36, 'name' => 'Slice of Life'],
 ];
+=======
+$db = Connection::getInstance();
+$animeRepo = new AnimeRepository($db);
+$query  = trim((string)($_GET['q']      ?? ''));
+$genre  = trim((string)($_GET['genre']  ?? ''));
+$status = trim((string)($_GET['status'] ?? ''));
+$sort   = trim((string)($_GET['sort']   ?? 'newest'));
+
+// Keep filters in a known-safe set to avoid invalid combinations and confusing UX.
+$allowedStatus = ['', 'published', 'ongoing'];
+$allowedSort = ['newest', 'rating_desc', 'title_asc'];
+if (!in_array($status, $allowedStatus, true)) {
+    $status = '';
+}
+if (!in_array($sort, $allowedSort, true)) {
+    $sort = 'newest';
+}
+
+$animeList = $animeRepo->searchAnime($query, $genre, $status, $sort);
+$genres    = $animeRepo->getAllGenres();
+
+// If the selected genre was removed/renamed, reset instead of querying a stale value.
+$knownGenres = array_column($genres, 'name');
+if ($genre !== '' && !in_array($genre, $knownGenres, true)) {
+    $genre = '';
+    $animeList = $animeRepo->searchAnime($query, $genre, $status, $sort);
+}
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 ?>
 <!doctype html>
 <html lang="en">
@@ -247,7 +282,11 @@ $genres = [
     <select class="filter-select" name="genre" onchange="this.form.submit()">
       <option value="">All Genres</option>
       <?php foreach ($genres as $g): ?>
+<<<<<<< HEAD
         <option value="<?php echo (int)$g['id']; ?>" <?php echo $genre_id == $g['id'] ? 'selected' : ''; ?>>
+=======
+        <option value="<?php echo htmlspecialchars($g['name']); ?>" <?php echo $genre === $g['name'] ? 'selected' : ''; ?>>
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
           <?php echo htmlspecialchars($g['name']); ?>
         </option>
       <?php endforeach; ?>
@@ -262,7 +301,11 @@ $genres = [
       <option value="rating_desc" <?php echo $sort === 'rating_desc' ? 'selected' : ''; ?>>Top Rated</option>
       <option value="title_asc"   <?php echo $sort === 'title_asc'   ? 'selected' : ''; ?>>Title A–Z</option>
     </select>
+<<<<<<< HEAD
     <?php if ($query || $genre_id || $status): ?>
+=======
+    <?php if ($query || $genre || $status): ?>
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
       <a href="/anime_hub.php" style="color: var(--muted); font-size: 13px; text-decoration: none; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);">
         <i class="fas fa-times"></i> Clear
       </a>
@@ -286,9 +329,15 @@ $genres = [
   <?php endif; ?>
 
   <?php foreach ($animeList as $anime): ?>
+<<<<<<< HEAD
     <a href="/watch.php?id=<?php echo (int)$anime['mal_id']; ?>" class="anime-card">
       <?php if (!empty($anime['images']['jpg']['image_url'])): ?>
         <img src="<?php echo htmlspecialchars($anime['images']['jpg']['image_url']); ?>" class="card-poster" alt="<?php echo htmlspecialchars($anime['title']); ?>" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+=======
+    <a href="/anime_detail.php?id=<?php echo (int)$anime['id']; ?>" class="anime-card">
+      <?php if (!empty($anime['poster_url'])): ?>
+        <img src="<?php echo htmlspecialchars(resolve_asset_url($anime['poster_url'])); ?>" class="card-poster" alt="<?php echo htmlspecialchars($anime['title']); ?>" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
         <div class="poster-placeholder" style="display:none;"><i class="fas fa-image"></i></div>
       <?php else: ?>
         <div class="poster-placeholder"><i class="fas fa-image"></i></div>
@@ -298,8 +347,13 @@ $genres = [
       <?php if (!empty($anime['type'])): ?>
         <div class="type-badge"><?php echo htmlspecialchars($anime['type']); ?></div>
       <?php endif; ?>
+<<<<<<< HEAD
       <?php if (!empty($anime['score'])): ?>
         <div class="rating-badge"><i class="fas fa-star" style="color:#fbbf24; font-size:10px;"></i> <?php echo htmlspecialchars((string)$anime['score']); ?></div>
+=======
+      <?php if (!empty($anime['rating'])): ?>
+        <div class="rating-badge"><i class="fas fa-star" style="color:#fbbf24; font-size:10px;"></i> <?php echo htmlspecialchars((string)$anime['rating']); ?></div>
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
       <?php endif; ?>
 
       <!-- Hover Play Overlay -->
@@ -311,6 +365,7 @@ $genres = [
         <div class="card-title-text"><?php echo htmlspecialchars($anime['title']); ?></div>
         <div class="card-meta">
           <span>
+<<<<<<< HEAD
             <span class="status-dot status-<?php echo htmlspecialchars(strtolower($anime['status'] ?? '')); ?>"></span>
             <?php echo htmlspecialchars($anime['status'] ?? 'Unknown'); ?>
           </span>
@@ -322,6 +377,19 @@ $genres = [
           <?php endif; ?>
         </div>
         <p class="card-synopsis"><?php echo htmlspecialchars(substr($anime['synopsis'] ?? 'No synopsis available.', 0, 100)); ?>...</p>
+=======
+            <span class="status-dot status-<?php echo htmlspecialchars($anime['status']); ?>"></span>
+            <?php echo htmlspecialchars(ucfirst($anime['status'])); ?>
+          </span>
+          <?php if (!empty($anime['total_episodes'])): ?>
+            <span><i class="fas fa-list" style="font-size:10px;"></i> <?php echo (int)$anime['total_episodes']; ?> eps</span>
+          <?php endif; ?>
+          <?php if (!empty($anime['release_year'])): ?>
+            <span><?php echo (int)$anime['release_year']; ?></span>
+          <?php endif; ?>
+        </div>
+        <p class="card-synopsis"><?php echo htmlspecialchars((string)($anime['synopsis'] ?? 'No synopsis available.')); ?></p>
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
       </div>
     </a>
   <?php endforeach; ?>

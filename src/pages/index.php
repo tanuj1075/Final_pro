@@ -27,6 +27,7 @@ $adminCredentialsConfigured = !$isUsingDefaultAdminCredentials || $allowDefaultC
 
 // Optional hash override for production (set ADMIN_PASSWORD_HASH in env)
 $PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$10$YourHashHere';
+<<<<<<< HEAD
 
 // Load local admin overrides if they exist (managed via admin_profile.php)
 $profileFile = __DIR__ . '/../data/admin_override.json';
@@ -46,6 +47,8 @@ if (file_exists($profileFile)) {
         }
     }
 }
+=======
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 // =========================================================
 
 try {

@@ -5,14 +5,20 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
 <nav class="navbar" role="navigation" aria-label="Main navigation">
   <div class="nav-container">
     <!-- Logo Section -->
+<<<<<<< HEAD
     <a href="ash.php" class="logo-section" aria-label="AckerStream home">
       <img src="../assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+=======
+    <a href="/ash.php" class="logo-section" aria-label="AckerStream home">
+      <img src="/src/assets/images/bird.svg" alt="AckerStream Logo" class="logo-img">
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
       <span class="logo-text">Ackerstream</span>
     </a>
 
     <!-- Center Navigation Menu -->
     <div class="nav-menu" id="primary-nav-menu">
       <ul class="nav-links">
+<<<<<<< HEAD
         <li class="nav-link"><a href="ash.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'ash.php' ? 'active' : ''; ?>">Home</a></li>
         <li class="nav-link"><a href="ash.php?type=top">Top Anime</a></li>
         
@@ -32,6 +38,42 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
         
         <li class="nav-link"><a href="anime_hub.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'anime_hub.php' ? 'active' : ''; ?>">Anime Hub</a></li>
         <li class="nav-link"><a href="manga.php">Manga</a></li>
+=======
+        <li class="nav-link"><a href="#most-watched" class="active">Stages</a></li>
+        <li class="nav-link"><a href="#most-watched">Schedule</a></li>
+        <li class="nav-link"><a href="#anime-journey">Installations</a></li>
+        
+        <!-- Categories Dropdown -->
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-dropdown-toggle="true">
+            Categories <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="#most-watched" class="dropdown-item"><i class="fas fa-heart"></i> Love</a>
+            <a href="#anime-journey" class="dropdown-item"><i class="fas fa-robot"></i> Sci-Fi</a>
+            <a href="#most-watched" class="dropdown-item"><i class="fas fa-fist-raised"></i> Action</a>
+            <a href="#anime-journey" class="dropdown-item"><i class="fas fa-laugh"></i> Comedy</a>
+            <a href="#anime-journey" class="dropdown-item"><i class="fas fa-ghost"></i> Horror</a>
+            <a href="#most-watched" class="dropdown-item"><i class="fas fa-home"></i> Slice of Life</a>
+          </div>
+        </li>
+        
+        <li class="nav-link"><a href="/manga.php">Manga</a></li>
+        <li class="nav-link"><a href="/subscription.html">Subscription</a></li>
+        <li class="nav-link"><a href="/anime_hub.php">Anime Hub</a></li>
+        
+        <!-- News Dropdown -->
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-dropdown-toggle="true">
+            News <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="/video.html" class="dropdown-item"><i class="fas fa-newspaper"></i> All News</a>
+            <a href="/video.html" class="dropdown-item"><i class="fas fa-trophy"></i> Anime Awards</a>
+            <a href="/ash.php" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Events & Experiences</a>
+          </div>
+        </li>
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
       </ul>
     </div>
 
@@ -43,7 +85,11 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
       </button>
       
       <!-- Premium Button -->
+<<<<<<< HEAD
       <a href="subscription.html" class="premium-btn" aria-label="Open subscription plans">
+=======
+      <a href="/subscription.html" class="premium-btn" aria-label="Open subscription plans">
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
         <div class="premium-icon">
           <i class="fas fa-crown"></i>
         </div>
@@ -55,7 +101,11 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
       
       <!-- Action Icons -->
       <div class="action-icons">
+<<<<<<< HEAD
         <form action="anime_hub.php" method="get" style="display:inline-flex; align-items:center; gap:6px;">
+=======
+        <form action="/anime_hub.php" method="get" style="display:inline-flex; align-items:center; gap:6px;">
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
           <input
             type="search"
             name="q"

@@ -104,6 +104,7 @@ class Migrator
             UNIQUE (user_id, provider)
         )");
 
+<<<<<<< HEAD
         // ── User Activity Tables ──────────────────────────────────────────────
         $this->db->exec("CREATE TABLE IF NOT EXISTS user_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,6 +128,12 @@ class Migrator
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON user_favorites(user_id)");
 
         // ── Query performance indexes for browse/search/filter endpoints ──────
+=======
+        // Siteuser tracking schema updates
+        // (Columns already included in initial table definitions)
+
+        // Query performance indexes for browse/search/filter endpoints.
+>>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_title ON admin_panel_anime(title)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_status ON admin_panel_anime(status)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_created_at ON admin_panel_anime(created_at)");
