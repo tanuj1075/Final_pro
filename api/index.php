@@ -44,6 +44,9 @@ $allowedRoutes = [
     'admin/login.php',
     'admin/upload_video.php',
     'admin/manage_manga.php',
+    'admin/admin_profile.php',
+    'admin/user_detail.php',
+    'admin/edit_anime.php',
 
     // ── Internal API endpoints (in src/services/api/) ─────────────────────
     'api/users.php',
@@ -78,6 +81,9 @@ $aliases = [
     'admin/dashboard'       => 'admin/dashboard.php',
     'admin/upload_video'    => 'admin/upload_video.php',
     'admin/manage_manga'    => 'admin/manage_manga.php',
+    'admin/admin_profile'   => 'admin/admin_profile.php',
+    'admin/user_detail'     => 'admin/user_detail.php',
+    'admin/edit_anime'      => 'admin/edit_anime.php',
     'admin/manage_anime'    => 'manage_anime.php',
     'admin/manage_anime.php' => 'manage_anime.php',
     'admin/ash.php'         => 'ash.php',
