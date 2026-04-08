@@ -126,12 +126,7 @@ class Migrator
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_history_user_id ON user_history(user_id)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON user_favorites(user_id)");
 
-<<<<<<< HEAD
         // ── Query performance indexes for browse/search/filter endpoints ──────
-
-=======
-        // Query performance indexes for browse/search/filter endpoints.
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_title ON admin_panel_anime(title)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_status ON admin_panel_anime(status)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_created_at ON admin_panel_anime(created_at)");

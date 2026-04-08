@@ -285,11 +285,5 @@ try {
     </div>
 
 </div><!-- /main -->
-<<<<<<< HEAD
-</body>
-</html>
-
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 </body>
 </html>

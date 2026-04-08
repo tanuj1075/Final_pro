@@ -1,14 +1,9 @@
 <?php
 require_once __DIR__ . '/../utils/security.php';
 secure_session_start();
-<<<<<<< HEAD
-
 require_once __DIR__ . '/../utils/bootstrap.php';
 use App\Database\Connection;
 use App\Repositories\AnimeRepository;
-
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 
 if (empty($_SESSION['user_logged_in']) && empty($_SESSION['admin_logged_in'])) {
     header('Location: login.php');
@@ -73,10 +68,7 @@ $genres = [
     ['id' => 24, 'name' => 'Sci-Fi'],
     ['id' => 36, 'name' => 'Slice of Life'],
 ];
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 ?>
 <!doctype html>
 <html lang="en">
@@ -260,10 +252,7 @@ $genres = [
       <option value="">All Genres</option>
       <?php foreach ($genres as $g): ?>
         <option value="<?php echo (int)$g['id']; ?>" <?php echo $genre_id == $g['id'] ? 'selected' : ''; ?>>
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
           <?php echo htmlspecialchars($g['name']); ?>
         </option>
       <?php endforeach; ?>
@@ -279,10 +268,7 @@ $genres = [
       <option value="title_asc"   <?php echo $sort === 'title_asc'   ? 'selected' : ''; ?>>Title A–Z</option>
     </select>
     <?php if ($query || $genre_id || $status): ?>
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
       <a href="/anime_hub.php" style="color: var(--muted); font-size: 13px; text-decoration: none; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);">
         <i class="fas fa-times"></i> Clear
       </a>
@@ -309,10 +295,7 @@ $genres = [
     <a href="/watch.php?id=<?php echo (int)$anime['mal_id']; ?>" class="anime-card">
       <?php if (!empty($anime['images']['jpg']['image_url'])): ?>
         <img src="<?php echo htmlspecialchars($anime['images']['jpg']['image_url']); ?>" class="card-poster" alt="<?php echo htmlspecialchars($anime['title']); ?>" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
         <div class="poster-placeholder" style="display:none;"><i class="fas fa-image"></i></div>
       <?php else: ?>
         <div class="poster-placeholder"><i class="fas fa-image"></i></div>
@@ -324,10 +307,7 @@ $genres = [
       <?php endif; ?>
       <?php if (!empty($anime['score'])): ?>
         <div class="rating-badge"><i class="fas fa-star" style="color:#fbbf24; font-size:10px;"></i> <?php echo htmlspecialchars((string)$anime['score']); ?></div>
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
       <?php endif; ?>
 
       <!-- Hover Play Overlay -->
@@ -339,10 +319,7 @@ $genres = [
         <div class="card-title-text"><?php echo htmlspecialchars($anime['title']); ?></div>
         <div class="card-meta">
           <span>
-<<<<<<< HEAD
           <span>
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
             <span class="status-dot status-<?php echo htmlspecialchars(strtolower($anime['status'] ?? '')); ?>"></span>
             <?php echo htmlspecialchars($anime['status'] ?? 'Unknown'); ?>
           </span>
@@ -354,10 +331,7 @@ $genres = [
           <?php endif; ?>
         </div>
         <p class="card-synopsis"><?php echo htmlspecialchars(substr($anime['synopsis'] ?? 'No synopsis available.', 0, 100)); ?>...</p>
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
       </div>
     </a>
   <?php endforeach; ?>

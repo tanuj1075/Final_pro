@@ -29,10 +29,7 @@ class AdminController
             $this->handleMainAccess();
             return;
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 
         if (isset($_GET['access']) && $_GET['access'] === 'main') {
             $this->handleMainAccess();
@@ -70,10 +67,7 @@ class AdminController
                     $this->deleteAnime((int)$_POST['anime_id']);
                     return;
                 }
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
             }
         }
 
@@ -90,10 +84,7 @@ class AdminController
                 require __DIR__ . '/../../pages/admin/edit_anime.php';
                 return;
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
             $this->showDashboard();
         } else {
             $this->showLogin();
@@ -108,31 +99,18 @@ class AdminController
     private function handleMainAccess(): void
     {
         if (!$this->isAdminLoggedIn()) {
-<<<<<<< HEAD
             header('Location: /admin?error=Please login first to access the main site');
             exit;
         }
         // Redirect to main site
         header('Location: /ash.php');
-=======
-            header('Location: index.php?error=Please login first to access the main site');
-            exit;
-        }
-        // Redirect to main site
-        header('Location: ash.php');
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
         exit;
     }
 
     private function logout(): void
     {
         destroy_session_and_cookie();
-<<<<<<< HEAD
         header('Location: /admin');
-
-=======
-        header('Location: index.php');
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
         exit;
     }
 
@@ -298,10 +276,7 @@ class AdminController
         exit;
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
     private function showLogin(?string $error = null): void
     {
         global $adminCredentialsConfigured, $isUsingDefaultAdminCredentials;

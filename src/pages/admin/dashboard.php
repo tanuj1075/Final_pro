@@ -125,10 +125,7 @@ foreach ($mostWatched as $row) {
     <title>Admin Dashboard - AckerStream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-<<<<<<< HEAD
 
-=======
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
     <style>
         :root {
             --primary: #ff4b2b;

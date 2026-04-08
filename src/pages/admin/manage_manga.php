@@ -56,7 +56,6 @@ if (empty($_SESSION['admin_logged_in'])) {
             <span>Admin Central</span>
         </div>
         <div class="nav-items">
-<<<<<<< HEAD
             <a href="/admin/dashboard" class="nav-item"><i class="fas fa-home"></i> Metrics</a>
             <a href="/admin/manage_anime" class="nav-item"><i class="fas fa-film"></i> Anime Catalog</a>
             <a href="/admin/upload_video" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
@@ -64,16 +63,6 @@ if (empty($_SESSION['admin_logged_in'])) {
             <a href="/ash.php" class="nav-item" target="_blank"><i class="fas fa-external-link-alt"></i> Visit Site</a>
         </div>
         <a href="/admin?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-
-=======
-            <a href="dashboard.php" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="upload_video.php" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
-            <a href="manage_manga.php" class="nav-item active"><i class="fas fa-book-open"></i> Manage Manga</a>
-            <a href="admin_profile.php" class="nav-item"><i class="fas fa-user-cog"></i> My Profile</a>
-            <a href="../../pages/ash.php" class="nav-item" target="_blank"><i class="fas fa-external-link-alt"></i> Visit Site</a>
-        </div>
-        <a href="../index.php?action=logout" class="nav-item" style="margin-top: auto; color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
     </div>
 
     <div class="main-content">
