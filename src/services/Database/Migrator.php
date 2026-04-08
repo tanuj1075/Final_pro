@@ -140,6 +140,8 @@ class Migrator
     private function ensureSiteUserColumns(): void
     {
         $columns = [
+            'status' => "TEXT NOT NULL DEFAULT 'offline'",
+            'last_logout' => "TEXT NULL",
             'registration_ip' => "TEXT NULL",
             'registration_user_agent' => "TEXT NULL",
             'last_seen_ip' => "TEXT NULL",

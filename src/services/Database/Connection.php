@@ -22,8 +22,7 @@ class Connection
     public static function getInstance(): PDO
     {
         if (self::$instance === null) {
-            $dataDir = self::resolveDataDirectory();
-            $dbPath = rtrim($dataDir, '/') . '/app.sqlite';
+            $dbPath = self::resolveDatabasePath();
 
             try {
                 self::$instance = new PDO('sqlite:' . $dbPath);
@@ -38,53 +37,52 @@ class Connection
     }
 
     /**
-     * Locate a writable data directory for the SQLite database.
-     *
-     * @return string
-     * @throws RuntimeException
+     * Resolve the SQLite database path, preferring APP_DATA_DIR (e.g. /tmp on Vercel).
      */
-    private static function resolveDataDirectory(): string
+    private static function resolveDatabasePath(): string
     {
-        $candidates = [];
-
         $envDataDir = getenv('APP_DATA_DIR');
+        $isVercel = (getenv('VERCEL') === '1') || (getenv('VERCEL_ENV') !== false);
+
         if (is_string($envDataDir) && trim($envDataDir) !== '') {
-            $candidates[] = rtrim(trim($envDataDir), '/');
+            $dbPath = rtrim(trim($envDataDir), '/') . '/app.sqlite';
+        } elseif ($isVercel) {
+            // Vercel filesystem is read-only except /tmp.
+            $dbPath = '/tmp/ackerstream_data/app.sqlite';
+        } else {
+            $dbPath = __DIR__ . '/../../data/app.sqlite';
         }
 
-        $candidates[] = dirname(__DIR__, 2) . '/data';
-
-        $tmpRoot = rtrim(sys_get_temp_dir(), '/');
-        if ($tmpRoot !== '') {
-            $candidates[] = $tmpRoot . '/final_pro_data';
+        $dbDir = dirname($dbPath);
+        if (!is_dir($dbDir) && !@mkdir($dbDir, 0775, true) && !is_dir($dbDir)) {
+            throw new RuntimeException('Unable to create database directory: ' . $dbDir);
         }
 
-        $homeDir = getenv('HOME');
-        if (is_string($homeDir) && trim($homeDir) !== '') {
-            $candidates[] = rtrim(trim($homeDir), '/') . '/.final_pro/data';
-        }
+        self::bootstrapDatabaseIfMissing($dbPath);
 
-        foreach ($candidates as $candidate) {
-            if (self::ensureWritableDirectory($candidate)) {
-                return $candidate;
-            }
-        }
-
-        throw new RuntimeException('Unable to create or write to any data directory candidate');
+        return $dbPath;
     }
 
     /**
-     * Ensure a directory exists and is writable.
-     *
-     * @param string $path
-     * @return bool
+     * On ephemeral filesystems (e.g. Vercel /tmp), copy the seed DB on first run.
      */
-    private static function ensureWritableDirectory(string $path): bool
+    private static function bootstrapDatabaseIfMissing(string $dbPath): void
     {
-        if (!is_dir($path) && !@mkdir($path, 0775, true) && !is_dir($path)) {
-            return false;
+        if (is_file($dbPath)) {
+            return;
         }
 
-        return is_writable($path);
+        $seedDbPath = __DIR__ . '/../../data/app.sqlite';
+        if (is_file($seedDbPath)) {
+            if (!@copy($seedDbPath, $dbPath)) {
+                throw new RuntimeException('Failed to copy seed database to: ' . $dbPath);
+            }
+            return;
+        }
+
+        // If no seed exists, allow SQLite to create a fresh DB file.
+        if (@touch($dbPath) === false) {
+            throw new RuntimeException('Failed to initialize database file: ' . $dbPath);
+        }
     }
 }

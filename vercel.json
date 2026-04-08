@@ -7,18 +7,13 @@
     }
   },
   "routes": [
-<<<<<<< HEAD
-    { "src": "/src/assets/(.*)", "dest": "/src/assets/$1" },
+    { "src": "^/src/assets/(.*)", "dest": "/src/assets/$1" },
+    { "src": "^/src/utils/control\\.js$", "dest": "/src/utils/control.js" },
     { "handle": "filesystem" },
-    { "src": "/api/(.*)", "dest": "/api/index.php?route=api/$1" },
-    { "src": "/admin/(.*)", "dest": "/api/index.php?route=admin/$1" },
-    { "src": "/(.*)", "dest": "/api/index.php?route=$1" }
-=======
-    { "src": "^/$", "dest": "/api/index.php?route=login.php" },
-    { "src": "^/admin/?$", "dest": "/api/index.php?route=admin/login.php" },
+    { "src": "^/$", "dest": "/api/index.php?route=ash.php" },
+    { "src": "^/admin/?$", "dest": "/api/index.php?route=admin/index.php" },
     { "src": "^/admin/(.*)$", "dest": "/api/index.php?route=admin/$1" },
-    { "src": "^/src/services/api/(.*)$", "dest": "/api/index.php?route=api/$1" },
+    { "src": "^/api/(.*)$", "dest": "/api/index.php?route=api/$1" },
     { "src": "^/(.*)$", "dest": "/api/index.php?route=$1" }
->>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
   ]
 }

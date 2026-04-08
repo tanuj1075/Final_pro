@@ -96,6 +96,7 @@ class UserRepository
             return ['success' => true, 'message' => 'Registration successful. Waiting for admin approval.'];
         } catch (PDOException $e) {
             $errorMsg = $e->getMessage();
+            error_log('User registration database error: ' . $errorMsg);
             if ($e->getCode() === '23000' || 
                 strpos($errorMsg, 'UNIQUE constraint failed') !== false || 
                 strpos($errorMsg, 'is not unique') !== false ||

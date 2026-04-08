@@ -1,6 +1,7 @@
 <?php
 
-$cacheDir = __DIR__ . '/../cache';
+$isVercel = (getenv('VERCEL') === '1' || getenv('VERCEL_ENV') !== false);
+$cacheDir = $isVercel ? '/tmp/ackerstream_cache' : __DIR__ . '/../cache';
 if (!is_dir($cacheDir)) {
     mkdir($cacheDir, 0777, true);
 }
@@ -63,13 +64,13 @@ $isAdminLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logge
 $displayName     = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
 
 if (!$isUserLoggedIn && !$isAdminLoggedIn) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit;
 }
 
 if (isset($_GET['logout'])) {
     destroy_session_and_cookie();
-    header('Location: login.php?logout=1');
+    header('Location: /login.php?logout=1');
     exit;
 }
 ?>
@@ -249,7 +250,7 @@ if (isset($_GET['logout'])) {
         <h2 class="section-title">
           <i class="fas fa-list"></i> <?php echo htmlspecialchars($genreName); ?> Anime
         </h2>
-        <a href="anime_hub.php?genre=<?php echo urlencode((string)($genreMap[$genreName] ?? '')); ?>&genre_name=<?php echo urlencode($genreName); ?>" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        <a href="/anime_hub.php?genre=<?php echo urlencode((string)($genreMap[$genreName] ?? '')); ?>&genre_name=<?php echo urlencode($genreName); ?>" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
 
       <div class="slider-container">
@@ -260,7 +261,7 @@ if (isset($_GET['logout'])) {
 
         <div class="anime-grid" id="<?php echo $sliderId; ?>">
 <?php foreach ($animeList as $anime) { ?>
-          <a href="watch.php?id=<?php echo $anime['mal_id']; ?>" class="anime-card-link">
+          <a href="/watch.php?id=<?php echo $anime['mal_id']; ?>" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="<?php echo $anime['images']['jpg']['image_url'] ?? ''; ?>" alt="<?php echo htmlspecialchars($anime['title']); ?>">
@@ -304,7 +305,7 @@ if (isset($_GET['logout'])) {
         <h2 class="section-title">
           <i class="fas fa-vr-cardboard"></i> Immersive Zones
         </h2>
-        <a href="manga.php" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        <a href="/manga.php" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
 
       <div class="slider-container">
@@ -313,7 +314,7 @@ if (isset($_GET['logout'])) {
         </button>
 
         <div class="anime-grid" id="cardSlider2">
-          <a href="anime_hub.php" target="_blank" class="anime-card-link">
+          <a href="/anime_hub.php" target="_blank" class="anime-card-link">
             <div class="anime-card featured">
               <div class="card-image">
                 <img src="/src/assets/images/5 centimeters per second card.jpg" alt="5 Centimeters per Second">
@@ -334,7 +335,7 @@ if (isset($_GET['logout'])) {
               </div>
             </div>
           </a>
-          <a href="video.html" target="_blank" class="anime-card-link">
+          <a href="/video.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="/src/assets/images/Weathering With You  card.jpg" alt="Weathering With You">
@@ -356,7 +357,7 @@ if (isset($_GET['logout'])) {
             </div>
           </a>
 
-          <a href="video.html" class="anime-card-link">
+          <a href="/video.html" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="/src/assets/images/The garden of words card.jpg" alt="The Garden of Words">
@@ -378,7 +379,7 @@ if (isset($_GET['logout'])) {
             </div>
           </a>
 
-          <a href="manga.php" class="anime-card-link">
+          <a href="/manga.php" class="anime-card-link">
             <div class="anime-card">
               <div class="card-image">
                 <img src="/src/assets/images/your-name-vol-1-manga-1.jpg" alt="Your Name Manga">
@@ -399,10 +400,6 @@ if (isset($_GET['logout'])) {
               </div>
             </div>
           </a>
-
-        </div>
-
-        <button class="slider-nav next" type="button" onclick="scrollSlider2(1)" aria-label="Scroll right">
 
         </div>
 
