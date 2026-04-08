@@ -26,8 +26,7 @@ $allowedRoutes = [
     'user_panel.php',
     'oauth_start.php',
     'oauth_callback.php',
-    'about.php',
-    'contact.php',
+    'anime.php',
     'anime_hub.php',
     'anime_detail.php',
     'manage_anime.php',
@@ -35,15 +34,20 @@ $allowedRoutes = [
     'manga.php',
     'subscription.html',
     'video.html',
+    'watch.php',
     'watch_yourname.php',
     'watch_aot.php',
     'watch_demonslayer.php',
 
     // ── Admin panel pages (inside src/pages/admin/) ────────────────────────
+    'admin/index.php',
     'admin/dashboard.php',
     'admin/login.php',
     'admin/upload_video.php',
     'admin/manage_manga.php',
+    'admin/admin_profile.php',
+    'admin/edit_anime.php',
+    'admin/user_detail.php',
 
     // ── Internal API endpoints (in src/services/api/) ─────────────────────
     'api/users.php',
@@ -54,44 +58,37 @@ $allowedRoutes = [
 
 /** Pretty-URL aliases → real filenames */
 $aliases = [
-    ''               => 'login.php',
+    ''               => 'ash.php',
+    '/'              => 'ash.php',
     'login'          => 'login.php',
     'signup'         => 'signup.php',
-    'index'          => 'login.php',
-    'index.php'      => 'login.php',
     'ash'            => 'ash.php',
-    'user_panel'     => 'user_panel.php',
-    'oauth_start'    => 'oauth_start.php',
-    'oauth_callback' => 'oauth_callback.php',
-    'anime_hub'      => 'anime_hub.php',
-    'anime_detail'   => 'anime_detail.php',
-    'manage_anime'   => 'manage_anime.php',
-    'manga_reader'   => 'manga_reader.php',
+    'profile'        => 'user_panel.php',
+    'anime'          => 'anime.php',
+    'hub'            => 'anime_hub.php',
     'manga'          => 'manga.php',
-    'subscription'   => 'subscription.html',
-    'video'          => 'video.html',
-    'watch_yourname' => 'watch_yourname.php',
-    'watch_aot'      => 'watch_aot.php',
-    'watch_demonslayer' => 'watch_demonslayer.php',
-    'admin/login'      => 'index.php',
-    'admin/login.php'  => 'index.php',
-    'admin/dashboard'       => 'admin/dashboard.php',
-    'admin/upload_video'    => 'admin/upload_video.php',
-    'admin/manage_manga'    => 'admin/manage_manga.php',
-    'admin/manage_anime'    => 'manage_anime.php',
-    'admin/manage_anime.php' => 'manage_anime.php',
-    'admin/ash.php'         => 'ash.php',
+    'watch'          => 'watch.php',
+    'admin'          => 'admin/index.php',
+    'admin/'         => 'admin/index.php',
+    'admin/dashboard' => 'admin/dashboard.php',
+    'admin/profile'   => 'admin/admin_profile.php',
 ];
 
+// 1. Check for explicit aliases
 if (isset($aliases[$route])) {
     $route = $aliases[$route];
 }
 
-// Strip .php extension aliases (e.g. "anime_hub.php" → "anime_hub.php")
-if (!str_contains($route, '/')) {
-    $route = basename($route);
+// 2. Handle extension-less clean URLs for allowed pages
+if (!str_contains($route, '.') && !in_array($route, $allowedRoutes, true)) {
+    if (in_array($route . '.php', $allowedRoutes, true)) {
+        $route .= '.php';
+    } elseif (in_array($route . '.html', $allowedRoutes, true)) {
+        $route .= '.html';
+    }
 }
 
+// 3. Final Whitelist Check
 if (!in_array($route, $allowedRoutes, true)) {
     http_response_code(404);
     header('Content-Type: text/plain; charset=UTF-8');
@@ -100,7 +97,6 @@ if (!in_array($route, $allowedRoutes, true)) {
 }
 
 // ── Resolve target file path ──────────────────────────────────────────────────
-// API endpoints live in src/services/api/
 if (str_starts_with($route, 'api/')) {
     $target = $projectRoot . '/src/services/' . $route;
 } else {
@@ -110,7 +106,7 @@ if (str_starts_with($route, 'api/')) {
 if (!is_file($target)) {
     http_response_code(404);
     header('Content-Type: text/plain; charset=UTF-8');
-    echo "File not found: $route";
+    echo "File not found: $route (Target: $target)";
     return;
 }
 

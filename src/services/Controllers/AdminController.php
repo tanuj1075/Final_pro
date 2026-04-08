@@ -25,13 +25,11 @@ class AdminController
             $this->logout();
             return;
         }
-<<<<<<< HEAD
         if ($action === 'main_site') {
             $this->handleMainAccess();
             return;
         }
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
+
 
         if (isset($_GET['access']) && $_GET['access'] === 'main') {
             $this->handleMainAccess();
@@ -65,18 +63,15 @@ class AdminController
                     $this->handleDeleteUser((int)$_POST['delete_user']);
                     return;
                 }
-<<<<<<< HEAD
                 if ($action === 'delete_anime' && isset($_POST['anime_id'])) {
                     $this->deleteAnime((int)$_POST['anime_id']);
                     return;
                 }
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
+
             }
         }
 
         if ($this->isAdminLoggedIn()) {
-<<<<<<< HEAD
             if ($action === 'user_detail' || (isset($_GET['page']) && $_GET['page'] === 'user_detail')) {
                 require __DIR__ . '/../../pages/admin/user_detail.php';
                 return;
@@ -89,8 +84,7 @@ class AdminController
                 require __DIR__ . '/../../pages/admin/edit_anime.php';
                 return;
             }
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
+
             $this->showDashboard();
         } else {
             $this->showLogin();
@@ -105,30 +99,19 @@ class AdminController
     private function handleMainAccess(): void
     {
         if (!$this->isAdminLoggedIn()) {
-<<<<<<< HEAD
-            header('Location: index.php?error=Please login first to access the main site');
-            exit;
-        }
-        // Redirect to main site
-        header('Location: ash.php');
-=======
             header('Location: /admin?error=Please login first to access the main site');
             exit;
         }
         // Redirect to main site
         header('Location: /ash.php');
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
         exit;
     }
 
     private function logout(): void
     {
         destroy_session_and_cookie();
-<<<<<<< HEAD
-        header('Location: index.php');
-=======
         header('Location: /admin');
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
+
         exit;
     }
 
@@ -272,7 +255,6 @@ class AdminController
         exit;
     }
 
-<<<<<<< HEAD
     private function deleteAnime(int $animeId): void
     {
         if (!is_valid_csrf_token($_POST['csrf_token'] ?? '')) {
@@ -295,8 +277,7 @@ class AdminController
         exit;
     }
 
-=======
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
+
     private function showLogin(?string $error = null): void
     {
         global $adminCredentialsConfigured, $isUsingDefaultAdminCredentials;
