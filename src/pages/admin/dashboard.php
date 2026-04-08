@@ -84,7 +84,8 @@ try {
 }
 
 // Resolve anime titles for most-watched (from DB first, else label as API)
-$cacheDir = __DIR__ . '/../../cache';
+$isVercel = (getenv('VERCEL') === '1' || getenv('VERCEL_ENV') !== false);
+$cacheDir = $isVercel ? '/tmp/ackerstream_cache' : __DIR__ . '/../../cache';
 $watchedResolved = [];
 foreach ($mostWatched as $row) {
     $aid = (int)$row['anime_id'];
@@ -451,8 +452,8 @@ foreach ($mostWatched as $row) {
                     <td><?= number_format((float)$anime['rating'], 1) ?></td>
                     <td><?= htmlspecialchars(substr($anime['created_at'] ?? '', 0, 10)) ?></td>
                     <td style="white-space:nowrap;">
-                        <a href="edit_anime.php?id=<?= (int)$anime['id'] ?>" class="btn-action" style="background:rgba(56,189,248,.1); color:var(--accent); text-decoration:none;"><i class="fas fa-edit"></i> Edit</a>
-                        <form method="POST" action="../index.php?action=delete_anime" style="display:inline;"
+                        <a href="/admin/edit_anime?id=<?= (int)$anime['id'] ?>" class="btn-action" style="background:rgba(56,189,248,.1); color:var(--accent); text-decoration:none;"><i class="fas fa-edit"></i> Edit</a>
+                        <form method="POST" action="/admin?action=delete_anime" style="display:inline;"
                               onsubmit="return confirm('Delete \'<?= htmlspecialchars(addslashes($anime['title'])) ?>\'? This cannot be undone.');">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <input type="hidden" name="anime_id" value="<?= (int)$anime['id'] ?>">
@@ -503,14 +504,14 @@ foreach ($mostWatched as $row) {
                 <td style="font-size:13px;">${loginTxt}</td>
                 <td style="font-size:13px;">${logoutTxt}</td>
                 <td style="font-size:12px;color:#94a3b8;">${regIp}</td>
-                <td><a href="user_detail.php?id=${u.id}" class="btn-action btn-info" style="text-decoration:none;">View</a></td>
+                <td><a href="/admin/user_detail?id=${u.id}" class="btn-action btn-info" style="text-decoration:none;">View</a></td>
                 <td>
-                    <form method="POST" action="../index.php?action=${isActive?'block':'unblock'}" style="display:inline;">
+                    <form method="POST" action="/admin?action=${isActive?'block':'unblock'}" style="display:inline;">
                         <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                         <input type="hidden" name="${isActive?'block_user':'unblock_user'}" value="${u.id}">
                         <button class="btn-action ${isActive?'btn-warn':'btn-approve'}">${isActive?'Ban':'Unban'}</button>
                     </form>
-                    <form method="POST" action="../index.php?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
+                    <form method="POST" action="/admin?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
                         <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
                         <input type="hidden" name="delete_user" value="${u.id}">
                         <button class="btn-action btn-danger">Delete</button>
@@ -521,7 +522,7 @@ foreach ($mostWatched as $row) {
     }
 
     function loadUsers() {
-        fetch('../../services/api/users.php')
+        fetch('/api/users.php')
             .then(r => r.json())
             .then(data => {
                 allUsersCache = data.users ?? [];
