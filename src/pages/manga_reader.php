@@ -4,6 +4,27 @@ secure_session_start();
 require_once __DIR__ . '/../utils/bootstrap.php';
 use App\Database\Connection;
 
+if (!is_feature_enabled('manga_reader')) {
+    echo '<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coming Soon</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
+    h1 { color: #333; }
+    p { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Feature Unavailable</h1>
+  <p>The Manga Reader feature is currently under development. Please check back later.</p>
+  <a href="/" style="display:inline-block; margin-top:20px; padding:10px 20px; background:#4a6fa5; color:#fff; text-decoration:none; border-radius:5px;">Go Home</a>
+</body>
+</html>';
+    exit;
+}
+
 if (empty($_SESSION['user_logged_in']) && empty($_SESSION['admin_logged_in'])) {
     header('Location: login.php');
     exit;
