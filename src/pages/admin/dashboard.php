@@ -125,7 +125,10 @@ foreach ($mostWatched as $row) {
     <title>Admin Dashboard - AckerStream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<<<<<<< HEAD
 
+=======
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
     <style>
         :root {
             --primary: #ff4b2b;
@@ -542,136 +545,5 @@ foreach ($mostWatched as $row) {
         if (document.getElementById('tab-users')?.classList.contains('active')) loadUsers();
     }, 10000);
 </script>
-=======
-                <div class="label">Pending Approval</div>
-                <div class="value" style="color: var(--primary);"><?= (int)$userStats['pending'] ?></div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Anime Titles</div>
-                <div class="value"><?= (int)$animeCount ?></div>
-            </div>
-        </div>
-
-        <h2 class="section-title"><i class="fas fa-user-clock"></i> User Approvals</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Date Joined</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($pendingUsers)): ?>
-                    <tr><td colspan="4" style="text-align: center; color: #64748b;">All caught up! No pending approvals.</td></tr>
-                <?php else: ?>
-                    <?php foreach ($pendingUsers as $u): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($u['username']) ?></td>
-                            <td><?= htmlspecialchars($u['email']) ?></td>
-                            <td><?= htmlspecialchars($u['created_at'] ?? 'N/A') ?></td>
-                            <td>
-                                <form method="POST" action="/admin?action=approve" style="display:inline;">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                    <input type="hidden" name="approve_user" value="<?= (int)$u['id'] ?>">
-                                    <button class="btn-action btn-approve">Approve</button>
-                                </form>
-                                <form method="POST" action="/admin?action=reject" style="display:inline;">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                    <input type="hidden" name="reject_user" value="<?= (int)$u['id'] ?>">
-                                    <button class="btn-action btn-reject">Reject</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-        <h2 class="section-title" style="margin-top: 48px;"><i class="fas fa-users"></i> All Users (Live Tracking)</h2>
-        <table class="data-table" id="all-users-table">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Registered IP</th>
-                    <th>Last Seen IP</th>
-                    <th>Last Login</th>
-                    <th>Last Logout</th>
-                    <th>User Agent</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="users-tbody">
-                <tr><td colspan="9" style="text-align: center; color: #64748b;">Loading active users...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        const CSRF_TOKEN = '<?= htmlspecialchars(csrf_token()) ?>';
-
-        function loadUsers() {
-            fetch('/api/users.php')
-                .then(res => res.json())
-                .then(data => {
-                    const tbody = document.getElementById('users-tbody');
-                    if (data.success && data.users.length > 0) {
-                        tbody.innerHTML = '';
-                        data.users.forEach(u => {
-                            const statusColor = u.status === 'online' ? '#10b981' : '#64748b';
-                            const statusHtml = `<span style="color: ${statusColor}; font-weight: bold;"><i class="fas fa-circle" style="font-size: 10px;"></i> ${u.status.toUpperCase()}</span>`;
-                            const loginTxt = u.last_login ? u.last_login : 'Never';
-                            const logoutTxt = u.last_logout ? u.last_logout : '-';
-                            const registrationIp = u.registration_ip ? u.registration_ip : '-';
-                            const lastSeenIp = u.last_seen_ip ? u.last_seen_ip : '-';
-                            const userAgent = u.last_seen_user_agent || u.registration_user_agent || '-';
-                            
-                            const isActive = parseInt(u.is_active) === 1;
-                            const actionBtnClass = isActive ? 'btn-reject' : 'btn-approve';
-                            const actionBtnText = isActive ? 'Block' : 'Unblock';
-                            const actionType = isActive ? 'block' : 'unblock';
-                            const actionInputName = isActive ? 'block_user' : 'unblock_user';
-
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td>${u.username}</td>
-                                    <td>${u.email}</td>
-                                    <td>${statusHtml}</td>
-                                    <td>${registrationIp}</td>
-                                    <td>${lastSeenIp}</td>
-                                    <td>${loginTxt}</td>
-                                    <td>${logoutTxt}</td>
-                                    <td title="${userAgent.replace(/"/g, '&quot;')}">${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}</td>
-                                    <td>
-                                        <form method="POST" action="/admin?action=${actionType}" style="display:inline;">
-                                            <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
-                                            <input type="hidden" name="${actionInputName}" value="${u.id}">
-                                            <button class="btn-action ${actionBtnClass}">${actionBtnText}</button>
-                                        </form>
-                                        <form method="POST" action="/admin?action=delete" style="display:inline;" onsubmit="return confirm('Delete this user permanently?');">
-                                            <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}">
-                                            <input type="hidden" name="delete_user" value="${u.id}">
-                                            <button class="btn-action btn-reject">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">No users found.</td></tr>';
-                    }
-                })
-                .catch(err => console.error('Error fetching users:', err));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUsers();
-            // Refresh every 10 seconds dynamically
-            setInterval(loadUsers, 10000);
-        });
-    </script>
->>>>>>> a0670c839e767ebb242c200d673457292b0a8a9f
 </body>
 </html>

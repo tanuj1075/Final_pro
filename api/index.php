@@ -46,8 +46,13 @@ $allowedRoutes = [
     'admin/upload_video.php',
     'admin/manage_manga.php',
     'admin/admin_profile.php',
+<<<<<<< HEAD
     'admin/edit_anime.php',
     'admin/user_detail.php',
+=======
+    'admin/user_detail.php',
+    'admin/edit_anime.php',
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 
     // ── Internal API endpoints (in src/services/api/) ─────────────────────
     'api/users.php',
@@ -67,11 +72,30 @@ $aliases = [
     'anime'          => 'anime.php',
     'hub'            => 'anime_hub.php',
     'manga'          => 'manga.php',
+<<<<<<< HEAD
     'watch'          => 'watch.php',
     'admin'          => 'admin/index.php',
     'admin/'         => 'admin/index.php',
     'admin/dashboard' => 'admin/dashboard.php',
     'admin/profile'   => 'admin/admin_profile.php',
+=======
+    'subscription'   => 'subscription.html',
+    'video'          => 'video.html',
+    'watch_yourname' => 'watch_yourname.php',
+    'watch_aot'      => 'watch_aot.php',
+    'watch_demonslayer' => 'watch_demonslayer.php',
+    'admin/login'      => 'index.php',
+    'admin/login.php'  => 'index.php',
+    'admin/dashboard'       => 'admin/dashboard.php',
+    'admin/upload_video'    => 'admin/upload_video.php',
+    'admin/manage_manga'    => 'admin/manage_manga.php',
+    'admin/admin_profile'   => 'admin/admin_profile.php',
+    'admin/user_detail'     => 'admin/user_detail.php',
+    'admin/edit_anime'      => 'admin/edit_anime.php',
+    'admin/manage_anime'    => 'manage_anime.php',
+    'admin/manage_anime.php' => 'manage_anime.php',
+    'admin/ash.php'         => 'ash.php',
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 ];
 
 // 1. Check for explicit aliases

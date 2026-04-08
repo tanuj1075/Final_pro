@@ -54,7 +54,11 @@ foreach ($allAnime as $anime) {
 ksort($animeByGenre); // Sort genres alphabetically
 
 require_once __DIR__ . '/../utils/security.php';
+<<<<<<< HEAD
 
+=======
+include 'anime.php';
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 secure_session_start();
 check_user_active();
 
@@ -84,8 +88,12 @@ if (isset($_GET['logout'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<<<<<<< HEAD
   <link href="/src/styles/AT.css" rel="stylesheet">
 
+=======
+  <link href="../styles/AT.css" rel="stylesheet">
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 </head>
 
 <body>
@@ -235,7 +243,10 @@ if (isset($_GET['logout'])) {
 
   <main class="main-content">
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 <?php if (empty($allAnime)): ?>
     <section class="anime-section">
       <div style="color: white; padding: 20px; text-align: center; width: 100%;">
@@ -298,7 +309,10 @@ if (isset($_GET['logout'])) {
     </section>
 <?php endforeach; ?>
 <?php endif; ?>
+<<<<<<< HEAD
 
+=======
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
 
     <section class="anime-section" id="anime-journey">
       <div class="section-header">
@@ -314,6 +328,7 @@ if (isset($_GET['logout'])) {
         </button>
 
         <div class="anime-grid" id="cardSlider2">
+<<<<<<< HEAD
 
           <a href="anime_hub.php" target="_blank" class="anime-card-link">
             <div class="anime-card featured">
@@ -332,10 +347,33 @@ if (isset($_GET['logout'])) {
                 <div class="card-meta">
                   <span class="rating"><i class="fas fa-star"></i> 8.1</span>
                   <span class="episodes">1 Movie</span>
+=======
+<?php foreach ($immersiveList as $anime): ?>
+          <a href="<?php echo $anime['link']; ?>" target="_blank" class="anime-card-link">
+            <div class="anime-card">
+              <div class="card-image">
+                <img src="<?php echo $anime['image']; ?>" alt="<?php echo $anime['title']; ?>">
+                <div class="card-overlay">
+                  <button class="quick-play" type="button">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+                <div class="episode-tag">Sub | Dub</div>
+              </div>
+              <div class="card-content">
+                <h3 class="anime-title"><?php echo $anime['title']; ?></h3>
+                <p class="anime-synopsis"><?php echo $anime['synopsis']; ?></p>
+                <div class="card-meta">
+                  <span class="rating">
+                    <i class="fas fa-star"></i> <?php echo $anime['rating']; ?>
+                  </span>
+                  <span class="episodes"><?php echo $anime['episodes']; ?></span>
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
                 </div>
               </div>
             </div>
           </a>
+<<<<<<< HEAD
 
           <a href="video.html" target="_blank" class="anime-card-link">
             <div class="anime-card">
@@ -407,6 +445,9 @@ if (isset($_GET['logout'])) {
 
         <button class="slider-nav next" type="button" onclick="scrollSlider2(1)" aria-label="Scroll right">
 
+=======
+<?php endforeach; ?>
+>>>>>>> c9bad0fb0a47353af11f3619c7827188645b3043
         </div>
 
         <button class="slider-nav next" type="button" onclick="scrollSlider2(1)" aria-label="Scroll right">
