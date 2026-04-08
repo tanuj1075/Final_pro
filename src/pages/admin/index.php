@@ -55,5 +55,6 @@ try {
     $controller->handleRequest();
 } catch (Exception $e) {
     error_log("Admin Critical Error: " . $e->getMessage());
+    http_response_code(500);
     echo "A critical error occurred. Please check the logs.";
 }

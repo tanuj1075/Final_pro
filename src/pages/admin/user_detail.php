@@ -11,7 +11,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 }
 
 $uid = (int)($_GET['id'] ?? 0);
-if (!$uid) { header('Location: dashboard.php'); exit; }
+if (!$uid) { header('Location: /admin/dashboard'); exit; }
 
 $user = null;
 $history = [];
@@ -26,7 +26,7 @@ try {
     $stmt->execute([$uid]);
     $user = $stmt->fetch();
 
-    if (!$user) { header('Location: dashboard.php'); exit; }
+    if (!$user) { header('Location: /admin/dashboard'); exit; }
 
     // Ensure tables exist
     $db->exec("CREATE TABLE IF NOT EXISTS user_history (
@@ -62,13 +62,14 @@ try {
 }
 
 // Helper: resolve anime info (DB first, then JSON cache)
-$cacheDir = __DIR__ . '/../../cache';
+$isVercel = (getenv('VERCEL') === '1' || getenv('VERCEL_ENV') !== false);
+$cacheDir = $isVercel ? '/tmp/ackerstream_cache' : __DIR__ . '/../../cache';
 function resolveAnime(int $aid, $db, string $cacheDir): array {
     try {
         $s = $db->prepare("SELECT title, cover_image FROM admin_panel_anime WHERE id = ?");
         $s->execute([$aid]);
         $row = $s->fetch();
-        if ($row) return ['title' => $row['title'], 'image' => $row['cover_image'] ? '../../assets/anime/'.$row['cover_image'] : '', 'link' => 'upload_video.php'];
+        if ($row) return ['title' => $row['title'], 'image' => $row['cover_image'] ? '/src/assets/anime/'.$row['cover_image'] : '', 'link' => '/admin/upload_video'];
     } catch (\Exception $e) {}
     $cf = $cacheDir . '/anime_' . $aid . '_cache.json';
     if (file_exists($cf)) {
@@ -76,7 +77,7 @@ function resolveAnime(int $aid, $db, string $cacheDir): array {
         return [
             'title' => $d['title_english'] ?? $d['title'] ?? 'Anime #'.$aid,
             'image' => $d['images']['jpg']['image_url'] ?? '',
-            'link'  => '../watch.php?id='.$aid,
+            'link'  => '/watch.php?id='.$aid,
         ];
     }
     return ['title' => 'Anime #'.$aid, 'image' => '', 'link' => '#'];
@@ -124,7 +125,7 @@ function resolveAnime(int $aid, $db, string $cacheDir): array {
     </style>
 </head>
 <body>
-    <a href="dashboard.php" class="back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <a href="/admin/dashboard" class="back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
     <!-- Profile Hero -->
     <div class="profile-hero">

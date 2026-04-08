@@ -1,1 +1,23 @@
+# Environment
 .env
+.env.local
+.env.production
+
+# Database (ephemeral on Vercel — don't push production data)
+src/data/app.sqlite
+data/app.sqlite
+
+# Auto-generated cache
+src/cache/
+cache/
+
+# Local development files
+local_router.php
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
