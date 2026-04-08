@@ -42,9 +42,16 @@ class Connection
     private static function resolveDatabasePath(): string
     {
         $envDataDir = getenv('APP_DATA_DIR');
-        $dbPath = (is_string($envDataDir) && trim($envDataDir) !== '')
-            ? rtrim(trim($envDataDir), '/') . '/app.sqlite'
-            : __DIR__ . '/../../data/app.sqlite';
+        $isVercel = (getenv('VERCEL') === '1') || (getenv('VERCEL_ENV') !== false);
+
+        if (is_string($envDataDir) && trim($envDataDir) !== '') {
+            $dbPath = rtrim(trim($envDataDir), '/') . '/app.sqlite';
+        } elseif ($isVercel) {
+            // Vercel filesystem is read-only except /tmp.
+            $dbPath = '/tmp/ackerstream_data/app.sqlite';
+        } else {
+            $dbPath = __DIR__ . '/../../data/app.sqlite';
+        }
 
         $dbDir = dirname($dbPath);
         if (!is_dir($dbDir) && !@mkdir($dbDir, 0775, true) && !is_dir($dbDir)) {
