@@ -236,15 +236,15 @@ foreach ($mostWatched as $row) {
 
     <div class="nav-section">Content</div>
     <button class="nav-item" onclick="showTab('content')"><i class="fas fa-film"></i> Anime Library</button>
-    <a href="upload_video.php" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
-    <a href="manage_manga.php" class="nav-item"><i class="fas fa-book-open"></i> Manage Manga</a>
+    <a href="/admin/upload_video" class="nav-item"><i class="fas fa-upload"></i> Upload Video</a>
+    <a href="/admin/manage_manga" class="nav-item"><i class="fas fa-book-open"></i> Manage Manga</a>
 
     <div class="nav-section">Account</div>
-    <a href="admin_profile.php" class="nav-item"><i class="fas fa-user-cog"></i> My Profile</a>
+    <a href="/admin/admin_profile" class="nav-item"><i class="fas fa-user-cog"></i> My Profile</a>
 
     <div class="nav-section">Site</div>
-    <a href="../../pages/ash.php" class="nav-item" target="_blank"><i class="fas fa-external-link-alt"></i> Visit Site</a>
-    <a href="../index.php?action=logout" class="nav-item" style="margin-top:auto; color:#f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="/ash.php" class="nav-item" target="_blank"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+    <a href="/admin?action=logout" class="nav-item" style="margin-top:auto; color:#f87171;"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <!-- MAIN CONTENT -->

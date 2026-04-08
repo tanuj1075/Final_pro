@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . '/../utils/security.php';
 secure_session_start();
+
 require_once __DIR__ . '/../utils/bootstrap.php';
 use App\Database\Connection;
 use App\Repositories\AnimeRepository;
 
 if (empty($_SESSION['user_logged_in']) && empty($_SESSION['admin_logged_in'])) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit;
 }
 
@@ -318,7 +319,6 @@ $genres = [
       <div class="card-body">
         <div class="card-title-text"><?php echo htmlspecialchars($anime['title']); ?></div>
         <div class="card-meta">
-          <span>
           <span>
             <span class="status-dot status-<?php echo htmlspecialchars(strtolower($anime['status'] ?? '')); ?>"></span>
             <?php echo htmlspecialchars($anime['status'] ?? 'Unknown'); ?>
