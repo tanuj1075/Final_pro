@@ -8,7 +8,8 @@ if ($id === 0) {
     exit;
 }
 
-$cacheDir = __DIR__ . '/../cache';
+$isVercel = (getenv('VERCEL') === '1' || getenv('VERCEL_ENV') !== false);
+$cacheDir = $isVercel ? '/tmp/ackerstream_cache' : __DIR__ . '/../cache';
 if (!is_dir($cacheDir)) {
     mkdir($cacheDir, 0777, true);
 }
