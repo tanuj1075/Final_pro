@@ -39,3 +39,4 @@ This project is optimized for deployment on **Vercel** using the `vercel.json` c
 - Admin auth is handled by `src/pages/index.php` (admin controller entrypoint) routed via `/admin` in `vercel.json`.
 - If admin login says it is disabled, set environment variables on Vercel: `ADMIN_USERNAME` and `ADMIN_PASSWORD` (or `ADMIN_PASSWORD_HASH`).
 
+# Ackerstream
