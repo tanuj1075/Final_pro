@@ -54,7 +54,12 @@ if ($isProduction) {
 }
 
 $projectRoot = dirname(__DIR__);
-$route = trim((string)($_GET['route'] ?? 'login.php'), '/');
+
+$route = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+if ($route === '/' || $route === '/api/index.php' || $route === '/index.php') {
+    $route = 'login.php';
+}
+$route = trim((string)$route, '/');
 
 // Support malformed links like "index.php/admin/dashboard" by canonicalizing
 // them to "admin/dashboard" before alias/whitelist checks.
@@ -80,7 +85,7 @@ $allowedRoutes = [
     'manage_anime.php',
     'manga_reader.php',
     'manga.php',
-    'subscription.html',
+    'subscription.php',
     'video.html',
     'watch.php',
     'watch_yourname.php',
@@ -118,7 +123,7 @@ $aliases = [
     'watch'                 => 'watch.php',
     'admin'                 => 'admin/index.php',
     'admin/'                => 'admin/index.php',
-    'subscription'          => 'subscription.html',
+    'subscription'          => 'subscription.php',
     'video'                 => 'video.html',
     'watch_yourname'        => 'watch_yourname.php',
     'watch_aot'             => 'watch_aot.php',

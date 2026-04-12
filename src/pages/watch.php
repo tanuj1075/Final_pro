@@ -60,6 +60,19 @@ $score = htmlspecialchars((string)($anime['score'] ?? 'N/A'));
 $image = htmlspecialchars($anime['images']['webp']['large_image_url'] ?? $anime['images']['jpg']['large_image_url'] ?? '');
 $trailer = $anime['trailer']['embed_url'] ?? null;
 
+// Premium restriction logic
+$isPremium = in_array($id, [16498, 21]); // 16498 = Attack on Titan, 21 = One Piece (demonstration)
+$userTier = 'Free';
+if (isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../services/Database/Connection.php';
+    require_once __DIR__ . '/../services/Repositories/UserRepository.php';
+    $tempRepo = new \App\Repositories\UserRepository(\App\Database\Connection::getInstance());
+    $tempUser = $tempRepo->getUserById((int)$_SESSION['user_id']);
+    $userTier = $tempUser['subscription_tier'] ?? 'Free';
+}
+
+$accessDenied = $isPremium && $userTier === 'Free';
+
 $year = $anime['year'] ?? (isset($anime['aired']['prop']['from']['year']) ? $anime['aired']['prop']['from']['year'] : 'N/A');
 $episodes = $anime['episodes'] ?? '?';
 $type = htmlspecialchars($anime['type'] ?? 'Unknown');
@@ -567,6 +580,21 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) 
 <body class="<?php echo htmlspecialchars($themeClass); ?>">
 
 <?php include __DIR__ . '/../components/Navbar.php'; ?>
+
+<?php if ($accessDenied): ?>
+<div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; backdrop-filter:blur(10px);">
+    <i class="fas fa-lock" style="font-size:80px; color:#ff4c60; margin-bottom:20px;"></i>
+    <h1 style="font-size:3rem; margin-bottom:10px;">Premium Content</h1>
+    <p style="font-size:1.2rem; color:#b3b3b3; max-width:600px; margin-bottom:30px;">
+        Watching <strong><?php echo $title; ?></strong> requires a Fan subscription or higher.
+        Upgrade your plan to unlock full access to our premium library.
+    </p>
+    <div style="display:flex; gap:20px;">
+        <a href="subscription.php" class="btn-watch" style="text-decoration:none;">Upgrade Now</a>
+        <a href="ash.php" class="btn-fav" style="text-decoration:none; border-color:white; color:white;">Go Back</a>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Landing Section -->
 <section class="fullscreen-video" id="introBanner">
