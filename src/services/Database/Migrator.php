@@ -36,7 +36,9 @@ class Migrator
             registration_ip TEXT NULL,
             registration_user_agent TEXT NULL,
             last_seen_ip TEXT NULL,
-            last_seen_user_agent TEXT NULL
+            last_seen_user_agent TEXT NULL,
+            subscription_tier TEXT NOT NULL DEFAULT 'Free',
+            subscription_expires_at TEXT NULL
         )");
 
         $this->ensureSiteUserColumns();
@@ -146,6 +148,8 @@ class Migrator
             'registration_user_agent' => "TEXT NULL",
             'last_seen_ip' => "TEXT NULL",
             'last_seen_user_agent' => "TEXT NULL",
+            'subscription_tier' => "TEXT NOT NULL DEFAULT 'Free'",
+            'subscription_expires_at' => "TEXT NULL",
         ];
 
         foreach ($columns as $name => $definition) {

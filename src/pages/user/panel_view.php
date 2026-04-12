@@ -183,6 +183,7 @@ try {
             </div>
         </div>
         <div class="header-actions">
+            <a href="subscription.php" class="btn btn-home" style="background:#fbbf24;color:#000;"><i class="fas fa-crown"></i> Upgrade Plan</a>
             <a href="ash.php" class="btn btn-home"><i class="fas fa-home"></i> Home Feed</a>
             <a href="?logout=1" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
@@ -194,6 +195,10 @@ try {
     <div class="stats-inner">
         <div class="stat"><div class="stat-number"><?= $totalWatched ?></div><div class="stat-label">Anime Watched</div></div>
         <div class="stat"><div class="stat-number"><?= $totalFavorites ?></div><div class="stat-label">Favorites</div></div>
+        <div class="stat">
+            <div class="stat-number" style="color:var(--gold);"><?= htmlspecialchars($user['subscription_tier'] ?? 'Free') ?></div>
+            <div class="stat-label">Current Plan</div>
+        </div>
         <div class="stat"><div class="stat-number"><span class="badge-approved">✓ Active</span></div><div class="stat-label">Account Status</div></div>
     </div>
 </div>
@@ -283,6 +288,18 @@ try {
             <div class="info-label">Joined</div>
             <div class="info-value"><?= htmlspecialchars($user['created_at'] ?? 'N/A') ?></div>
         </div>
+        <div class="info-row">
+            <i class="fas fa-crown"></i>
+            <div class="info-label">Subscription Tier</div>
+            <div class="info-value" style="color:var(--gold); font-weight:700;"><?= htmlspecialchars($user['subscription_tier'] ?? 'Free') ?></div>
+        </div>
+        <?php if (!empty($user['subscription_expires_at'])): ?>
+        <div class="info-row">
+            <i class="fas fa-hourglass-half"></i>
+            <div class="info-label">Expires At</div>
+            <div class="info-value"><?= htmlspecialchars($user['subscription_expires_at']) ?></div>
+        </div>
+        <?php endif; ?>
     </div>
 
 </div><!-- /main -->

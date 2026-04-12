@@ -43,7 +43,7 @@ $displayName = $_SESSION['username'] ?? $_SESSION['admin_username'] ?? 'Guest';
       </button>
       
       <!-- Premium Button -->
-      <a href="/subscription.html" class="premium-btn" aria-label="Open subscription plans">
+      <a href="/subscription" class="premium-btn" aria-label="Open subscription plans">
         <div class="premium-icon">
           <i class="fas fa-crown"></i>
         </div>

@@ -219,7 +219,7 @@ class UserRepository
     public function getUserById(int $userId): ?array
     {
         $stmt = $this->db->prepare(
-            "SELECT id, username, email, is_approved, is_active, created_at, last_login, status, last_logout
+            "SELECT id, username, email, is_approved, is_active, created_at, last_login, status, last_logout, subscription_tier, subscription_expires_at
              FROM admin_panel_siteuser
              WHERE id = :id"
         );
@@ -263,6 +263,23 @@ class UserRepository
             'last_seen_ip' => $clientMetadata['ip'],
             'last_seen_user_agent' => $clientMetadata['user_agent'],
         ]);
+    }
+
+    public function updateSubscription(int $userId, string $tier, ?string $expiresAt): bool
+    {
+        $stmt = $this->db->prepare(
+            "UPDATE admin_panel_siteuser
+             SET subscription_tier = :tier,
+                 subscription_expires_at = :expires_at
+             WHERE id = :id"
+        );
+        $stmt->execute([
+            'id' => $userId,
+            'tier' => $tier,
+            'expires_at' => $expiresAt,
+        ]);
+
+        return $stmt->rowCount() > 0;
     }
 
     public function getUserStats(): array
