@@ -2,6 +2,7 @@
 // ── Pull history & favorites from DB for this user ──────────────────────────
 $historyAnime  = [];
 $favoritesAnime = [];
+$loginHistory = $loginHistory ?? [];
 $totalWatched  = 0;
 $totalFavorites = 0;
 
@@ -168,6 +169,22 @@ try {
         .empty { text-align: center; padding: 40px; color: var(--muted); }
         .empty i { font-size: 48px; display: block; margin-bottom: 16px; opacity: .4; }
         .empty p { font-size: 14px; }
+
+        /* ── LOGIN HISTORY ── */
+        .login-list { display: grid; gap: 12px; }
+        .login-item {
+            display: grid;
+            grid-template-columns: minmax(150px, 220px) minmax(120px, 180px) 1fr;
+            gap: 12px;
+            align-items: center;
+            background: rgba(255,255,255,.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 13px;
+        }
+        .login-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -284,6 +301,33 @@ try {
             <div class="info-value"><?= htmlspecialchars($user['created_at'] ?? 'N/A') ?></div>
         </div>
     </div>
+
+    <!-- Recent Login Activity -->
+    <div class="section-title"><i class="fas fa-right-to-bracket"></i> Recent Login Activity</div>
+    <?php if (!empty($loginHistory)): ?>
+        <div class="card">
+            <div class="login-list">
+                <?php foreach ($loginHistory as $login): ?>
+                    <div class="login-item">
+                        <div>
+                            <div class="login-label">Login Time</div>
+                            <div><?= htmlspecialchars($login['login_at'] ?? 'N/A') ?></div>
+                        </div>
+                        <div>
+                            <div class="login-label">IP Address</div>
+                            <div class="mono"><?= htmlspecialchars($login['login_ip'] ?? 'Unknown') ?></div>
+                        </div>
+                        <div>
+                            <div class="login-label">User Agent</div>
+                            <div class="mono"><?= htmlspecialchars($login['login_user_agent'] ?? 'Unknown') ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="empty"><i class="fas fa-clock-rotate-left"></i><p>No recorded logins yet.</p></div>
+    <?php endif; ?>
 
 </div><!-- /main -->
 </body>

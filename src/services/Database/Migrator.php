@@ -104,6 +104,15 @@ class Migrator
             UNIQUE (user_id, provider)
         )");
 
+        $this->db->exec("CREATE TABLE IF NOT EXISTS admin_panel_login_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            login_at TEXT NOT NULL DEFAULT (datetime('now')),
+            login_ip TEXT NULL,
+            login_user_agent TEXT NULL,
+            FOREIGN KEY (user_id) REFERENCES admin_panel_siteuser(id) ON DELETE CASCADE
+        )");
+
         // ── User Activity Tables ──────────────────────────────────────────────
         $this->db->exec("CREATE TABLE IF NOT EXISTS user_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -132,6 +141,8 @@ class Migrator
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_created_at ON admin_panel_anime(created_at)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_detail_anime_id ON admin_panel_anime_detail(anime_id)");
         $this->db->exec("CREATE INDEX IF NOT EXISTS idx_anime_genres_genre_id ON admin_panel_anime_genres(genre_id)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_login_history_user_id ON admin_panel_login_history(user_id)");
+        $this->db->exec("CREATE INDEX IF NOT EXISTS idx_login_history_login_at ON admin_panel_login_history(login_at)");
     }
 
     /**
