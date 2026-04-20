@@ -139,6 +139,7 @@ class UserRepository
         }
 
         $this->touchLastLogin((int)$user['id']);
+        $this->recordLoginEvent((int)$user['id']);
 
         return ['success' => true, 'user' => $user];
     }
@@ -263,6 +264,45 @@ class UserRepository
             'last_seen_ip' => $clientMetadata['ip'],
             'last_seen_user_agent' => $clientMetadata['user_agent'],
         ]);
+    }
+
+    public function recordLoginEvent(int $userId): void
+    {
+        $clientMetadata = $this->getClientMetadata();
+        $stmt = $this->db->prepare(
+            "INSERT INTO admin_panel_login_history (
+                user_id,
+                login_at,
+                login_ip,
+                login_user_agent
+            ) VALUES (
+                :user_id,
+                datetime('now'),
+                :login_ip,
+                :login_user_agent
+            )"
+        );
+        $stmt->execute([
+            'user_id' => $userId,
+            'login_ip' => $clientMetadata['ip'],
+            'login_user_agent' => $clientMetadata['user_agent'],
+        ]);
+    }
+
+    public function getRecentLoginHistory(int $userId, int $limit = 10): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT login_at, login_ip, login_user_agent
+             FROM admin_panel_login_history
+             WHERE user_id = :user_id
+             ORDER BY login_at DESC
+             LIMIT :limit"
+        );
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 
     public function getUserStats(): array

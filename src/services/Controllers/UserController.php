@@ -30,9 +30,11 @@ class UserController
         }
 
         $user = null;
+        $loginHistory = [];
         $dbError = null;
         try {
             $user = $this->userRepo->getUserById($_SESSION['user_id'] ?? 0);
+            $loginHistory = $this->userRepo->getRecentLoginHistory((int)($_SESSION['user_id'] ?? 0), 8);
         } catch (\Exception $e) {
             error_log('User panel database warning: ' . $e->getMessage());
             $dbError = 'Unable to load live account details right now.';
