@@ -113,6 +113,18 @@ class Migrator
             FOREIGN KEY (user_id) REFERENCES admin_panel_siteuser(id) ON DELETE CASCADE
         )");
 
+        $this->db->exec("CREATE TABLE IF NOT EXISTS admin_profile (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            username TEXT NOT NULL DEFAULT 'admin',
+            display_name TEXT NOT NULL DEFAULT 'Administrator',
+            bio TEXT NOT NULL DEFAULT '',
+            email TEXT NOT NULL DEFAULT '',
+            avatar_color TEXT NOT NULL DEFAULT '#ff4b2b',
+            password_hash TEXT NULL,
+            updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )");
+        $this->ensureAdminProfileColumns();
+
         // ── User Activity Tables ──────────────────────────────────────────────
         $this->db->exec("CREATE TABLE IF NOT EXISTS user_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -169,6 +181,33 @@ class Migrator
     private function siteUserHasColumn(string $columnName): bool
     {
         $stmt = $this->db->query("PRAGMA table_info(admin_panel_siteuser)");
+        $rows = $stmt->fetchAll();
+
+        foreach ($rows as $row) {
+            if (($row['name'] ?? '') === $columnName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function ensureAdminProfileColumns(): void
+    {
+        $columns = [
+            'password_hash' => 'TEXT NULL',
+        ];
+
+        foreach ($columns as $name => $definition) {
+            if (!$this->adminProfileHasColumn($name)) {
+                $this->db->exec("ALTER TABLE admin_profile ADD COLUMN {$name} {$definition}");
+            }
+        }
+    }
+
+    private function adminProfileHasColumn(string $columnName): bool
+    {
+        $stmt = $this->db->query("PRAGMA table_info(admin_profile)");
         $rows = $stmt->fetchAll();
 
         foreach ($rows as $row) {

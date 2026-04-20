@@ -20,8 +20,21 @@ $db->exec("CREATE TABLE IF NOT EXISTS admin_profile (
     bio TEXT NOT NULL DEFAULT '',
     email TEXT NOT NULL DEFAULT '',
     avatar_color TEXT NOT NULL DEFAULT '#ff4b2b',
+    password_hash TEXT NULL,
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 )");
+
+$columns = $db->query("PRAGMA table_info(admin_profile)")->fetchAll();
+$hasPasswordHashColumn = false;
+foreach ($columns as $column) {
+    if (($column['name'] ?? '') === 'password_hash') {
+        $hasPasswordHashColumn = true;
+        break;
+    }
+}
+if (!$hasPasswordHashColumn) {
+    $db->exec("ALTER TABLE admin_profile ADD COLUMN password_hash TEXT NULL");
+}
 
 // Seed default row if empty
 $count = (int)$db->query("SELECT COUNT(*) FROM admin_profile")->fetchColumn();
@@ -63,14 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newPw      = $_POST['new_password'] ?? '';
             $confirmPw  = $_POST['confirm_password'] ?? '';
 
-            // Load the profile JSON if it exists (our local override)
-            $profileFile = __DIR__ . '/../../data/admin_override.json';
-            $override = file_exists($profileFile) ? (json_decode(file_get_contents($profileFile), true) ?? []) : [];
-            $storedPw = $override['password'] ?? null;
+            $profilePasswordHash = (string)$db->query("SELECT COALESCE(password_hash, '') FROM admin_profile WHERE id=1")->fetchColumn();
 
             // Verify current password
             $envPassword = (string)(getenv('ADMIN_PASSWORD') ?: 'rkmb123#');
-            $actualPw = $storedPw ?? $envPassword;
+            $actualPw = $profilePasswordHash !== '' ? $profilePasswordHash : $envPassword;
 
             $currentMatch = ($currentPw === $actualPw) || password_verify($currentPw, $actualPw);
 
@@ -84,10 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $flash = 'New passwords do not match.';
                 $flashType = 'error';
             } else {
-                // Save new password override
-                $override['password'] = password_hash($newPw, PASSWORD_BCRYPT);
-                if (!is_dir(dirname($profileFile))) mkdir(dirname($profileFile), 0777, true);
-                file_put_contents($profileFile, json_encode($override));
+                $stmt = $db->prepare("UPDATE admin_profile SET password_hash=?, updated_at=datetime('now') WHERE id=1");
+                $stmt->execute([password_hash($newPw, PASSWORD_BCRYPT)]);
                 $flash = 'Password changed successfully! Use the new password on next login.';
             }
 
@@ -97,11 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $flash = 'Username cannot be empty.';
                 $flashType = 'error';
             } else {
-                $profileFile = __DIR__ . '/../../data/admin_override.json';
-                $override = file_exists($profileFile) ? (json_decode(file_get_contents($profileFile), true) ?? []) : [];
-                $override['username'] = $newUsername;
-                if (!is_dir(dirname($profileFile))) mkdir(dirname($profileFile), 0777, true);
-                file_put_contents($profileFile, json_encode($override));
                 $_SESSION['admin_username'] = $newUsername;
 
                 $stmt = $db->prepare("UPDATE admin_profile SET username=?, updated_at=datetime('now') WHERE id=1");

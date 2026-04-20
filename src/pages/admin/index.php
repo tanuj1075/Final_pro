@@ -33,22 +33,19 @@ $adminCredentialsConfigured = !$isUsingDefaultAdminCredentials || $allowDefaultC
 
 $PASSWORD_HASH = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$10$YourHashHere';
 
-$profileFile = __DIR__ . '/../../data/admin_override.json';
-if (file_exists($profileFile)) {
-    $override = json_decode(file_get_contents($profileFile), true);
-    if (!empty($override['username'])) $ADMIN_USERNAME = $override['username'];
-    if (!empty($override['password'])) {
-        if (strpos($override['password'], '$2y$') === 0 || strpos($override['password'], '$2b$') === 0) {
-            $PASSWORD_HASH = $override['password'];
-            $ADMIN_PASSWORD = null;
-        } else {
-            $ADMIN_PASSWORD = $override['password'];
-        }
-    }
-}
-
 try {
     $db = Connection::getInstance();
+    $profile = $db->query("SELECT username, password_hash FROM admin_profile WHERE id = 1")->fetch();
+    if ($profile) {
+        if (!empty($profile['username'])) {
+            $ADMIN_USERNAME = (string)$profile['username'];
+        }
+        if (!empty($profile['password_hash'])) {
+            $PASSWORD_HASH = (string)$profile['password_hash'];
+            $ADMIN_PASSWORD = null;
+        }
+    }
+
     $userRepo = new UserRepository($db);
     $animeRepo = new AnimeRepository($db);
     $controller = new AdminController($animeRepo, $userRepo);
